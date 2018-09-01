@@ -1,0 +1,17 @@
+{
+  "name": "esy-glfw",
+  "version": "0.1.0",
+  "description": "GLFW bindings for OCaml",
+  "license": "MIT",
+  "esy": {
+    "build": [
+        ["make", "build"]
+    ]
+  },
+  "dependencies": {
+    "ocaml": "~4.6.0"
+  },
+  "devDependencies": {
+    "ocaml": "~4.6.0"
+  }
+}
