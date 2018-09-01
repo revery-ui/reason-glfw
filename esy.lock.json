@@ -1,0 +1,27 @@
+{
+  "hash": "86456a8270f01b0e6e80f18bf8a14167",
+  "root": "esy-glfw@path:.",
+  "node": {
+    "ocaml@4.6.5": {
+      "record": {
+        "name": "ocaml",
+        "version": "4.6.5",
+        "source":
+          "archive:https://registry.npmjs.org/ocaml/-/ocaml-4.6.5.tgz#sha1:23b6d4dc36437f431c427953a5236447e7b51368",
+        "files": [],
+        "opam": null
+      },
+      "dependencies": []
+    },
+    "esy-glfw@path:.": {
+      "record": {
+        "name": "esy-glfw",
+        "version": "path:.",
+        "source": "path:.",
+        "files": [],
+        "opam": null
+      },
+      "dependencies": [ "ocaml@4.6.5" ]
+    }
+  }
+}
