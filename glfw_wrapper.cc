@@ -20,14 +20,14 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glfwCreateWindow(value unit)
+    caml_glfwCreateWindow(value iWidth, value iHeight, value sTitle)
     {
       GLFWwindow* wd;           /* window desciptor/handle */
-        if (!glfwInit()) {
-            return Val_unit;
-        }
+      int w = Int_val(iWidth);
+      int h = Int_val(iHeight);
+      char *s = String_val(sTitle);
 
-      wd = glfwCreateWindow(640, 480, "Experiment with line drawing",
+      wd = glfwCreateWindow(w, h, s,
                             NULL, NULL);
       return (value) wd;
     }
@@ -50,6 +50,43 @@ extern "C" {
         glfwGetFramebufferSize(wd, &fbwidth, &fbheight);
 
         printf("size2: %d %d\n", fbwidth, fbheight);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwWindowShouldClose(value window)
+    {
+        GLFWwindow *wd = (GLFWwindow*)window;
+        int val = glfwWindowShouldClose(wd);
+        return Val_bool(val);
+    }
+
+    CAMLprim value
+    caml_glfwPollEvents(value unit) 
+    {
+        glfwPollEvents();
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glClear(value unit) {
+        glClearColor(1, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwSwapBuffers(value window)
+    {
+        GLFWwindow *wd = (GLFWwindow*)window;
+        glfwSwapBuffers(wd);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwTerminate(value unit)
+    {
+        glfwTerminate();
         return Val_unit;
     }
 }
