@@ -5,7 +5,7 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["echo", "$cur__install"],
+        ["bash", "-c", "#{os == 'windows' ? 'true' : 'make lib_glfw'}"],
         ["make", "build"]
     ],
     "buildsInSource": true

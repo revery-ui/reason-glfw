@@ -11,6 +11,16 @@ LIBRARY=$(PREFIX)/lib-mingw-w64
 GCC_EXTRA_ARGS=-static -static-libgcc -static-libstdc++
 endif
 
+glfw/include/GLFW/glfw3.h:
+	@echo Building glfw...
+	@git clone https://github.com/glfw/glfw glfw
+
+glfw/src/libglfw3.a: glfw/include/GLFW/glfw3.h 
+	@cd glfw; cmake .
+	@cd glfw; make 
+
+lib_glfw: glfw/include/GLFW/glfw3.h glfw/src/libglfw3.a
+
 build:
 	@echo Using compiler: $(GCC) with args: $(GCC_EXTRA_ARGS)
 	@echo Compiling to: $(PREFIX)/bin
@@ -24,6 +34,7 @@ build:
 	ocamlc -a -custom -o glfw.cma glfw.cmo -dllib dllglfw_wrapper_stubs.dll
 	ocamlopt -c glfw.ml
 	ocamlopt $(PREFIX)/bin/glfw_wrapper.o glfw.cmx -o test_app -ccopt -L$(LIBRARY) -cclib -lglfw3 -ccopt "-framework OpenGL" -ccopt "-framework Cocoa" -ccopt "-framework IOKit" -ccopt "-framework CoreVideo"
+        @echo Run app from: $(PWD)/test_app
 	#ocamlopt -a -o glfw.cmxa glfw.cmx -ccopt -cclib -lwrap_stubs -lglfw3 -lgdi32 -lopengl32
 
 test:
