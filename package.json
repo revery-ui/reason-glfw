@@ -6,7 +6,8 @@
   "esy": {
     "build": [
         ["make", "build"]
-    ]
+    ],
+    "buildsInSource": true
   },
   "dependencies": {
     "ocaml": "~4.6.0"
