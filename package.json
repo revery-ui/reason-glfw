@@ -5,6 +5,7 @@
   "license": "MIT",
   "esy": {
     "build": [
+        ["echo", "$cur__install"],
         ["make", "build"]
     ],
     "buildsInSource": true
