@@ -1,4 +1,4 @@
-BUILDDIR=$(ROOTDIR)/build
+BUILDDIR=$(ROOTDIR)/_build
 
 ifeq (, $(shell which x86_64-w64-mingw32-g++))
 GCC=g++
@@ -27,15 +27,24 @@ $(LIBRARY)/libglfw3.a: $(INCLUDE)/GLFW/glfw3.h
 build-glfw: $(LIBRARY)/libglfw3.a
 	echo "Building lib_glfw"
 
+prep:
+	mkdir -p $(BUILDDIR)
+	cp *.ml _build
+	cp *.mli _build
+
 noop:
+	mkdir -p $(BUILDDIR)
 	echo "Skip building glfw"
+
+$(BUILDDIR)/glfw.cmi:
+	ocamlc -c $(BUILDDIR)/glfw.mli -o $(BUILDDIR)/glfw.cmi
 
 $(BUILDDIR)/glfw.cmo:
 	mkdir -p $(BUILDDIR)
-	ocamlc -c glfw.ml -o $(BUILDDIR)/glfw.cmo
+	ocamlc -I $(BUILDDIR) -c $(BUILDDIR)/glfw.ml -o $(BUILDDIR)/glfw.cmo
 
 $(BUILDDIR)/glfw.cmx:
-	ocamlopt -c glfw.ml -o $(BUILDDIR)/glfw.cmx
+	ocamlopt -I $(BUILDDIR) -c $(BUILDDIR)/glfw.ml -o $(BUILDDIR)/glfw.cmx
 
 $(BUILDDIR)/glfw_wrapper.o:
 	@$(GCC) -o $(BUILDDIR)/glfw_wrapper.o -I$(OCAMLLIB) -I./include -c ./glfw_wrapper.cc
@@ -49,7 +58,7 @@ $(BUILDDIR)/glfw.cmxa:
 $(BUILDDIR)/test.exe:
 	ocamlopt  -o $(BUILDIR)/test_app
 
-build: $(BUILDDIR)/glfw.cmo $(BUILDDIR)/glfw.cmx $(BUILDDIR)/glfw_wrapper.o $(BUILDDIR)/glfw.cmxa $(BUILDDIR)/glfw.cma
+build: $(BUILDDIR)/glfw.cmi $(BUILDDIR)/glfw.cmo $(BUILDDIR)/glfw.cmx $(BUILDDIR)/glfw_wrapper.o $(BUILDDIR)/glfw.cmxa $(BUILDDIR)/glfw.cma
 	@echo Using compiler: $(GCC) with args: $(GCC_EXTRA_ARGS)
 	@echo Compiling to: $(BUILDDIR)
 	ocamlopt -I $(BUILDDIR) glfw.cmxa -c test_glfw.ml -o $(BUILDDIR)/test_glfw.cmx

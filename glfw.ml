@@ -12,6 +12,6 @@ external glfwTerminate: unit -> unit = "caml_glfwTerminate"
 external glfwSwapBuffers: window -> unit = "caml_glfwSwapBuffers"
 
 (* GL *)
-external glClear: unit -> unit = "caml_glClear"
+external glClearColor: float -> float -> float -> float -> unit = "caml_glClearColor"
 
 external printFrameBufferSize: window -> unit = "caml_printFrameBufferSize"

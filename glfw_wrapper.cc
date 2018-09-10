@@ -69,8 +69,12 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glClear(value unit) {
-        glClearColor(1, 0, 0, 0);
+    caml_glClearColor(value vr, value vg, value vb, value va) {
+        float r = Double_val(vr);
+        float g = Double_val(vg);
+        float b = Double_val(vb);
+        float a = Double_val(va);
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
         return Val_unit;
     }

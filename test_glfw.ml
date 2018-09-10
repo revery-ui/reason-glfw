@@ -7,7 +7,7 @@ let () =
     glfwMakeContextCurrent(w);
 
     while not (glfwWindowShouldClose w) do
-        glClear();
+        glClearColor 1.0 0. 1. 1.;
         glfwSwapBuffers(w);
         glfwPollEvents();
         printFrameBufferSize(w);

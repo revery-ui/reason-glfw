@@ -36,10 +36,9 @@ function gl() {
     return window.__glfw__gl__
 }
 
-// Provides: caml_glClear
-function caml_glClear() {
-    debugger;
-    gl().clearColor(1, 0, 0, 1);
+// Provides: caml_glClearColor
+function caml_glClearColor(r, g, b, a) {
+    gl().clearColor(r, g, b, a);
     gl().clear(gl().COLOR_BUFFER_BIT);
 }
 

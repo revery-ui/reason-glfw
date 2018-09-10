@@ -5,10 +5,11 @@
   "license": "MIT",
   "esy": {
     "build": [
+        ["make", "prep", "ROOTDIR=#{self.root}"],
         ["make", "#{os == 'windows' ? 'noop' : 'build-glfw'}", "ROOTDIR=#{self.root}"],
         ["make", "build", "ROOTDIR=#{self.root}"]
     ],
-    "buildsInSource":true
+    "buildsInSource":"_build"
   },
   "peerDependencies": {
     "ocaml": "~4.6.0"
