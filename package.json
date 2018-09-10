@@ -5,9 +5,10 @@
   "license": "MIT",
   "esy": {
     "build": [
+        ["make", "lib_glfw", "BUILDDIR=#{self.root}/_build"],
         ["make", "build", "BUILDDIR=#{self.root}/_build"]
     ],
-    "buildsInSource":"_build"
+    "buildsInSource":true
   },
   "peerDependencies": {
     "ocaml": "~4.6.0"
