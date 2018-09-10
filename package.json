@@ -5,8 +5,9 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["make", "build"]
-    ]
+        ["make", "derp", "BUILDDIR=#{self.root}/_build"]
+    ],
+    "buildsInSource":"_build"
   },
   "dependencies": {
     "ocaml": "~4.6.0"
