@@ -5,8 +5,8 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["make", "lib_glfw", "BUILDDIR=#{self.root}/_build"],
-        ["make", "build", "BUILDDIR=#{self.root}/_build"]
+        ["make", "#{os == 'windows' ? 'noop' : 'build-glfw'}", "ROOTDIR=#{self.root}"],
+        ["make", "build", "ROOTDIR=#{self.root}"]
     ],
     "buildsInSource":true
   },

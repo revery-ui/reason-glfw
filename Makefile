@@ -1,3 +1,5 @@
+BUILDDIR=$(ROOTDIR)/build
+
 ifeq (, $(shell which x86_64-w64-mingw32-g++))
 GCC=g++
 INCLUDE=$(BUILDDIR)/glfw/include
@@ -6,13 +8,15 @@ ADDITIONAL_OPTS=-ccopt "-framework OpenGL" -ccopt "-framework Cocoa" -ccopt "-fr
 else
 GCC=x86_64-w64-mingw32-g++
 GCC_EXTRA_ARGS=-static -static-libgcc -static-libstdc++
-INCLUDE=$(BUILDDIR)/../include
-LIBRARY=$(BUILDDIR)/../lib-mingw-w64
+INCLUDE=$(ROOTDIR)/include
+LIBRARY=$(ROOTDIR)/lib-mingw-w64
 ADDITIONAL_OPTS=-cclib -lgdi32 -cclib -lopengl32
 endif
 
 # Building glfw from source
 $(INCLUDE)/GLFW/glfw3.h:
+	echo Library: $(LIBRARY)
+	echo Include: $(INCLUDE)
 	mkdir -p $(BUILDDIR)
 	git clone https://github.com/glfw/glfw $(BUILDDIR)/glfw
 
@@ -20,7 +24,11 @@ $(LIBRARY)/libglfw3.a: $(INCLUDE)/GLFW/glfw3.h
 	cd $(BUILDDIR)/glfw; cmake .
 	cd $(BUILDDIR)/glfw; make
 
-lib_glfw: $(LIBRARY)/libglfw3.a
+build-glfw: $(LIBRARY)/libglfw3.a
+	echo "Building lib_glfw"
+
+noop:
+	echo "Skip building glfw"
 
 $(BUILDDIR)/glfw.cmo:
 	mkdir -p $(BUILDDIR)
