@@ -9,8 +9,12 @@
     ],
     "buildsInSource":"_build"
   },
-  "dependencies": {
+  "peerDependencies": {
     "ocaml": "~4.6.0"
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/js_of_ocaml-compiler": "*"
   },
   "devDependencies": {
     "ocaml": "~4.6.0"
