@@ -5,7 +5,7 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["make", "derp", "BUILDDIR=#{self.root}/_build"]
+        ["make", "build", "BUILDDIR=#{self.root}/_build"]
     ],
     "buildsInSource":"_build"
   },
