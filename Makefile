@@ -1,4 +1,4 @@
-BUILDDIR=$(ROOTDIR)/build
+BUILDDIR=$(ROOTDIR)/_build
 
 ifeq (, $(shell which x86_64-w64-mingw32-g++))
 GCC=g++
@@ -56,5 +56,6 @@ build: $(BUILDDIR)/glfw.cmo $(BUILDDIR)/glfw.cmx $(BUILDDIR)/glfw_wrapper.o $(BU
 	ocamlopt -I $(BUILDDIR) glfw.cmxa test_glfw.cmx -o $(BUILDDIR)/test_glfw
 	#ocamlc -c -I $(BUILDDIR) glfw.cmo -c test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
 	#ocamlfind ocamlc -package js_of_ocaml-compiler -linkpkg -o test_glfw.byte $(BUILDDIR)/glfw.cma test_glfw.ml
-	ocamlc -g -I $(BUILDDIR) glfw.cma test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
+	cp test_glfw.ml _build/test_glfw.ml
+	ocamlc -g -I $(BUILDDIR) glfw.cma _build/test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
 	js_of_ocaml -pretty -no-inline -source-map ./js/stubs.js $(BUILDDIR)/test_glfw.byte -o $(BUILDDIR)/test_glfw.js
