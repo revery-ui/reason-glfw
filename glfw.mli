@@ -12,3 +12,15 @@ val printFrameBufferSize : window -> unit
 
 
 val glClearColor : float -> float -> float -> float -> unit
+
+type shaderType =
+    | GL_VERTEX_SHADER
+    | GL_FRAGMENT_SHADER
+
+type shader
+
+val glCreateShader: shaderType -> shader
+val glShaderSource: shader -> string -> unit
+val glCompileShader: shader -> unit
+val glDeleteShader: shader -> unit
+val glGetShaderIsCompiled: shader -> bool

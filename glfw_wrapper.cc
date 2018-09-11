@@ -1,6 +1,10 @@
 #include <stdio.h>
 
 #include <caml/mlvalues.h>
+#include <glad/glad.h>
+
+#define GLFW_INCLUDE_NONE
+
 #include <GLFW/glfw3.h>
 
 extern "C" {
@@ -37,6 +41,7 @@ extern "C" {
     {
         GLFWwindow* wd = (GLFWwindow *)window;
         glfwMakeContextCurrent(wd);
+        gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress);
         return Val_unit;
     }
 
@@ -77,6 +82,65 @@ extern "C" {
         glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
         return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glCreateShader(value v) {
+        int shaderType;
+        switch (Int_val(v)) {
+            case 0:
+                printf("vertex shader");
+                shaderType = GL_VERTEX_SHADER;
+                break;
+            default:
+            case 1:
+                printf("fragment shader");
+                shaderType = GL_FRAGMENT_SHADER;
+                break;
+        }
+
+        return (value) glCreateShader(shaderType);
+    }
+
+    CAMLprim value
+    caml_glShaderSource(value vShader, value vSource) {
+        GLuint shader = (GLuint)vShader;
+        char *s;
+        s = String_val(vSource);
+        glShaderSource(shader, 1, &s, NULL);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glCompileShader(value vShader) {
+        GLuint shader = (GLuint)vShader;
+        glCompileShader(shader);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glDeleteShader(value vShader) {
+        GLuint shader = (GLuint)vShader;
+        glDeleteShader(shader);
+    }
+
+    CAMLprim value
+    caml_glGetShaderIsCompiled(value vShader) {
+        GLuint shader = (GLuint)vShader;
+
+        GLint result;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+
+        if (result == GL_TRUE) {
+            printf("Compiled! %d\n", shader);
+            return Val_true;
+        } else {
+            printf("Not compiled! %d\n", shader);
+            char infoLog[512];
+            glGetShaderInfoLog(shader, 512, NULL, infoLog);
+            printf("Output: %s\n", infoLog);
+            return Val_false;
+        }
     }
 
     CAMLprim value
