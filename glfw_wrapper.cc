@@ -193,10 +193,11 @@ extern "C" {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
             printf("link failed: %s\n", infoLog);
         } else {
-            printf("link success!");
+            printf("link success!\n");
 
-            int pos = glGetAttribLocation(shaderProgram, "aVertexPosition");
-            printf("- pos: %d\n", pos);
+            int aVertexPositionLoc = glGetAttribLocation(shaderProgram, "aVertexPosition");
+            int aVertexColorLoc = glGetAttribLocation(shaderProgram, "aVertexColor");
+            printf("- vertexPositionLoc: %d\n - vertexColorLoc: %d\n", aVertexPositionLoc, aVertexColorLoc);
         }
         return Val_unit;
     }
