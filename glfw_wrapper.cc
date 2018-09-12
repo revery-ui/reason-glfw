@@ -241,6 +241,7 @@ extern "C" {
 
     CAMLprim value
     caml_glDrawArrays(value vDrawMode, value vFirst, value vCount) {
+        // TODO: Use param
         unsigned int first = Int_val(vFirst);
         unsigned int count = Int_val(vCount);
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -249,12 +250,14 @@ extern "C" {
 
     CAMLprim value
     caml_glEnableVertexAttribArray(value unit) {
+        // TODO: Use param
         glEnableVertexAttribArray(0);
         return Val_unit;
     }
 
     CAMLprim value
     caml_glVertexAttribPointer(value unit) {
+        // TODO: Params!
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         return Val_unit;
     }

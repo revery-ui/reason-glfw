@@ -41,15 +41,12 @@ let () =
     let vArray = Bigarray.Array1.of_array Bigarray.Float32 Bigarray.C_layout positions in
     print_endline ("from ocaml: " ^ string_of_float (Bigarray.Array1.get vArray 0));
     let shaderProgram = initShaderProgram vsSource fsSource in
-    let vao = glCreateVertexArray () in
     let vb = glCreateBuffer () in
-    glBindVertexArray vao;
     glBindBuffer GL_ARRAY_BUFFER vb;
     glBufferData GL_ARRAY_BUFFER 9 vArray GL_STATIC_DRAW;
     print_endline ("from ocaml: " ^ string_of_float (Bigarray.Array1.get vArray 1));
     glVertexAttribPointer 0 3 GL_FLOAT false;
     glEnableVertexAttribArray 0;
-
 
     while not (glfwWindowShouldClose w) do
         glClearColor 0.0 0. 0. 1.;
