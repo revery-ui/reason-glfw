@@ -47,6 +47,9 @@ external glUseProgram: program -> unit = "caml_glUseProgram"
 (* TODO: Add link result return *)
 external glLinkProgram: program -> unit = "caml_glLinkProgram"
 
+type attribLocation
+external glGetAttribLocation: program -> string -> attribLocation = "caml_glGetAttribLocation"
+
 type bufferType =
     | GL_ARRAY_BUFFER
 
@@ -63,8 +66,8 @@ external glBufferData: bufferType -> (float, Bigarray.float32_elt, Bigarray.c_la
 type glType =
     | GL_FLOAT
 
-external glVertexAttribPointer: int -> int -> glType -> bool -> unit = "caml_glVertexAttribPointer"
-external glEnableVertexAttribArray: int -> unit = "caml_glEnableVertexAttribArray"
+external glVertexAttribPointer: attribLocation -> int -> glType -> bool -> unit = "caml_glVertexAttribPointer"
+external glEnableVertexAttribArray: attribLocation -> unit = "caml_glEnableVertexAttribArray"
 
 type drawMode =
     | GL_TRIANGLES

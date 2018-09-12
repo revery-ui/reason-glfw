@@ -63,6 +63,8 @@ let () =
 
     glBindBuffer GL_ARRAY_BUFFER cb;
     glBufferData GL_ARRAY_BUFFER cArray GL_STATIC_DRAW;
+    let posAttribute = glGetAttribLocation shaderProgram "aVertexPosition" in
+    let colorAttribute = glGetAttribLocation shaderProgram "aVertexColor" in
     while not (glfwWindowShouldClose w) do
         glClearColor 0.0 0. 0. 1.;
         glClearDepth 1.0;
@@ -71,12 +73,12 @@ let () =
 
         glUseProgram shaderProgram;
         glBindBuffer GL_ARRAY_BUFFER vb;
-        glVertexAttribPointer 0 3 GL_FLOAT false;
-        glEnableVertexAttribArray 0;
+        glVertexAttribPointer posAttribute 3 GL_FLOAT false;
+        glEnableVertexAttribArray posAttribute;
 
         glBindBuffer GL_ARRAY_BUFFER cb;
-        glVertexAttribPointer 1 4 GL_FLOAT false;
-        glEnableVertexAttribArray 1;
+        glVertexAttribPointer colorAttribute 4 GL_FLOAT false;
+        glEnableVertexAttribArray colorAttribute;
         glDrawArrays GL_TRIANGLES 0 3;
 
         glfwSwapBuffers(w);

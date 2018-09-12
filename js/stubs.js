@@ -139,6 +139,11 @@ function caml_glLinkProgram(program) {
     gl().linkProgram(program);
 }
 
+// Provides: caml_glGetAttribLocation
+function caml_glGetAttribLocation(program, attribName) {
+    return gl().getAttribLocation(program, attribName)
+}
+
 // Provides: caml_glShaderSource
 function caml_glShaderSource(shader, src) {
     gl().shaderSource(shader, src);

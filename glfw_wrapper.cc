@@ -194,12 +194,16 @@ extern "C" {
             printf("link failed: %s\n", infoLog);
         } else {
             printf("link success!\n");
-
-            int aVertexPositionLoc = glGetAttribLocation(shaderProgram, "aVertexPosition");
-            int aVertexColorLoc = glGetAttribLocation(shaderProgram, "aVertexColor");
-            printf("- vertexPositionLoc: %d\n - vertexColorLoc: %d\n", aVertexPositionLoc, aVertexColorLoc);
         }
         return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glGetAttribLocation(value vProgram, value vAttributeName) {
+        unsigned int shaderProgram = (unsigned int)vProgram;
+        char *s;
+        s = String_val(vAttributeName);
+        return (value)glGetAttribLocation(shaderProgram, s);
     }
 
     CAMLprim value

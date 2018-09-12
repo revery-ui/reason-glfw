@@ -44,14 +44,17 @@ val glAttachShader: program -> shader -> unit
 val glLinkProgram: program -> unit
 val glUseProgram: program -> unit
 
+type attribLocation
+val glGetAttribLocation: program -> string -> attribLocation
+
 type bufferType =
     | GL_ARRAY_BUFFER
 
 type glType =
     | GL_FLOAT
 
-val glVertexAttribPointer: int -> int -> glType -> bool -> unit
-val glEnableVertexAttribArray: int -> unit
+val glVertexAttribPointer: attribLocation -> int -> glType -> bool -> unit
+val glEnableVertexAttribArray: attribLocation -> unit
 
 type buffer
 val glCreateBuffer: unit -> buffer
