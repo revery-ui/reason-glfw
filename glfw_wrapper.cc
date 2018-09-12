@@ -253,7 +253,7 @@ extern "C" {
 
     CAMLprim value
     caml_glEnableVertexAttribArray(value vAttributeLocation) {
-        int attributeLocation = Int_val(vAttributeLocation);
+        int attributeLocation = (int)(vAttributeLocation);
         glEnableVertexAttribArray(attributeLocation);
         return Val_unit;
     }
@@ -261,7 +261,7 @@ extern "C" {
     CAMLprim value
     caml_glVertexAttribPointer(value vAttrib, value vNumComponents) {
         // TODO: Params!
-        int attributeLocation = Int_val(vAttrib);
+        int attributeLocation = (int)(vAttrib);
         int numComponents = Int_val(vNumComponents);
         glVertexAttribPointer(attributeLocation, numComponents, GL_FLOAT, GL_FALSE, 0, (void*)0);
         return Val_unit;
