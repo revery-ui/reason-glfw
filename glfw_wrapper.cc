@@ -203,6 +203,8 @@ extern "C" {
         unsigned int shaderProgram = (unsigned int)vProgram;
         char *s;
         s = String_val(vAttributeName);
+        int val = glGetAttribLocation(shaderProgram, s);
+        printf("- attribute: %s - loc: %d\n", s, val);
         return (value)glGetAttribLocation(shaderProgram, s);
     }
 
