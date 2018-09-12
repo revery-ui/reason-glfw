@@ -212,13 +212,14 @@ extern "C" {
     caml_glCreateBuffer(value unit) {
         unsigned int VBO;
         glGenBuffers(1, &VBO);
-        /* printf("glCreateBuffer: %d \n", VBO); */
+        printf("glCreateBuffer: %d \n", VBO);
         return (value)VBO;
     }
 
     CAMLprim value
     caml_glBindBuffer(value vBufferType, value vBuffer) {
         unsigned int VBO = (unsigned int)vBuffer;
+        /* printf("bind buffer: %d\n", VBO); */
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         /* printf("glBindBuffer: %d\n", VBO); */
@@ -231,9 +232,9 @@ extern "C" {
         int val = Caml_ba_array_val(vData)->dim[0];
         /* printf("-size: %d\n -num dimensions: %d\n", val, Caml_ba_array_val(vData)->num_dims); */
         float* elements = (float*)Caml_ba_data_val(vData);
-        for (int i = 0; i < val; i++) {
-            printf("- element %d : %f", i, *(elements++));
-        }
+        /* for (int i = 0; i < val; i++) { */
+        /*     printf("- element %d : %f", i, *(elements++)); */
+        /* } */
         glBufferData(GL_ARRAY_BUFFER, val * sizeof(float), elements, GL_STATIC_DRAW);
         return Val_unit;
     }
@@ -257,7 +258,7 @@ extern "C" {
     caml_glDrawArrays(value vDrawMode, value vFirst, value vCount) {
         unsigned int first = Int_val(vFirst);
         unsigned int count = Int_val(vCount);
-        glDrawArrays(GL_TRIANGLES, first, count);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         return Val_unit;
     }
 
@@ -269,7 +270,7 @@ extern "C" {
 
     CAMLprim value
     caml_glVertexAttribPointer(value unit) {
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         return Val_unit;
     }
 
