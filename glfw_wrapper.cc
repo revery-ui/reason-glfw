@@ -240,21 +240,6 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glBindVertexArray(value vVAO) {
-        /* unsigned int VAO = (unsigned int)vVAO; */
-        /* glBindVertexArray(VAO); */
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glCreateVertexArray(value unit) {
-        /* unsigned int VAO; */
-        /* glGenVertexArrays(1, &VAO); */
-        /* return (value)VAO; */
-        return Val_unit;
-    }
-
-    CAMLprim value
     caml_glDrawArrays(value vDrawMode, value vFirst, value vCount) {
         unsigned int first = Int_val(vFirst);
         unsigned int count = Int_val(vCount);
@@ -271,11 +256,6 @@ extern "C" {
     CAMLprim value
     caml_glVertexAttribPointer(value unit) {
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glUnbindVertexArray(value unit) {
         return Val_unit;
     }
 

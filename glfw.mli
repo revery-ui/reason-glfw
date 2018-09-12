@@ -58,11 +58,6 @@ val glCreateBuffer: unit -> buffer
 val glBindBuffer: bufferType -> buffer -> unit
 val glUnbindBuffer: bufferType -> unit
 
-type vertexArrayObject
-val glCreateVertexArray: unit -> vertexArrayObject
-val glBindVertexArray: vertexArrayObject -> unit
-val glUnbindVertexArray: unit -> unit
-
 type drawType =
     | GL_STATIC_DRAW
 

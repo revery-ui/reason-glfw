@@ -66,12 +66,6 @@ type glType =
 external glVertexAttribPointer: int -> int -> glType -> bool -> unit = "caml_glVertexAttribPointer"
 external glEnableVertexAttribArray: int -> unit = "caml_glEnableVertexAttribArray"
 
-type vertexArrayObject
-
-external glCreateVertexArray: unit -> vertexArrayObject = "caml_glCreateVertexArray"
-external glBindVertexArray: vertexArrayObject -> unit = "caml_glBindVertexArray"
-external glUnbindVertexArray: unit -> unit = "caml_glUnbindVertexArray"
-
 type drawMode =
     | GL_TRIANGLES
 
