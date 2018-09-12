@@ -58,7 +58,7 @@ external glUnbindBuffer: bufferType -> unit = "caml_glUnbindBuffer"
 type drawType =
     | GL_STATIC_DRAW
 
-external glBufferData: bufferType -> int -> (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Array1.t -> drawType -> unit = "caml_glBufferData"
+external glBufferData: bufferType -> (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Array1.t -> drawType -> unit = "caml_glBufferData"
 
 type glType =
     | GL_FLOAT

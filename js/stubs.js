@@ -73,7 +73,7 @@ function caml_glBindBuffer(target, buffer) {
 }
 
 // Provides: caml_glBufferData
-function caml_glBufferData(target, size, data, usage) {
+function caml_glBufferData(target, data, usage) {
     // TODO: Remove size
     gl().bufferData(gl().ARRAY_BUFFER, data.data,  gl().STATIC_DRAW)
 }
@@ -150,15 +150,14 @@ function caml_glUseProgram(program) {
 }
 
 // Provides: caml_glVertexAttribPointer
-function caml_glVertexAttribPointer() {
+function caml_glVertexAttribPointer(attributeLocation, numComponents) {
     // TODO: PARAMS!
-    gl().vertexAttribPointer(0, 3, gl().FLOAT, false, 0, 0);
+    gl().vertexAttribPointer(attributeLocation, numComponents, gl().FLOAT, false, 0, 0);
 }
 
 // Provides: caml_glEnableVertexAttribArray
-function caml_glEnableVertexAttribArray() {
-    // TODO: Params
-    gl().enableVertexAttribArray(0);
+function caml_glEnableVertexAttribArray(attributeLocation) {
+    gl().enableVertexAttribArray(attributeLocation);
 }
 
 // Provides: caml_glfwPollEvents

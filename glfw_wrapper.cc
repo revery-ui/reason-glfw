@@ -227,15 +227,11 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glBufferData(value vBufferType, value vSize, value vData, value drawType) {
+    caml_glBufferData(value vBufferType, value vData, value drawType) {
         /* printf("glBufferData - show floats TODO\n"); */
-        int val = Caml_ba_array_val(vData)->dim[0];
-        /* printf("-size: %d\n -num dimensions: %d\n", val, Caml_ba_array_val(vData)->num_dims); */
+        int size = Caml_ba_array_val(vData)->dim[0];
         float* elements = (float*)Caml_ba_data_val(vData);
-        /* for (int i = 0; i < val; i++) { */
-        /*     printf("- element %d : %f", i, *(elements++)); */
-        /* } */
-        glBufferData(GL_ARRAY_BUFFER, val * sizeof(float), elements, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), elements, GL_STATIC_DRAW);
         return Val_unit;
     }
 
@@ -249,16 +245,18 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glEnableVertexAttribArray(value unit) {
-        // TODO: Use param
-        glEnableVertexAttribArray(0);
+    caml_glEnableVertexAttribArray(value vAttributeLocation) {
+        int attributeLocation = Int_val(vAttributeLocation);
+        glEnableVertexAttribArray(attributeLocation);
         return Val_unit;
     }
 
     CAMLprim value
-    caml_glVertexAttribPointer(value unit) {
+    caml_glVertexAttribPointer(value vAttrib, value vNumComponents) {
         // TODO: Params!
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        int attributeLocation = Int_val(vAttrib);
+        int numComponents = Int_val(vNumComponents);
+        glVertexAttribPointer(attributeLocation, numComponents, GL_FLOAT, GL_FALSE, 0, (void*)0);
         return Val_unit;
     }
 

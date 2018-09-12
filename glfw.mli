@@ -61,7 +61,7 @@ val glUnbindBuffer: bufferType -> unit
 type drawType =
     | GL_STATIC_DRAW
 
-val glBufferData: bufferType -> int -> (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Array1.t -> drawType -> unit
+val glBufferData: bufferType -> (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Array1.t -> drawType -> unit
 
 type drawMode =
     | GL_TRIANGLES
