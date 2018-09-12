@@ -14,9 +14,13 @@
   "peerDependencies": {
     "ocaml": "~4.6.0"
   },
+  "resolutions": {
+    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1"
+  },
   "dependencies": {
     "@opam/dune": "*",
-    "@opam/js_of_ocaml-compiler": "*"
+    "@opam/js_of_ocaml-compiler": "*",
+    "esy-cmake": "*"
   },
   "devDependencies": {
     "ocaml": "~4.6.0"
