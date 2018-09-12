@@ -65,9 +65,8 @@ build: $(BUILDDIR)/glfw.cmi $(BUILDDIR)/glfw.cmo $(BUILDDIR)/glfw.cmx $(BUILDDIR
 	@echo Using compiler: $(GCC) with args: $(GCC_EXTRA_ARGS)
 	@echo Compiling to: $(BUILDDIR)
 	ocamlopt -I $(BUILDDIR) glfw.cmxa -c test_glfw.ml -o $(BUILDDIR)/test_glfw.cmx
-	ocamlopt -I $(BUILDDIR) glfw.cmxa test_glfw.cmx -o $(BUILDDIR)/test_glfw
+	ocamlopt -I $(BUILDDIR) $(OCAMLLIB)/bigarray.cmxa glfw.cmxa test_glfw.cmx -o $(BUILDDIR)/test_glfw
 	#ocamlc -c -I $(BUILDDIR) glfw.cmo -c test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
 	#ocamlfind ocamlc -package js_of_ocaml-compiler -linkpkg -o test_glfw.byte $(BUILDDIR)/glfw.cma test_glfw.ml
-	cp test_glfw.ml _build/test_glfw.ml
-	ocamlc -g -I $(BUILDDIR) glfw.cma _build/test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
+	ocamlc -g -I $(BUILDDIR) $(OCAMLLIB)/bigarray.cma glfw.cma $(BUILDDIR)/test_glfw.ml -o $(BUILDDIR)/test_glfw.byte
 	js_of_ocaml -pretty -no-inline -source-map ./js/stubs.js $(BUILDDIR)/test_glfw.byte -o $(BUILDDIR)/test_glfw.js
