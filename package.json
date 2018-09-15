@@ -6,7 +6,6 @@
   "esy": {
     "build": [
         ["make", "build-glfw", "ROOTDIR=#{self.root}"],
-        ["ls", "-a", "_build"],
         ["dune", "build"]
     ],
     "buildsInSource":"_build"
