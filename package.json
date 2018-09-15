@@ -6,7 +6,6 @@
   "esy": {
     "build": [
         ["make", "build-glfw", "ROOTDIR=#{self.root}"],
-        ["ls", "-a", "_build"],
         ["dune", "build"]
     ],
     "buildsInSource":"_build"
@@ -15,10 +14,13 @@
     "ocaml": "~4.6.0"
   },
   "resolutions": {
-    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1"
+    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1",
+    "@opam/menhir": "20171013"
   },
   "dependencies": {
     "@opam/dune": "*",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*",
     "@opam/js_of_ocaml-compiler": "*",
     "esy-cmake": "*"
   },
