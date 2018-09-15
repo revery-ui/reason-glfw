@@ -4,6 +4,11 @@
     (js_of_ocaml (javascript_files stubs.js))
     (flags ((-ccopt) (-L../../lib-mingw-w64) (-cclib) (-lglfw3) (-cclib) (-lgdi32)))
     (c_names glad)
-    (c_flags (-I ./../../../include))
+    (c_flags (:include c_flags.sexp))
     (cxx_names glfw_wrapper)
     (cxx_flags ((-I ./../../../include) (-fno-exceptions) (-fno-rtti) (-lstdc++))))
+
+(rule
+    (targets c_flags.sexp)
+    (deps (:discover ../config/discover.exe))
+    (action (run %{discover})))
