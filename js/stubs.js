@@ -144,6 +144,17 @@ function caml_glGetAttribLocation(program, attribName) {
     return gl().getAttribLocation(program, attribName)
 }
 
+// Provides: caml_glGetUniformLocation
+function caml_glGetUniformLocation(program, uniformName) {
+    return gl().getUniformLocation(program, uniformName)
+}
+
+// Provides: caml_glUniformMatrix4fv
+function caml_glUniformMatrix4fv(uniformLocation, uniformValue) {
+    console.log("TODO: Remove hardcoding caml_glUniformMatrix4fv")
+    return gl().uniformMatrix4fv(uniformLocation, false, new Float32Array([2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]));
+}
+
 // Provides: caml_glShaderSource
 function caml_glShaderSource(shader, src) {
     gl().shaderSource(shader, src);
