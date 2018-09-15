@@ -30,10 +30,12 @@ let () =
         attribute vec3 aVertexPosition;
         attribute vec4 aVertexColor;
 
+        uniform mat4 transform;
+
         varying lowp vec4 vColor;
 
         void main() {
-            gl_Position = vec4(aVertexPosition, 1.0);
+            gl_Position = transform * vec4(aVertexPosition, 1.0);
             vColor = aVertexColor;
         }
     |} in
@@ -65,6 +67,7 @@ let () =
     glBufferData GL_ARRAY_BUFFER cArray GL_STATIC_DRAW;
     let posAttribute = glGetAttribLocation shaderProgram "aVertexPosition" in
     let colorAttribute = glGetAttribLocation shaderProgram "aVertexColor" in
+    let worldUniform = glGetUniformLocation shaderProgram "transform" in
     while not (glfwWindowShouldClose w) do
         glClearColor 0.0 0. 0. 1.;
         glClearDepth 1.0;
@@ -72,6 +75,7 @@ let () =
         glDepthFunc GL_LEQUAL;
 
         glUseProgram shaderProgram;
+        glUniformMatrix4fv worldUniform;
         glBindBuffer GL_ARRAY_BUFFER vb;
         glVertexAttribPointer posAttribute 3 GL_FLOAT false;
         glEnableVertexAttribArray posAttribute;

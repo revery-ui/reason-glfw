@@ -50,6 +50,11 @@ external glLinkProgram: program -> unit = "caml_glLinkProgram"
 type attribLocation
 external glGetAttribLocation: program -> string -> attribLocation = "caml_glGetAttribLocation"
 
+type uniformLocation
+external glGetUniformLocation: program -> string -> uniformLocation = "caml_glGetUniformLocation"
+external glUniformMatrix4fv: uniformLocation -> (* todo *) unit = "caml_glUniformMatrix4fv"
+
+
 type bufferType =
     | GL_ARRAY_BUFFER
 

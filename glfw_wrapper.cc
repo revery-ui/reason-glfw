@@ -205,7 +205,28 @@ extern "C" {
         s = String_val(vAttributeName);
         int val = glGetAttribLocation(shaderProgram, s);
         printf("- attribute: %s - loc: %d\n", s, val);
-        return (value)glGetAttribLocation(shaderProgram, s);
+        return (value)val;
+    }
+
+    CAMLprim value
+    caml_glGetUniformLocation(value vProgram, value vAttributeName) {
+        unsigned int shaderProgram = (unsigned int)vProgram;
+        char *s;
+        s = String_val(vAttributeName);
+
+        int val = glGetUniformLocation(shaderProgram, s);
+        printf(" -uniform: %s - loc: %d\n", s, val);
+        return (value)val;
+    }
+
+    // TODO: Real matrix
+    CAMLprim value
+    caml_glUniformMatrix4fv(value vUniformLocation) {
+        float mat[] = {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+        int uloc = (int)vUniformLocation;
+
+        glUniformMatrix4fv(uloc, 1, GL_FALSE, &mat[0]);
+        return Val_unit;
     }
 
     CAMLprim value

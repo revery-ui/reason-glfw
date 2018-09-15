@@ -47,6 +47,10 @@ val glUseProgram: program -> unit
 type attribLocation
 val glGetAttribLocation: program -> string -> attribLocation
 
+type uniformLocation
+val glGetUniformLocation: program -> string -> uniformLocation
+val glUniformMatrix4fv: uniformLocation -> unit
+
 type bufferType =
     | GL_ARRAY_BUFFER
 
@@ -70,4 +74,3 @@ type drawMode =
     | GL_TRIANGLES
 
 val glDrawArrays: drawMode -> int -> int -> unit
-
