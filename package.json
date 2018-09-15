@@ -5,9 +5,9 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["make", "prep", "ROOTDIR=#{self.root}"],
-        ["make", "#{os == 'windows' ? 'noop' : 'build-glfw'}", "ROOTDIR=#{self.root}"],
-        ["make", "build", "ROOTDIR=#{self.root}"]
+        ["make", "build-glfw", "ROOTDIR=#{self.root}"],
+        ["ls", "-a", "_build"],
+        ["dune", "build"]
     ],
     "buildsInSource":"_build"
   },

@@ -6,6 +6,7 @@ let loadShader shaderType source =
     let () = glCompileShader shader in
     let _ = glGetShaderIsCompiled shader in
     shader
+;;
 
 let initShaderProgram vsSource fsSource =
     let vsShader = loadShader GL_VERTEX_SHADER vsSource in
@@ -13,12 +14,13 @@ let initShaderProgram vsSource fsSource =
     let shaderProgram = glCreateProgram () in
     let () = glAttachShader shaderProgram vsShader in
     let _ = glAttachShader shaderProgram fsShader in
-    let result = glLinkProgram shaderProgram in
+    let _ = glLinkProgram shaderProgram in
     shaderProgram
+;;
 
 let () =
     print_hello ();
-    glfwInit ();
+    let _ = glfwInit () in
     let w = glfwCreateWindow 800 600 "test" in
     glfwMakeContextCurrent(w);
 
@@ -90,3 +92,4 @@ let () =
     done;
     print_endline "Done!";
     glfwTerminate ();
+;;
