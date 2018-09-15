@@ -30,7 +30,7 @@ let flags =
         @ cclib("-lglfw3")
         @ cclib("-lgdi32")
     | _ -> []
-        @ ccopt("-L./../../glfw/src")
+        @ ccopt("-L./../glfw/src")
         @ cclib("-lglfw3")
         @ ccopt("-framework OpenGL")
         @ ccopt("-framework Cocoa")
