@@ -2,13 +2,13 @@
     (name glfw)
     (public_name glfw)
     (js_of_ocaml (javascript_files stubs.js))
-    (flags ((-ccopt) (-L../../lib-mingw-w64) (-cclib) (-lglfw3) (-cclib) (-lgdi32)))
+    (flags (:include flags.sexp))
     (c_names glad)
     (c_flags (:include c_flags.sexp))
     (cxx_names glfw_wrapper)
     (cxx_flags (:include cxx_flags.sexp)))
 
 (rule
-    (targets c_flags.sexp cxx_flags.sexp)
+    (targets c_flags.sexp cxx_flags.sexp flags.sexp)
     (deps (:discover ../config/discover.exe))
     (action (run %{discover})))
