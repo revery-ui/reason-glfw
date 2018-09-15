@@ -1,7 +1,0 @@
-B C:/Users/bryph/.esy/3_/i/opam__slash__ocamlfind-1.8.0-11c4585d/lib/ocaml
-B ../_build/default/bin/.test_glfw.eobjs
-B ../_build/default/src/.glfw.objs
-S C:/Users/bryph/.esy/3_/i/opam__slash__ocamlfind-1.8.0-11c4585d/lib/ocaml
-S .
-S ../src
-FLG -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs
