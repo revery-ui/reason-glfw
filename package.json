@@ -15,7 +15,8 @@
     "ocaml": "~4.6.0"
   },
   "resolutions": {
-    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1"
+    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1",
+    "@opam/menhir": "20171013"
   },
   "dependencies": {
     "@opam/dune": "*",
