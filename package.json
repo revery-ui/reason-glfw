@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@opam/dune": "*",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*",
     "@opam/js_of_ocaml-compiler": "*",
     "esy-cmake": "*"
   },
