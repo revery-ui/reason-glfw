@@ -6,9 +6,9 @@
     (c_names glad)
     (c_flags (:include c_flags.sexp))
     (cxx_names glfw_wrapper)
-    (cxx_flags ((-I ./../../../include) (-fno-exceptions) (-fno-rtti) (-lstdc++))))
+    (cxx_flags (:include cxx_flags.sexp)))
 
 (rule
-    (targets c_flags.sexp)
+    (targets c_flags.sexp cxx_flags.sexp)
     (deps (:discover ../config/discover.exe))
     (action (run %{discover})))
