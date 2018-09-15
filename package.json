@@ -5,6 +5,7 @@
   "license": "MIT",
   "esy": {
     "build": [
+        ["make", "build-glfw", "ROOTDIR=#{self.root}"],
         ["dune", "build"]
     ],
     "buildsInSource":"_build"
