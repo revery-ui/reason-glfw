@@ -1,0 +1,3 @@
+B ../_build/default/src/.glfw.objs
+S .
+FLG -ccopt -L/cygdrive/e/esy-glfw/lib-mingw-w64 -cclib -lglfw3 -cclib -lgdi32

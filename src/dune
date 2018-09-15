@@ -1,0 +1,9 @@
+(library
+    (name glfw)
+    (public_name glfw)
+    (js_of_ocaml (javascript_files stubs.js))
+    (flags ((-ccopt) (-L/cygdrive/e/esy-glfw/lib-mingw-w64) (-cclib) (-lglfw3) (-cclib) (-lgdi32)))
+    (c_names glad)
+    (c_flags (-I ./../../../include))
+    (cxx_names glfw_wrapper)
+    (cxx_flags ((-I ./../../../include) (-fno-exceptions) (-fno-rtti) (-lstdc++))))
