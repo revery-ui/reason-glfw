@@ -89,7 +89,9 @@ external glEnableVertexAttribArray: attribLocation => unit =
   "caml_glEnableVertexAttribArray";
 
 type drawMode =
-  | GL_TRIANGLES;
+  | GL_TRIANGLES
+  | GL_TRIANGLE_STRIP;
+
 
 external glDrawArrays: (drawMode, int, int) => unit = "caml_glDrawArrays";
 

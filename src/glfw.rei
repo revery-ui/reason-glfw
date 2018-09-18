@@ -77,6 +77,7 @@ let glBufferData:
   unit;
 
 type drawMode =
-  | GL_TRIANGLES;
+  | GL_TRIANGLES
+  | GL_TRIANGLE_STRIP;
 
 let glDrawArrays: (drawMode, int, int) => unit;
