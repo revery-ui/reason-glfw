@@ -3,5 +3,9 @@
     (public_name test_glfw)
     (libraries
         Bigarray
-        glfw
+        EsyGlfw
             ))
+
+(install
+    (section bin)
+    (files test.jpg))

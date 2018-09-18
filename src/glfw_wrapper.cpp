@@ -9,7 +9,67 @@
 
 #include <GLFW/glfw3.h>
 
+#include <image.h>
+
 extern "C" {
+
+    void warn(const char *message) {
+        printf("[WARNING]: %s\n", message);
+    }
+
+    GLenum variantToTextureType(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_TEXTURE_2D;
+            default:
+                warn("Unexpected texture type!");
+                return 0;
+        }
+    }
+
+    GLenum variantToTextureParameter(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_TEXTURE_WRAP_S;
+            case 1:
+                return GL_TEXTURE_WRAP_T;
+            case 2:
+                return GL_TEXTURE_MIN_FILTER;
+            case 3:
+                return GL_TEXTURE_MAG_FILTER;
+            default:
+                warn("Unexpected texture parameter!");
+                return 0;
+        }
+    }
+
+    GLenum variantToTextureParameterValue(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_REPEAT;
+            case 1:
+                return GL_LINEAR;
+            default:
+                warn("Unexpected texture parameter value!");
+                return 0;
+        }
+    }
+
+    GLenum variantToTexturePixelDataFormat(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_RGB;
+            case 1:
+                return GL_RGBA;
+            default:
+                warn ("Unexpected texture pixel data format!");
+                return 0;
+        }
+    }
+
+    GLenum variantToTexturePixelDataType(value vVal) {
+        return GL_UNSIGNED_BYTE;
+    }
 
     GLenum variantToDrawMode(value vDrawMode) {
         switch (Int_val(vDrawMode)) {
@@ -236,6 +296,51 @@ extern "C" {
         int uloc = (int)vUniformLocation;
 
         glUniformMatrix4fv(uloc, 1, GL_FALSE, &mat[0]);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glCreateTexture(value vUnit) {
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        return (value)texture;
+    }
+
+    CAMLprim value
+    caml_glBindTexture(value vTextureType, value vTexture) {
+        unsigned int texture = (unsigned int)vTexture;
+        glBindTexture(variantToTextureType(vTextureType), texture);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glTexImage2D(value vTextureType, value vTexturePixelDataFormat, value vTexturePixelDataType, value vImage) {
+        ImageInfo *pImage = (ImageInfo *)vImage;
+        glTexImage2D(
+                variantToTextureType(vTextureType), 
+                0,
+                GL_RGB,
+                pImage->width,
+                pImage->height,
+                0,
+                variantToTexturePixelDataFormat(vTexturePixelDataFormat), 
+                variantToTexturePixelDataType(vTexturePixelDataType), 
+                pImage->data);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glTexParameteri(value vTextureType, value vTextureParameter, value vTextureParameterValue) {
+        glTexParameteri(
+                variantToTextureType(vTextureType),
+                variantToTextureParameter(vTextureParameter),
+                variantToTextureParameterValue(vTextureParameterValue));
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glGenerateMipmap(value vTextureType) {
+        glGenerateMipmap(variantToTextureType(vTextureType));
         return Val_unit;
     }
 
