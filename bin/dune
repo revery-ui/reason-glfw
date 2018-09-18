@@ -4,9 +4,9 @@
     (js_of_ocaml)
     (libraries
         Bigarray
-        glfw
+        EsyGlfw
             ))
 
-(install 
+(install
     (section bin)
-    (files test_glfw.bc.js))
+    (files test_glfw.bc.js test.jpg))
