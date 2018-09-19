@@ -1,6 +1,7 @@
 (executable
     (name test_glfw)
     (public_name test_glfw)
+    (js_of_ocaml)
     (libraries
         Bigarray
         EsyGlfw
@@ -8,4 +9,4 @@
 
 (install
     (section bin)
-    (files test.jpg))
+    (files test_glfw.bc.js test.jpg))
