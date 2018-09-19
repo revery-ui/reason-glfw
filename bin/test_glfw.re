@@ -66,9 +66,14 @@ let () = {
     |};
   print_endline(fsSource);
 
-  let positions = [|(-0.5), (-0.5), 0.0, 0.5, (-0.5), 0.0, 0.0, 0.5, 0.0|];
-  let colors = [|1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0|];
-  let textures = [|0.0, 0.0, 1.0, 0.0, 0.0, 1.0|];
+  let positions = [|
+        -0.5, 0.5, 0.0,
+        0.5, 0.5, 0.0,
+        -0.5, -0.5, 0.0,
+        0.5, -0.5, 0.0
+|];
+  let colors = [|1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0|];
+  let textures = [|0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0|];
   let vArray =
     Bigarray.Array1.of_array(Bigarray.Float32, Bigarray.C_layout, positions);
   let cArray =
@@ -122,7 +127,7 @@ let () = {
     glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, false);
     glEnableVertexAttribArray(textureAttribute);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glfwSwapBuffers(w);
     glfwPollEvents();

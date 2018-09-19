@@ -71,6 +71,16 @@ extern "C" {
         return GL_UNSIGNED_BYTE;
     }
 
+    GLenum variantToDrawMode(value vDrawMode) {
+        switch (Int_val(vDrawMode)) {
+            case 0:
+                return GL_TRIANGLES;
+            case 1:
+            default:
+                return GL_TRIANGLE_STRIP;
+        }
+    }
+
     CAMLprim value
     caml_print_hello(value unit)
     {
@@ -282,7 +292,7 @@ extern "C" {
     // TODO: Real matrix
     CAMLprim value
     caml_glUniformMatrix4fv(value vUniformLocation) {
-        float mat[] = {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+        float mat[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
         int uloc = (int)vUniformLocation;
 
         glUniformMatrix4fv(uloc, 1, GL_FALSE, &mat[0]);
@@ -373,7 +383,7 @@ extern "C" {
         // TODO: Use param
         unsigned int first = Int_val(vFirst);
         unsigned int count = Int_val(vCount);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(variantToDrawMode(vDrawMode), first, count);
         return Val_unit;
     }
 
