@@ -1,6 +1,5 @@
 type window;
 
-let print_hello: unit => unit;
 let glfwInit: unit => bool;
 let glfwCreateWindow: (int, int, string) => window;
 let glfwMakeContextCurrent: window => unit;

@@ -1,5 +1,6 @@
 open EsyGlfw;
 open EsyGlfw.Glfw;
+open Reglm;
 
 let loadShader = (shaderType, source) => {
   let shader = glCreateShader(shaderType);
@@ -20,7 +21,7 @@ let initShaderProgram = (vsSource, fsSource) => {
 };
 
 let () = {
-  print_hello();
+  let _ = Mat4.create();
   let _ = glfwInit();
   let w = glfwCreateWindow(800, 600, "test");
   glfwMakeContextCurrent(w);

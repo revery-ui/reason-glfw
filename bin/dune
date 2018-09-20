@@ -4,6 +4,7 @@
     (js_of_ocaml)
     (libraries
         Bigarray
+        Reglm
         EsyGlfw
             ))
 
