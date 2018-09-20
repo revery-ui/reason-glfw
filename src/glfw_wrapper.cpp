@@ -282,7 +282,6 @@ extern "C" {
         return (value)val;
     }
 
-    // TODO: Real matrix
     CAMLprim value
     caml_glUniformMatrix4fv(value vUniformLocation, value vMat4) {
         float *mat4 = (float *)(Data_custom_val(vMat4));
