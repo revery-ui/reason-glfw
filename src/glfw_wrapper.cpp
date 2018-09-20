@@ -284,11 +284,11 @@ extern "C" {
 
     // TODO: Real matrix
     CAMLprim value
-    caml_glUniformMatrix4fv(value vUniformLocation) {
-        float mat[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    caml_glUniformMatrix4fv(value vUniformLocation, value vMat4) {
+        float *mat4 = (float *)(Data_custom_val(vMat4));
         int uloc = (int)vUniformLocation;
 
-        glUniformMatrix4fv(uloc, 1, GL_FALSE, &mat[0]);
+        glUniformMatrix4fv(uloc, 1, GL_FALSE, mat4);
         return Val_unit;
     }
 

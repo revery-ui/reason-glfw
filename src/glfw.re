@@ -1,3 +1,5 @@
+open Reglm;
+
 type window;
 
 /* GLFW */
@@ -55,7 +57,7 @@ external glGetAttribLocation: (program, string) => attribLocation =
 type uniformLocation;
 external glGetUniformLocation: (program, string) => uniformLocation =
   "caml_glGetUniformLocation";
-external glUniformMatrix4fv: uniformLocation => /* todo */ unit =
+external glUniformMatrix4fv: (uniformLocation, Mat4.t) => /* todo */ unit =
   "caml_glUniformMatrix4fv";
 
 type texture;

@@ -21,7 +21,6 @@ let initShaderProgram = (vsSource, fsSource) => {
 };
 
 let () = {
-  let _ = Mat4.create();
   let _ = glfwInit();
   let w = glfwCreateWindow(800, 600, "test");
   glfwMakeContextCurrent(w);
@@ -115,7 +114,11 @@ let () = {
     glDepthFunc(GL_LEQUAL);
 
     glUseProgram(shaderProgram);
-    glUniformMatrix4fv(worldUniform);
+    let m = Mat4.create();
+    let v = Vec3.create();
+    Vec3.set(v, 2., 0.5, 0.5);
+    Mat4.fromScaling(m, v);
+    glUniformMatrix4fv(worldUniform, m);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
     glVertexAttribPointer(posAttribute, 3, GL_FLOAT, false);
     glEnableVertexAttribArray(posAttribute);
