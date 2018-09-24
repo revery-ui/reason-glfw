@@ -1,5 +1,5 @@
 (library
-    (name EsyGlfw)
+    (name Reglfw)
     (js_of_ocaml (javascript_files stubs.js))
     (libraries
         Reglm)
