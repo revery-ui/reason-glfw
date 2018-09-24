@@ -5,7 +5,7 @@
     (libraries
         Bigarray
         Reglm
-        Reglfw
+        reglfw
             ))
 
 (install
