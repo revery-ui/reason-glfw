@@ -21,4 +21,9 @@ $(LIBRARY)/libglfw3.a: $(INCLUDE)/GLFW/glfw3.h
 	cd $(BUILDDIR)/glfw; make
 
 build-glfw: $(LIBRARY)/libglfw3.a
+	echo Library: $(LIBRARY)
+	echo Include: $(INCLUDE)
 	mkdir -p $(BUILDDIR)
+
+noop:
+	@echo Using prebuilt binaries on Windows.
