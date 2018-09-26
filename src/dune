@@ -1,8 +1,9 @@
 (library
     (name reglfw)
     (public_name reglfw)
-    (js_of_ocaml (javascript_files stubs.js))
+    (js_of_ocaml (javascript_files stubs.js stb_image_stubs.js))
     (libraries
+        lwt
         Reglm)
     (flags (:include flags.sexp))
     (c_names glad)

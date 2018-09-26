@@ -7,7 +7,7 @@
     "build": [
         ["make", "#{os == 'windows' ? 'noop' : 'build-glfw'}", "ROOTDIR=#{self.root}"],
         ["dune", "build"],
-        ["dune", "build", "./bin/test_glfw.bc.js"],
+        ["dune", "build", "./bin_js/test_glfw.bc.js"],
         ["make", "install", "ROOTDIR=#{self.root}", "LIBDIR=#{self.lib}/reglfw"]
     ],
     "buildsInSource":"_build"
@@ -24,7 +24,9 @@
     "@opam/dune": "*",
     "@esy-ocaml/reason": "*",
     "refmterr": "*",
+    "@opam/js_of_ocaml": "*",
     "@opam/js_of_ocaml-compiler": "*",
+    "@opam/js_of_ocaml-lwt": "*",
     "@opam/lwt": "^4.0.0",
     "@opam/lwt_ppx": "^1.1.0",
     "esy-cmake": "*",

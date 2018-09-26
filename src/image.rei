@@ -1,7 +1,14 @@
+
 let stb_print_hello: unit => unit;
 
-type t;
+type image;
+type t = image;
 
-let load: string => t;
+exception ImageLoadException(string);
 
-let debug_print: t => unit;
+type successCallback = image => unit;
+type failureCallback = string => unit;
+
+let load: (string) => Lwt.t(image);
+
+let debug_print: image => unit;

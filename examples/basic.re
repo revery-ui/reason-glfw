@@ -20,12 +20,12 @@ let initShaderProgram = (vsSource, fsSource) => {
   shaderProgram;
 };
 
-let () = {
+let run = () => {
   let _ = glfwInit();
   let w = glfwCreateWindow(800, 600, "test");
   glfwMakeContextCurrent(w);
 
-  let img = Image.load ("test.jpg");
+  let%lwt img = Image.load("test.jpg");
   Image.debug_print(img);
   let vsSource = {|
         #ifndef GL_ES
@@ -72,7 +72,7 @@ let () = {
         -0.5, -0.5, 0.0,
         0.5, -0.5, 0.0
 |];
-  let colors = [|1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0|];
+  let colors = [|1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0|];
   let textures = [|0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0|];
   let vArray =
     Bigarray.Array1.of_array(Bigarray.Float32, Bigarray.C_layout, positions);
@@ -116,7 +116,7 @@ let () = {
     glUseProgram(shaderProgram);
     let m = Mat4.create();
     let v = Vec3.create();
-    Vec3.set(v, 2., 0.5, 0.5);
+    Vec3.set(v, 1., 2., 0.5);
     Mat4.fromScaling(m, v);
     glUniformMatrix4fv(worldUniform, m);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
@@ -138,4 +138,5 @@ let () = {
   };
   print_endline("Done!");
   glfwTerminate();
+  Lwt.return();
 };

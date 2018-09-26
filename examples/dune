@@ -1,0 +1,11 @@
+(library
+    (name EsyGlfwExamples)
+    (preprocess (pps lwt_ppx))
+    (js_of_ocaml)
+    (libraries
+        lwt
+        reglfw ))
+
+(install
+    (section bin)
+    (files test.jpg))

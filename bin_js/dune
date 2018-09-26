@@ -1,0 +1,16 @@
+(executable
+    (name test_glfw)
+    (preprocess (pps lwt_ppx))
+    (public_name test_glfw_js)
+    (js_of_ocaml)
+    (libraries
+        js_of_ocaml
+        lwt
+        Bigarray
+        reglfw
+        EsyGlfwExamples
+            ))
+
+(install
+    (section bin)
+    (files gl-matrix-min.js index.html test_glfw.bc.js))
