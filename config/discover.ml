@@ -34,7 +34,15 @@ let flags =
     | Linux -> []
         @ ccopt("-L.")
         @ ccopt("-L./../glfw/src")
+        @ cclib("-Wl,--start-group")
+        @ cclib("-lGL")
+        @ cclib("-lGLU")
         @ cclib("-lglfw3")
+        @ cclib("-lX11")
+        @ cclib("-lXxf86vm")
+        @ cclib("-lXrandr")
+        @ cclib("-lpthread")
+        @ cclib("-lXi")
     | _ -> []
         @ ccopt("-L.")
         @ ccopt("-L./../glfw/src")
