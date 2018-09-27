@@ -5,7 +5,7 @@
     (libraries
         lwt
         reglm)
-    (flags (:include flags.sexp))
+    (library_flags (:include flags.sexp))
     (c_names glad)
     (c_flags (:include c_flags.sexp))
     (cxx_names glfw_wrapper stb_image stb_image_wrapper)
