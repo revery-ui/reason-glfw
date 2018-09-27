@@ -2,7 +2,7 @@
 type os =
     | Windows
     | Mac
-    | Linux (* TODO *)
+    | Linux
     | Unknown
 
 let uname () =
@@ -16,6 +16,7 @@ let get_os =
     | "Win32" -> Windows
     | _ -> match uname () with
         | "Darwin" -> Mac
+        | "Linux" -> Linux
         | _ -> Unknown
 
 let c_flags = ["-I";  "./../../../include"; "-I"; "./../../../src"]
@@ -30,6 +31,11 @@ let flags =
         @ ccopt("-L./../../lib-mingw-w64")
         @ cclib("-lglfw3")
         @ cclib("-lgdi32")
+    | Linux -> []
+        @ cclib("-Wl,--no-as-needed")
+        @ ccopt("-L.")
+        @ ccopt("-L./../glfw/src")
+        @ cclib("-lglfw3")
     | _ -> []
         @ ccopt("-L.")
         @ ccopt("-L./../glfw/src")
