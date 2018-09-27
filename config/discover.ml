@@ -32,7 +32,6 @@ let flags =
         @ cclib("-lglfw3")
         @ cclib("-lgdi32")
     | Linux -> []
-        @ cclib("-Wl,--no-as-needed")
         @ ccopt("-L.")
         @ ccopt("-L./../glfw/src")
         @ cclib("-lglfw3")
