@@ -9,12 +9,20 @@ let glfwWindowShouldClose: window => bool;
 let glfwPollEvents: unit => unit;
 let glfwTerminate: unit => unit;
 let glfwSwapBuffers: window => unit;
+let glfwSetWindowSize: (window, int, int) => unit;
+let glfwMaximizeWindow: (window) => unit;
+
+type glfwFramebufferSizeCallback = (window, int, int) => unit;
+let glfwSetFramebufferSizeCallback:
+  (window, glfwFramebufferSizeCallback) => unit;
+
 let printFrameBufferSize: window => unit;
 
 /* GL */
 
 let glClearColor: (float, float, float, float) => unit;
 let glClearDepth: float => unit;
+let glViewport: (int, int, int, int) => unit;
 
 type shader;
 type shaderType =
@@ -65,21 +73,23 @@ type textureParameter =
 
 type textureParameterValue =
   | GL_REPEAT
-  | GL_LINEAR
+  | GL_LINEAR;
 
 type texturePixelDataFormat =
   | GL_RGB
-  | GL_RGBA
+  | GL_RGBA;
 
 type texturePixelDataType =
-  | GL_UNSIGNED_BYTE
+  | GL_UNSIGNED_BYTE;
 
 type texture;
 let glCreateTexture: unit => texture;
 let glBindTexture: (textureType, texture) => unit;
-let glTexParameteri: (textureType, textureParameter, textureParameterValue) => unit;
-let glTexImage2D: (textureType, texturePixelDataFormat, texturePixelDataType, Image.t) => unit;
-let glGenerateMipmap: (textureType) => unit;
+let glTexParameteri:
+  (textureType, textureParameter, textureParameterValue) => unit;
+let glTexImage2D:
+  (textureType, texturePixelDataFormat, texturePixelDataType, Image.t) => unit;
+let glGenerateMipmap: textureType => unit;
 
 type bufferType =
   | GL_ARRAY_BUFFER;

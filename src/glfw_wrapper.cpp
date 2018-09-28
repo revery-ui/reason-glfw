@@ -16,6 +16,24 @@
 
 extern "C" {
 
+    struct WindowInfo {
+        GLFWwindow* pWindow;
+        value vSetFramebufferSizeCallback;
+    };
+
+    static WindowInfo* sActiveWindows[255];
+    static int sActiveWindowCount = 0;
+
+    WindowInfo* getWindowInfoFromWindow(GLFWwindow *w) {
+        WindowInfo *pInfo;
+        for (int i = 0; i < sActiveWindowCount; i++) {
+            if (sActiveWindows[i] && sActiveWindows[i]->pWindow) {
+                pInfo = sActiveWindows[i];
+            }
+        }
+        return pInfo;
+    }
+
     CAMLprim value
     caml_test_callback_success(value vSuccess, value vFailure) {
         CAMLparam2(vSuccess, vFailure);
@@ -32,74 +50,6 @@ extern "C" {
         CAMLreturn(Val_unit);
     }
 
-    void warn(const char *message) {
-        printf("[WARNING]: %s\n", message);
-    }
-
-    GLenum variantToTextureType(value vVal) {
-        switch (Int_val(vVal)) {
-            case 0:
-                return GL_TEXTURE_2D;
-            default:
-                warn("Unexpected texture type!");
-                return 0;
-        }
-    }
-
-    GLenum variantToTextureParameter(value vVal) {
-        switch (Int_val(vVal)) {
-            case 0:
-                return GL_TEXTURE_WRAP_S;
-            case 1:
-                return GL_TEXTURE_WRAP_T;
-            case 2:
-                return GL_TEXTURE_MIN_FILTER;
-            case 3:
-                return GL_TEXTURE_MAG_FILTER;
-            default:
-                warn("Unexpected texture parameter!");
-                return 0;
-        }
-    }
-
-    GLenum variantToTextureParameterValue(value vVal) {
-        switch (Int_val(vVal)) {
-            case 0:
-                return GL_REPEAT;
-            case 1:
-                return GL_LINEAR;
-            default:
-                warn("Unexpected texture parameter value!");
-                return 0;
-        }
-    }
-
-    GLenum variantToTexturePixelDataFormat(value vVal) {
-        switch (Int_val(vVal)) {
-            case 0:
-                return GL_RGB;
-            case 1:
-                return GL_RGBA;
-            default:
-                warn ("Unexpected texture pixel data format!");
-                return 0;
-        }
-    }
-
-    GLenum variantToTexturePixelDataType(value vVal) {
-        return GL_UNSIGNED_BYTE;
-    }
-
-    GLenum variantToDrawMode(value vDrawMode) {
-        switch (Int_val(vDrawMode)) {
-            case 0:
-                return GL_TRIANGLES;
-            case 1:
-            default:
-                return GL_TRIANGLE_STRIP;
-        }
-    }
-
     CAMLprim value
     caml_glfwInit(value unit)
     {
@@ -107,9 +57,20 @@ extern "C" {
         return Val_bool(ret);
     }
 
+    void framebuffer_size_callback(GLFWwindow *pWin, int iWidth, int iHeight) {
+        // Is there a window info?
+        WindowInfo * pWinInfo = getWindowInfoFromWindow(pWin);
+
+        if (pWinInfo && pWinInfo->vSetFramebufferSizeCallback != Val_unit) {
+            (void) caml_callback3((value)pWinInfo->vSetFramebufferSizeCallback, ((value)(void *)pWinInfo), Val_int(iWidth), Val_int(iHeight));
+        }
+    }
+
     CAMLprim value
     caml_glfwCreateWindow(value iWidth, value iHeight, value sTitle)
     {
+      CAMLparam3(iWidth, iHeight, sTitle);
+
       GLFWwindow* wd;           /* window desciptor/handle */
       int w = Int_val(iWidth);
       int h = Int_val(iHeight);
@@ -117,36 +78,75 @@ extern "C" {
 
       wd = glfwCreateWindow(w, h, s,
                             NULL, NULL);
-      return (value) wd;
+
+      struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
+      pWindowInfo->pWindow = wd;
+      pWindowInfo->vSetFramebufferSizeCallback = Val_unit;
+
+      glfwSetFramebufferSizeCallback(wd, framebuffer_size_callback);
+
+      sActiveWindows[sActiveWindowCount] = pWindowInfo;
+      sActiveWindowCount++;
+
+      CAMLreturn((value)pWindowInfo);
+    }
+
+    CAMLprim value
+    caml_glfwSetWindowSize(value vWindow, value vWidth, value vHeight) {
+        WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
+        glfwSetWindowSize(pWindowInfo->pWindow, Int_val(vWidth), Int_val(vHeight));
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwMaximizeWindow(value vWindow) {
+        WindowInfo *pWindowInfo = (WindowInfo *)vWindow;
+        glfwMaximizeWindow(pWindowInfo->pWindow);
+        return Val_unit;
     }
 
     CAMLprim value
     caml_glfwMakeContextCurrent(value window)
     {
-        GLFWwindow* wd = (GLFWwindow *)window;
-        glfwMakeContextCurrent(wd);
+        WindowInfo* wd = (WindowInfo *)window;
+        glfwMakeContextCurrent(wd->pWindow);
         gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress);
         return Val_unit;
     }
 
     CAMLprim value
+    caml_glfwSetFramebufferSizeCallback(value vWindow, value vCallback) {
+        CAMLparam2(vWindow, vCallback);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        if (pWinInfo) {
+            // TODO: Recycle existing callback if any!
+
+            // We need to mark the closure as being a global root, so the garbage
+            // collector knows it is being used.
+            pWinInfo->vSetFramebufferSizeCallback = vCallback;
+            caml_register_global_root(&(pWinInfo->vSetFramebufferSizeCallback));
+        }
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
     caml_printFrameBufferSize(value window)
     {
-
-        GLFWwindow *wd = (GLFWwindow*)window;
+        WindowInfo* wd = (WindowInfo*)window;
         int fbwidth;
         int fbheight;
-        glfwGetFramebufferSize(wd, &fbwidth, &fbheight);
-
-        printf("size2: %d %d\n", fbwidth, fbheight);
+        glfwGetFramebufferSize(wd->pWindow, &fbwidth, &fbheight);
         return Val_unit;
     }
 
     CAMLprim value
     caml_glfwWindowShouldClose(value window)
     {
-        GLFWwindow *wd = (GLFWwindow*)window;
-        int val = glfwWindowShouldClose(wd);
+        WindowInfo *wd = (WindowInfo *)window;
+        int val = glfwWindowShouldClose(wd->pWindow);
         return Val_bool(val);
     }
 
@@ -158,270 +158,10 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glClearColor(value vr, value vg, value vb, value va) {
-        float r = Double_val(vr);
-        float g = Double_val(vg);
-        float b = Double_val(vb);
-        float a = Double_val(va);
-        glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glClearDepth(value vd) {
-        float d = Double_val(vd);
-        glClearDepthf(d);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glEnable(value vEnableOptions) {
-        glEnable(GL_DEPTH_TEST);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glDepthFunc(value vDepthFunc) {
-        glDepthFunc(GL_LEQUAL);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glCreateShader(value v) {
-        int shaderType;
-        switch (Int_val(v)) {
-            case 0:
-                printf("vertex shader");
-                shaderType = GL_VERTEX_SHADER;
-                break;
-            default:
-            case 1:
-                printf("fragment shader");
-                shaderType = GL_FRAGMENT_SHADER;
-                break;
-        }
-
-        return (value) glCreateShader(shaderType);
-    }
-
-    CAMLprim value
-    caml_glShaderSource(value vShader, value vSource) {
-        GLuint shader = (GLuint)vShader;
-        char *s;
-        s = String_val(vSource);
-        glShaderSource(shader, 1, &s, NULL);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glCompileShader(value vShader) {
-        CAMLparam1(vShader);
-        GLuint shader = (GLuint)vShader;
-        glCompileShader(shader);
-
-        GLint result;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-
-        if (result == GL_TRUE) {
-            CAMLreturn(Val_int(0));
-        } else {
-            char infoLog[512];
-            glGetShaderInfoLog(shader, 512, NULL, infoLog);
-
-            CAMLlocal2(failure, log);
-            failure = caml_alloc(1, 0);
-            log = caml_copy_string(infoLog);
-            Store_field(failure, 0, log);
-            CAMLreturn(failure);
-        }
-    }
-
-    CAMLprim value
-    caml_glDeleteShader(value vShader) {
-        GLuint shader = (GLuint)vShader;
-        glDeleteShader(shader);
-    }
-
-    CAMLprim value
-    caml_glCreateProgram(value unit) {
-        unsigned int shaderProgram;
-        shaderProgram = glCreateProgram();
-        return (value)shaderProgram;
-    }
-
-    CAMLprim value
-    caml_glAttachShader(value vProgram, value vShader) {
-        unsigned int shaderProgram = (unsigned int)vProgram;
-        unsigned int shader = (unsigned int)vShader;
-        glAttachShader(shaderProgram, shader);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glLinkProgram(value vProgram) {
-        unsigned int shaderProgram = (unsigned int)vProgram;
-        glLinkProgram(shaderProgram);
-
-        int success;
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-        char infoLog[512];
-        if (!success) {
-            glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            printf("link failed: %s\n", infoLog);
-        } else {
-            printf("link success!\n");
-        }
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glGetAttribLocation(value vProgram, value vAttributeName) {
-        unsigned int shaderProgram = (unsigned int)vProgram;
-        char *s;
-        s = String_val(vAttributeName);
-        int val = glGetAttribLocation(shaderProgram, s);
-        printf("- attribute: %s - loc: %d\n", s, val);
-        return (value)val;
-    }
-
-    CAMLprim value
-    caml_glGetUniformLocation(value vProgram, value vAttributeName) {
-        unsigned int shaderProgram = (unsigned int)vProgram;
-        char *s;
-        s = String_val(vAttributeName);
-
-        int val = glGetUniformLocation(shaderProgram, s);
-        printf(" -uniform: %s - loc: %d\n", s, val);
-        return (value)val;
-    }
-
-    CAMLprim value
-    caml_glUniformMatrix4fv(value vUniformLocation, value vMat4) {
-        float *mat4 = (float *)(Data_custom_val(vMat4));
-        int uloc = (int)vUniformLocation;
-
-        glUniformMatrix4fv(uloc, 1, GL_FALSE, mat4);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glCreateTexture(value vUnit) {
-        unsigned int texture;
-        glGenTextures(1, &texture);
-        return (value)texture;
-    }
-
-    CAMLprim value
-    caml_glBindTexture(value vTextureType, value vTexture) {
-        unsigned int texture = (unsigned int)vTexture;
-        glBindTexture(variantToTextureType(vTextureType), texture);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glTexImage2D(value vTextureType, value vTexturePixelDataFormat, value vTexturePixelDataType, value vImage) {
-        ImageInfo *pImage = (ImageInfo *)vImage;
-        glTexImage2D(
-                variantToTextureType(vTextureType), 
-                0,
-                GL_RGB,
-                pImage->width,
-                pImage->height,
-                0,
-                variantToTexturePixelDataFormat(vTexturePixelDataFormat), 
-                variantToTexturePixelDataType(vTexturePixelDataType), 
-                pImage->data);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glTexParameteri(value vTextureType, value vTextureParameter, value vTextureParameterValue) {
-        glTexParameteri(
-                variantToTextureType(vTextureType),
-                variantToTextureParameter(vTextureParameter),
-                variantToTextureParameterValue(vTextureParameterValue));
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glGenerateMipmap(value vTextureType) {
-        glGenerateMipmap(variantToTextureType(vTextureType));
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glUseProgram(value vProgram) {
-        unsigned int program = (unsigned int)vProgram;
-        glUseProgram(program);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glCreateBuffer(value unit) {
-        unsigned int VBO;
-        glGenBuffers(1, &VBO);
-        printf("glCreateBuffer: %d \n", VBO);
-        return (value)VBO;
-    }
-
-    CAMLprim value
-    caml_glBindBuffer(value vBufferType, value vBuffer) {
-        unsigned int VBO = (unsigned int)vBuffer;
-        /* printf("bind buffer: %d\n", VBO); */
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        /* printf("glBindBuffer: %d\n", VBO); */
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glBufferData(value vBufferType, value vData, value drawType) {
-        /* printf("glBufferData - show floats TODO\n"); */
-        int size = Caml_ba_array_val(vData)->dim[0];
-        float* elements = (float*)Caml_ba_data_val(vData);
-        glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), elements, GL_STATIC_DRAW);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glDrawArrays(value vDrawMode, value vFirst, value vCount) {
-        // TODO: Use param
-        unsigned int first = Int_val(vFirst);
-        unsigned int count = Int_val(vCount);
-        glDrawArrays(variantToDrawMode(vDrawMode), first, count);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glEnableVertexAttribArray(value vAttributeLocation) {
-        int attributeLocation = (int)(vAttributeLocation);
-        glEnableVertexAttribArray(attributeLocation);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glVertexAttribPointer(value vAttrib, value vNumComponents) {
-        // TODO: Params!
-        int attributeLocation = (int)(vAttrib);
-        int numComponents = Int_val(vNumComponents);
-        glVertexAttribPointer(attributeLocation, numComponents, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        return Val_unit;
-    }
-
-    CAMLprim value
-    caml_glUnbindBuffer(value unit) {
-        printf("TODO: glUnbindBuffer\n");
-        return Val_unit;
-    }
-
-    CAMLprim value
     caml_glfwSwapBuffers(value window)
     {
-        GLFWwindow *wd = (GLFWwindow*)window;
-        glfwSwapBuffers(wd);
+        WindowInfo *wd = (WindowInfo*)window;
+        glfwSwapBuffers(wd->pWindow);
         return Val_unit;
     }
 
