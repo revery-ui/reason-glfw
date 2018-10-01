@@ -18,6 +18,10 @@ let glfwSetFramebufferSizeCallback:
 
 let printFrameBufferSize: window => unit;
 
+type glfwRenderLoopCallback = (float) => bool;
+
+let glfwRenderLoop: (glfwRenderLoopCallback) => unit;
+
 /* GL */
 
 let glClearColor: (float, float, float, float) => unit;
