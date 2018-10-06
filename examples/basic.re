@@ -168,6 +168,10 @@ let run = () => {
     },
   );
 
+  glfwSetKeyCallback(w, (_w, keyCode, _, _, _) => {
+    print_endline ("Key: " ++ string_of_int(keyCode) ++ " pressed.");
+  });
+
   glfwMaximizeWindow(w);
 
   glfwRenderLoop((_t) => {

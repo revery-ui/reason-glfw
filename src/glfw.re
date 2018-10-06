@@ -41,6 +41,9 @@ external glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit =
   "caml_glfwSetFramebufferSizeCallback";
 
+type glfwKeyCallback = (window, int, int, int, int) => unit;
+external glfwSetKeyCallback : (window, glfwKeyCallback) => unit = "caml_glfwSetKeyCallback";
+
 /* GL */
 type shader;
 type shaderType =

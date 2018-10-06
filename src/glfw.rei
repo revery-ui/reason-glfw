@@ -12,6 +12,9 @@ let glfwSwapBuffers: window => unit;
 let glfwSetWindowSize: (window, int, int) => unit;
 let glfwMaximizeWindow: (window) => unit;
 
+type glfwKeyCallback = (window, int, int, int, int) => unit;
+let glfwSetKeyCallback: (window, glfwKeyCallback) => unit;
+
 type glfwFramebufferSizeCallback = (window, int, int) => unit;
 let glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit;

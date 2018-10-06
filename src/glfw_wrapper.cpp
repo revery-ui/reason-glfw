@@ -19,6 +19,7 @@ extern "C" {
     struct WindowInfo {
         GLFWwindow* pWindow;
         value vSetFramebufferSizeCallback;
+        value vSetKeyCallback;
     };
 
     static WindowInfo* sActiveWindows[255];
@@ -72,6 +73,21 @@ extern "C" {
         }
     }
 
+    void key_callback(GLFWwindow *pWin, int a, int b, int c, int d) {
+        WindowInfo * pWinInfo = getWindowInfoFromWindow(pWin);
+
+        if (pWinInfo && pWinInfo->vSetKeyCallback != Val_unit) {
+            value *args = (value *)malloc(5 * sizeof(value));
+            args[0] = (value)pWinInfo;
+            args[1] = Val_int(a);
+            args[2] = Val_int(b);
+            args[3] = Val_int(c);
+            args[4] = Val_int(d);
+            (void) caml_callbackN((value)pWinInfo->vSetKeyCallback, 5, args);
+            free(args);
+        }
+    }
+
     CAMLprim value
     caml_glfwCreateWindow(value iWidth, value iHeight, value sTitle)
     {
@@ -88,8 +104,10 @@ extern "C" {
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
       pWindowInfo->vSetFramebufferSizeCallback = Val_unit;
+      pWindowInfo->vSetKeyCallback = Val_unit;
 
       glfwSetFramebufferSizeCallback(wd, framebuffer_size_callback);
+      glfwSetKeyCallback(wd, key_callback);
 
       sActiveWindows[sActiveWindowCount] = pWindowInfo;
       sActiveWindowCount++;
@@ -133,6 +151,24 @@ extern "C" {
             // collector knows it is being used.
             pWinInfo->vSetFramebufferSizeCallback = vCallback;
             caml_register_global_root(&(pWinInfo->vSetFramebufferSizeCallback));
+        }
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glfwSetKeyCallback(value vWindow, value vCallback) {
+        CAMLparam2(vWindow, vCallback);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        if (pWinInfo) {
+            // TODO: Recycle existing callback if any!
+
+            // We need to mark the closure as being a global root, so the garbage
+            // collector knows it is being used.
+            pWinInfo->vSetKeyCallback = vCallback;
+            caml_register_global_root(&(pWinInfo->vSetKeyCallback));
         }
 
         CAMLreturn(Val_unit);

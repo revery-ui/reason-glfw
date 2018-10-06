@@ -6,8 +6,8 @@
   "esy": {
     "build": [
         ["make", "#{os == 'windows' ? 'noop' : 'build-glfw'}", "ROOTDIR=#{self.root}"],
-        ["dune", "build"],
-        ["dune", "build", "./bin_js/test_glfw.bc.js"],
+        ["dune", "build", "--root", "."],
+        ["dune", "build", "--root", ".", "./bin_js/test_glfw.bc.js"],
         ["make", "install", "ROOTDIR=#{self.root}", "LIBDIR=#{self.lib}/reglfw"]
     ],
     "buildsInSource":"_build"
