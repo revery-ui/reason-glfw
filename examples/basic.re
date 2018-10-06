@@ -34,6 +34,8 @@ let run = () => {
 
   glfwSetWindowSize(w, 800, 600);
 
+  glfwSetWindowTitle(w, "reason-glfw example");
+
   glViewport(0, 0, 800, 600);
 
   let width = ref(800);

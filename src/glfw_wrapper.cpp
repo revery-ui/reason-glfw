@@ -98,6 +98,15 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glfwSetWindowTitle(value vWindow, value vTitle) {
+        WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
+        char *szTitle = String_val(vTitle);
+        printf(" - Setting title: %s\n", szTitle);
+        glfwSetWindowTitle(pWindowInfo->pWindow, szTitle);
+        return Val_unit;
+    }
+
+    CAMLprim value
     caml_glfwSetWindowSize(value vWindow, value vWidth, value vHeight) {
         WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
         glfwSetWindowSize(pWindowInfo->pWindow, Int_val(vWidth), Int_val(vHeight));

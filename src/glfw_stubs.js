@@ -88,6 +88,13 @@ function caml_glfwSetWindowSize(w, width, height) {
     canvas.height = height;
 }
 
+// Provides: caml_glfwSetWindowTitle
+function caml_glfwSetWindowTitle(w, title) {
+    var t = title.toString();
+    w.title = t;
+    document.title = t;
+}
+
 // Provides: caml_glfwSetFramebufferSizeCallback
 function caml_glfwSetFramebufferSizeCallback(w, callback) {
     w.onSetFramebufferSize = callback;
