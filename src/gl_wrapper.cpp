@@ -12,7 +12,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include <image.h>
+#include <reglfw_image.h>
 
 extern "C" {
 
@@ -43,6 +43,18 @@ extern "C" {
             default:
                 warn("Unexpected buffer type!");
                 return 0;
+        }
+    }
+
+    GLenum variantToPixelAlignmentParameter(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_PACK_ALIGNMENT;
+            case 1:
+                return GL_UNPACK_ALIGNMENT;
+            default:
+                warn ("Unexpected pixel alignment parameter type!");
+                return GL_PACK_ALIGNMENT;
         }
     }
 
@@ -274,6 +286,12 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glPixelStorei(value vPixelAlignmentParameter, value vParam) {
+        glPixelStorei(variantToPixelAlignmentParameter(vPixelAlignmentParameter), Int_val(vParam));
+        return Val_unit;
+    }
+
+    CAMLprim value
     caml_glCreateTexture(value vUnit) {
         unsigned int texture;
         glGenTextures(1, &texture);
@@ -289,7 +307,7 @@ extern "C" {
 
     CAMLprim value
     caml_glTexImage2D(value vTextureType, value vTexturePixelDataFormat, value vTexturePixelDataType, value vImage) {
-        ImageInfo *pImage = (ImageInfo *)vImage;
+        ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
         glTexImage2D(
                 variantToTextureType(vTextureType), 
                 0,

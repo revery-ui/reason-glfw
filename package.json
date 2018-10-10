@@ -1,6 +1,6 @@
 {
   "name": "reason-glfw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "GLFW bindings for OCaml",
   "license": "MIT",
   "esy": {
@@ -10,13 +10,16 @@
         ["dune", "build", "--root", ".", "./bin_js/test_glfw.bc.js"],
         ["make", "install", "ROOTDIR=#{self.root}", "LIBDIR=#{self.lib}/reglfw"]
     ],
+    "install": [
+        "esy-installer"
+    ],
     "buildsInSource":"_build"
   },
   "peerDependencies": {
     "ocaml": "~4.6.0"
   },
   "resolutions": {
-    "esy-cmake": "github:bryphe/esy-cmake#8afd4a1",
+    "esy-cmake": "github:bryphe/esy-cmake#5a40a8e",
     "@opam/menhir": "20171013",
     "@opam/re": "1.8.0"
   },
