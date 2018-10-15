@@ -88,6 +88,13 @@ function caml_glfwSetWindowSize(w, width, height) {
     canvas.height = height;
 }
 
+// Provides: caml_glfwSetWindowTitle
+function caml_glfwSetWindowTitle(w, title) {
+    var t = title.toString();
+    w.title = t;
+    document.title = t;
+}
+
 // Provides: caml_glfwSetFramebufferSizeCallback
 function caml_glfwSetFramebufferSizeCallback(w, callback) {
     w.onSetFramebufferSize = callback;
@@ -121,6 +128,11 @@ function caml_glfwMakeContextCurrent(win) {
         '1': gl.TEXTURE_WRAP_T,
         '2': gl.TEXTURE_MIN_FILTER,
         '3': gl.TEXTURE_MAG_FILTER,
+    };
+
+    joo_global_object.variantToPixelAlignmentParameter = {
+        '0': gl.PACK_ALIGNMENT,
+        '1': gl.UNPACK_ALIGNMENT,
     };
 
     joo_global_object.variantToTextureParameterValue = {

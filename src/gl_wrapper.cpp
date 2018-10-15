@@ -12,7 +12,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include <image.h>
+#include <reglfw_image.h>
 
 extern "C" {
 
@@ -43,6 +43,18 @@ extern "C" {
             default:
                 warn("Unexpected buffer type!");
                 return 0;
+        }
+    }
+
+    GLenum variantToPixelAlignmentParameter(value vVal) {
+        switch (Int_val(vVal)) {
+            case 0:
+                return GL_PACK_ALIGNMENT;
+            case 1:
+                return GL_UNPACK_ALIGNMENT;
+            default:
+                warn ("Unexpected pixel alignment parameter type!");
+                return GL_PACK_ALIGNMENT;
         }
     }
 
@@ -80,18 +92,6 @@ extern "C" {
                 return GL_LINEAR;
             default:
                 warn("Unexpected texture parameter value!");
-                return 0;
-        }
-    }
-
-    GLenum variantToTexturePixelDataFormat(value vVal) {
-        switch (Int_val(vVal)) {
-            case 0:
-                return GL_RGB;
-            case 1:
-                return GL_RGBA;
-            default:
-                warn ("Unexpected texture pixel data format!");
                 return 0;
         }
     }
@@ -265,11 +265,38 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glUniform3fv(value vUniformLocation, value vVec3) {
+        float *vec3 = (float *)(Data_custom_val(vVec3));
+        int uloc = (int)vUniformLocation;
+
+        glUniform3fv(uloc, 1, vec3);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glUniform4f(value vUniformLocation, value v0, value v1, value v2, value v3) {
+        float f0 = Double_val(v0);
+        float f1 = Double_val(v1);
+        float f2 = Double_val(v2);
+        float f3 = Double_val(v3);
+        int iUniformLocation = (int)vUniformLocation;
+
+        glUniform4f(iUniformLocation, f0, f1, f2, f3);
+        return Val_unit;
+    }
+
+    CAMLprim value
     caml_glUniformMatrix4fv(value vUniformLocation, value vMat4) {
         float *mat4 = (float *)(Data_custom_val(vMat4));
         int uloc = (int)vUniformLocation;
 
         glUniformMatrix4fv(uloc, 1, GL_FALSE, mat4);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glPixelStorei(value vPixelAlignmentParameter, value vParam) {
+        glPixelStorei(variantToPixelAlignmentParameter(vPixelAlignmentParameter), Int_val(vParam));
         return Val_unit;
     }
 
@@ -288,16 +315,34 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glTexImage2D(value vTextureType, value vTexturePixelDataFormat, value vTexturePixelDataType, value vImage) {
-        ImageInfo *pImage = (ImageInfo *)vImage;
+    caml_glTexImage2D(value vTextureType, value vTexturePixelDataType, value vImage) {
+
+        ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
+
+        GLenum channels;
+        switch (pImage->numChannels) {
+            case 1:
+                channels = GL_ALPHA;
+                break;
+            case 2:
+                channels = GL_LUMINANCE_ALPHA;
+                break;
+            case 3:
+                channels = GL_RGB;
+                break;
+            case 4:
+            default:
+                channels = GL_RGBA;
+        }
+
         glTexImage2D(
                 variantToTextureType(vTextureType), 
                 0,
-                GL_RGB,
+                channels,
                 pImage->width,
                 pImage->height,
                 0,
-                variantToTexturePixelDataFormat(vTexturePixelDataFormat), 
+                channels,
                 variantToTexturePixelDataType(vTexturePixelDataType), 
                 pImage->data);
         return Val_unit;

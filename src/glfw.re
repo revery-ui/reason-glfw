@@ -15,6 +15,7 @@ external glfwSwapBuffers: window => unit = "caml_glfwSwapBuffers";
 external glfwSetWindowSize: (window, int, int) => unit =
   "caml_glfwSetWindowSize";
 external glfwMaximizeWindow: (window) => unit = "caml_glfwMaximizeWindow";
+external glfwSetWindowTitle: (window, string) => unit = "caml_glfwSetWindowTitle";
 
 type glfwRenderLoopCallback = float => bool;
 
@@ -96,8 +97,16 @@ external glGetAttribLocation: (program, string) => attribLocation =
 type uniformLocation;
 external glGetUniformLocation: (program, string) => uniformLocation =
   "caml_glGetUniformLocation";
-external glUniformMatrix4fv: (uniformLocation, Mat4.t) => /* todo */ unit =
+external glUniform3fv: (uniformLocation, Vec3.t) => unit = "caml_glUniform3fv";
+external glUniform4f: (uniformLocation, float, float, float, float) => unit = "caml_glUniform4f";
+external glUniformMatrix4fv: (uniformLocation, Mat4.t) => unit =
   "caml_glUniformMatrix4fv";
+
+type pixelAlignmentParameter =
+  | GL_PACK_ALIGNMENT
+  | GL_UNPACK_ALIGNMENT;
+
+external glPixelStorei:  (pixelAlignmentParameter, int) => unit = "caml_glPixelStorei";
 
 type texture;
 type textureType =
@@ -128,7 +137,7 @@ external glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit =
   "caml_glTexParameteri";
 external glTexImage2D:
-  (textureType, texturePixelDataFormat, glType, Image.t) => unit =
+  (textureType, glType, Image.t) => unit =
   "caml_glTexImage2D";
 external glGenerateMipmap: textureType => unit = "caml_glGenerateMipmap";
 

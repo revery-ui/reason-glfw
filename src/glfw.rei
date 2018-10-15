@@ -11,6 +11,7 @@ let glfwTerminate: unit => unit;
 let glfwSwapBuffers: window => unit;
 let glfwSetWindowSize: (window, int, int) => unit;
 let glfwMaximizeWindow: (window) => unit;
+let glfwSetWindowTitle: (window, string) => unit;
 
 type glfwKeyCallback = (window, int, int, int, int) => unit;
 let glfwSetKeyCallback: (window, glfwKeyCallback) => unit;
@@ -71,7 +72,16 @@ let glGetAttribLocation: (program, string) => attribLocation;
 
 type uniformLocation;
 let glGetUniformLocation: (program, string) => uniformLocation;
+
+let glUniform3fv: (uniformLocation, Vec3.t) => unit;
+let glUniform4f: (uniformLocation, float, float, float, float) => unit;
 let glUniformMatrix4fv: (uniformLocation, Mat4.t) => unit;
+
+type pixelAlignmentParameter =
+  | GL_PACK_ALIGNMENT
+  | GL_UNPACK_ALIGNMENT;
+
+let glPixelStorei: (pixelAlignmentParameter, int) => unit;
 
 type textureType =
   | GL_TEXTURE_2D;
@@ -101,7 +111,7 @@ let glBindTexture: (textureType, texture) => unit;
 let glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit;
 let glTexImage2D:
-  (textureType, texturePixelDataFormat, glType, Image.t) => unit;
+  (textureType, glType, Image.t) => unit;
 let glGenerateMipmap: textureType => unit;
 
 type bufferType =
