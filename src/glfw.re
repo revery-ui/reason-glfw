@@ -18,6 +18,17 @@ external glfwMaximizeWindow: (window) => unit = "caml_glfwMaximizeWindow";
 external glfwSetWindowTitle: (window, string) => unit = "caml_glfwSetWindowTitle";
 [@noalloc] external glfwSwapInterval: int => unit = "caml_glfwSwapInterval";
 
+type windowHint =
+| GLFW_RESIZABLE
+| GLFW_VISIBLE
+| GLFW_DECORATED
+| GLFW_FOCUSED
+| GLFW_AUTO_ICONIFY
+| GLFW_FLOATING
+| GLFW_MAXIMIZED;
+
+[@noalloc] external glfwWindowHint: (windowHint, bool) => unit = "caml_glfwWindowHint";
+
 type glfwRenderLoopCallback = float => bool;
 
 external glfwJavascriptRenderLoop: (glfwRenderLoopCallback) => unit = "caml_glfwJavascriptRenderLoop";

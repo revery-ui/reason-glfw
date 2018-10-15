@@ -14,6 +14,17 @@ let glfwMaximizeWindow: (window) => unit;
 let glfwSetWindowTitle: (window, string) => unit;
 let glfwSwapInterval: int => unit;
 
+type windowHint =
+| GLFW_RESIZABLE
+| GLFW_VISIBLE
+| GLFW_DECORATED
+| GLFW_FOCUSED
+| GLFW_AUTO_ICONIFY
+| GLFW_FLOATING
+| GLFW_MAXIMIZED;
+
+let glfwWindowHint: (windowHint, bool) => unit;
+
 type glfwFramebufferSizeCallback = (window, int, int) => unit;
 let glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit;
