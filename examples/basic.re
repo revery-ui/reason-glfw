@@ -162,6 +162,9 @@ let run = () => {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
     glfwSwapBuffers(w);
+
+    let time = glfwGetTime();
+    print_endline ("Time: " ++ string_of_float(time));
   };
 
   glfwSetFramebufferSizeCallback(
