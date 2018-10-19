@@ -76,14 +76,24 @@ external glShaderSource: (shader, string) => unit = "caml_glShaderSource";
 external glViewport: (int, int, int, int) => unit = "caml_glViewport";
 
 type enableOptions =
-  | GL_DEPTH_TEST;
+  | GL_DEPTH_TEST
+  | GL_BLEND;
 
-external glEnable: enableOptions => unit = "caml_glEnable";
+[@noalloc] external glEnable: enableOptions => unit = "caml_glEnable";
+[@noalloc] external glDisable: enableOptions => unit = "caml_glDisable";
 
 type depthFunctions =
   | GL_LEQUAL;
 
 external glDepthFunc: depthFunctions => unit = "caml_glDepthFunc";
+
+type blendFunc =
+  | GL_ZERO
+  | GL_ONE
+  | GL_SRC_ALPHA
+  | GL_ONE_MINUS_SRC_ALPHA;
+
+[@noalloc] external glBlendFunc: (blendFunc, blendFunc) => unit = "caml_glBlendFunc";
 
 /* TODO: Add compile result return */
 external glCompileShader: shader => shaderCompilationResult =
