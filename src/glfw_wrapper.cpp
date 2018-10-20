@@ -135,6 +135,12 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glfwDefaultWindowHints() {
+        glfwDefaultWindowHints();
+        return Val_unit;
+    }
+
+    CAMLprim value
     caml_glfwWindowHint(value vHint, value vVal) {
         int windowHint = variantToWindowHint(vHint);
         int val = Bool_val(vVal) ? GLFW_TRUE : GLFW_FALSE;
@@ -220,6 +226,20 @@ extern "C" {
         WindowInfo *wd = (WindowInfo *)window;
         int val = glfwWindowShouldClose(wd->pWindow);
         return Val_bool(val);
+    }
+
+    CAMLprim value
+    caml_glfwShowWindow(value vWindow) {
+        WindowInfo *wd = (WindowInfo *)vWindow;
+        glfwShowWindow(wd->pWindow);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwHideWindow(value vWindow) {
+        WindowInfo *wd = (WindowInfo *)vWindow;
+        glfwHideWindow(wd->pWindow);
+        return Val_unit;
     }
 
     CAMLprim value

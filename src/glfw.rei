@@ -12,6 +12,8 @@ let glfwSwapBuffers: window => unit;
 let glfwSetWindowSize: (window, int, int) => unit;
 let glfwMaximizeWindow: (window) => unit;
 let glfwSetWindowTitle: (window, string) => unit;
+let glfwShowWindow: (window) => unit;
+let glfwHideWindow: (window) => unit;
 let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
@@ -25,6 +27,7 @@ type windowHint =
 | GLFW_FLOATING
 | GLFW_MAXIMIZED;
 
+let glfwDefaultWindowHints: unit => unit;
 let glfwWindowHint: (windowHint, bool) => unit;
 
 type glfwFramebufferSizeCallback = (window, int, int) => unit;

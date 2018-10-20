@@ -14,6 +14,8 @@ external glfwTerminate: unit => unit = "caml_glfwTerminate";
 external glfwSwapBuffers: window => unit = "caml_glfwSwapBuffers";
 external glfwSetWindowSize: (window, int, int) => unit =
   "caml_glfwSetWindowSize";
+[@noalloc] external glfwShowWindow: (window) => unit = "caml_glfwShowWindow";
+[@noalloc] external glfwHideWindow: (window) => unit = "caml_glfwHideWindow";
 external glfwMaximizeWindow: (window) => unit = "caml_glfwMaximizeWindow";
 external glfwSetWindowTitle: (window, string) => unit = "caml_glfwSetWindowTitle";
 [@noalloc] external glfwSwapInterval: int => unit = "caml_glfwSwapInterval";
@@ -30,6 +32,7 @@ type windowHint =
 | GLFW_FLOATING
 | GLFW_MAXIMIZED;
 
+[@noalloc] external glfwDefaultWindowHints: unit => unit = "caml_glfwDefaultWindowHints";
 [@noalloc] external glfwWindowHint: (windowHint, bool) => unit = "caml_glfwWindowHint";
 
 type glfwRenderLoopCallback = float => bool;
