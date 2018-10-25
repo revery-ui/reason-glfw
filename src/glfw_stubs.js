@@ -11,6 +11,17 @@ function caml_glfwInit() {
             wins[i]._notifyResize();
         }
     });
+
+    joo_global_object.window.addEventListener("keypress", function (keyEvent) {
+
+        if (keyEvent.key && keyEvent.key.length === 1) {
+            var codepoint = keyEvent.key.codePointAt(0);
+            var wins = joo_global_object._activeWindows;
+            for (var i = 0; i < wins.length; i++) {
+                wins[i]._notifyChar(codepoint);
+            }
+        }
+    });
 };
 
 // Provides: caml_glfwGetTime_byte
@@ -98,6 +109,13 @@ function caml_glfwCreateWindow(width, height, title) {
         title: title,
         isMaximized: false,
         onSetFramebufferSize: null,
+        onChar: null,
+    };
+
+    var notifyChar = function (codepoint) {
+        if (w.onChar) {
+            w.onChar(w, codepoint);
+        }
     };
 
     var notifyResize = function () {
@@ -112,6 +130,7 @@ function caml_glfwCreateWindow(width, height, title) {
     };
 
     w._notifyResize = notifyResize;
+    w._notifyChar = notifyChar;
 
     joo_global_object._activeWindows.push(w);
     return w;
@@ -147,6 +166,11 @@ function caml_glfwWindowHint(hint, val) {
 // Provides: caml_glfwSetFramebufferSizeCallback
 function caml_glfwSetFramebufferSizeCallback(w, callback) {
     w.onSetFramebufferSize = callback;
+}
+
+// Provides: caml_glfwSetCharCallback
+function caml_glfwSetCharCallback(w, callback) {
+    w.onChar = callback;
 }
 
 // Provides: caml_glfwMaximizeWindow
