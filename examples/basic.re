@@ -172,6 +172,10 @@ let run = () => {
     glfwSwapBuffers(w);
   };
 
+  glfwSetCharCallback(w, (_w, codepoint) => {
+    print_endline ("CHAR: " ++ string_of_int(codepoint));
+  });
+
   glfwSetFramebufferSizeCallback(
     w,
     (_, w, h) => {

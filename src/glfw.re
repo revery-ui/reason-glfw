@@ -78,7 +78,7 @@ let glfwRenderLoop = (callback) => {
 }
 
 type glfwCharCallback = (window, int) => unit;
-external glfwSetCharCallback = (window, glfwCharCallback) => unit = "caml_glfwSetCharCallback";
+external glfwSetCharCallback: (window, glfwCharCallback) => unit = "caml_glfwSetCharCallback";
 
 type glfwFramebufferSizeCallback = (window, int, int) => unit;
 external glfwSetFramebufferSizeCallback:
