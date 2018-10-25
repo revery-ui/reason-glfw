@@ -173,7 +173,7 @@ let run = () => {
   };
 
   glfwSetCharCallback(w, (_w, codepoint) => {
-    print_endline ("CHAR: " ++ string_of_int(codepoint));
+    print_endline ("CHAR: " ++ string_of_int(codepoint) ++ " | " ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))));
   });
 
   glfwSetFramebufferSizeCallback(
