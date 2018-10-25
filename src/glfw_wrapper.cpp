@@ -19,6 +19,7 @@ extern "C" {
     struct WindowInfo {
         GLFWwindow* pWindow;
         value vSetFramebufferSizeCallback;
+        value vCharCallback;
     };
 
     static WindowInfo* sActiveWindows[255];
@@ -94,6 +95,14 @@ extern "C" {
         }
     }
 
+    void char_callback(GLFWwindow *pWin, unsigned int codepoint) {
+        WindowInfo *pWinInfo = getWindowInfoFromWindow(pWin);
+
+        if (pWinInfo && pWinInfo->vCharCallback != Val_unit) {
+            (void) caml_callback2((value)pWinInfo->vCharCallback, ((value)(void *)pWinInfo), Val_int(codepoint));
+        }
+    }
+
     CAMLprim value
     caml_glfwCreateWindow(value iWidth, value iHeight, value sTitle)
     {
@@ -110,8 +119,10 @@ extern "C" {
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
       pWindowInfo->vSetFramebufferSizeCallback = Val_unit;
+      pWindowInfo->vCharCallback = Val_unit;
 
       glfwSetFramebufferSizeCallback(wd, framebuffer_size_callback);
+      glfwSetCharCallback(wd, char_callback);
 
       sActiveWindows[sActiveWindowCount] = pWindowInfo;
       sActiveWindowCount++;
@@ -191,6 +202,24 @@ extern "C" {
             // collector knows it is being used.
             pWinInfo->vSetFramebufferSizeCallback = vCallback;
             caml_register_global_root(&(pWinInfo->vSetFramebufferSizeCallback));
+        }
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glfwSetCharCallback(value vWindow, value vCallback) {
+        CAMLparam2(vWindow, vCallback);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        if (pWinInfo) {
+            // TODO: Recycle existing callback if any!
+
+            // We need to mark the closure as being a global root, so the garbage
+            // collector knows it is being used.
+            pWinInfo->vCharCallback = vCallback;
+            caml_register_global_root(&(pWinInfo->vCharCallback));
         }
 
         CAMLreturn(Val_unit);
