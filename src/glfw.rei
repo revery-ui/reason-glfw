@@ -19,6 +19,17 @@ let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
 
+module Modifier {
+    type t;
+
+    let of_int: int => t;
+
+    let isShiftPressed: t => bool;
+    let isControlPressed: t => bool;
+    let isAltPressed: t => bool;
+    let isSuperPressed: t => bool;
+}
+
 module Monitor {
     type t;
 
