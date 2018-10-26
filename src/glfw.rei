@@ -51,6 +51,9 @@ type windowHint =
 let glfwDefaultWindowHints: unit => unit;
 let glfwWindowHint: (windowHint, bool) => unit;
 
+type glfwCharCallback = (window, int) => unit;
+let glfwSetCharCallback: (window, glfwCharCallback) => unit;
+
 type glfwFramebufferSizeCallback = (window, int, int) => unit;
 let glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit;
