@@ -54,6 +54,22 @@ type windowHint =
 | GLFW_FLOATING
 | GLFW_MAXIMIZED;
 
+type glfwMouseButton =
+| GLFW_MOUSE_BUTTON_LEFT
+| GLFW_MOUSE_BUTTON_MIDDLE
+| GLFW_MOUSE_BUTTON_RIGHT
+| GLFW_MOUSE_BUTTON_LAST
+
+type glfwModifierKey =
+| GLFW_MOD_SHIFT
+| GLFW_MOD_CONTROL
+| GLFW_MOD_ALT
+| GLFW_MOD_SUPER;
+
+type glfwButtonState =
+| GLFW_PRESS
+| GLFW_RELEASE;
+
 [@noalloc] external glfwDefaultWindowHints: unit => unit = "caml_glfwDefaultWindowHints";
 [@noalloc] external glfwWindowHint: (windowHint, bool) => unit = "caml_glfwWindowHint";
 
@@ -84,6 +100,22 @@ type glfwFramebufferSizeCallback = (window, int, int) => unit;
 external glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit =
   "caml_glfwSetFramebufferSizeCallback";
+
+type glfwCursorPos = {
+    mouseX: float,
+    mouseY: float
+};
+external caml_glfwGetCursorPos: window => array(float) = "caml_glfwGetCursorPos";
+
+let glfwGetCursorPos = (w) => {
+    let pos = caml_glfwGetCursorPos(w);
+
+    let v = { 
+            mouseX: pos[0], 
+            mouseY: pos[1],
+    };
+    v;
+};
 
 /* GL */
 type shader;

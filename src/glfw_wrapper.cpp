@@ -19,6 +19,7 @@ extern "C" {
     struct WindowInfo {
         GLFWwindow* pWindow;
         value vSetFramebufferSizeCallback;
+        value vSetCursorPosCallback;
         value vCharCallback;
     };
 
@@ -95,6 +96,15 @@ extern "C" {
         }
     }
 
+    void cursor_pos_callback(GLFWwindow *pWin, double xPos, double yPos) {
+        // Is there a window info?
+        WindowInfo * pWinInfo = getWindowInfoFromWindow(pWin);
+
+        if (pWinInfo && pWinInfo->vSetCursorPosCallback != Val_unit) {
+            (void) caml_callback3((value)pWinInfo->vSetCursorPosCallback, ((value)(void *)pWinInfo), caml_copy_double(xPos), caml_copy_double(yPos));
+        }
+    }
+
     void char_callback(GLFWwindow *pWin, unsigned int codepoint) {
         WindowInfo *pWinInfo = getWindowInfoFromWindow(pWin);
 
@@ -119,9 +129,11 @@ extern "C" {
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
       pWindowInfo->vSetFramebufferSizeCallback = Val_unit;
+      pWindowInfo->vSetCursorPosCallback = Val_unit;
       pWindowInfo->vCharCallback = Val_unit;
 
       glfwSetFramebufferSizeCallback(wd, framebuffer_size_callback);
+      glfwSetCursorPosCallback(wd, cursor_pos_callback);
       glfwSetCharCallback(wd, char_callback);
 
       sActiveWindows[sActiveWindowCount] = pWindowInfo;
@@ -280,6 +292,40 @@ extern "C" {
         Store_field(ret, 0, Val_int(xPos));
         Store_field(ret, 1, Val_int(yPos));
 
+        CAMLreturn(ret);
+    }
+
+    CAMLprim value
+    caml_glfwSetCursorPosCallback(value vWindow, value vCallback) {
+        CAMLparam2(vWindow, vCallback);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        if (pWinInfo) {
+            // TODO: Recycle existing callback if any!
+
+            // We need to mark the closure as being a global root, so the garbage
+            // collector knows it is being used.
+            pWinInfo->vSetCursorPosCallback = vCallback;
+            caml_register_global_root(&(pWinInfo->vSetCursorPosCallback));
+        }
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glfwGetCursorPos(value vWindow) {
+        CAMLparam1(vWindow);
+        CAMLlocal1(ret);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        double xpos, ypos;
+        glfwGetCursorPos(pWinInfo->pWindow, &xpos, &ypos);
+
+        ret = caml_alloc(2 * Double_wosize, Double_array_tag);
+        Store_double_field(ret, 0, xpos);
+        Store_double_field(ret, 1, ypos);
         CAMLreturn(ret);
     }
 

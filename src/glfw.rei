@@ -48,6 +48,22 @@ type windowHint =
 | GLFW_FLOATING
 | GLFW_MAXIMIZED;
 
+type glfwMouseButton =
+| GLFW_MOUSE_BUTTON_LEFT
+| GLFW_MOUSE_BUTTON_MIDDLE
+| GLFW_MOUSE_BUTTON_RIGHT
+| GLFW_MOUSE_BUTTON_LAST
+
+type glfwButtonState =
+| GLFW_PRESS
+| GLFW_RELEASE
+
+type glfwModifierKey =
+| GLFW_MOD_SHIFT
+| GLFW_MOD_CONTROL
+| GLFW_MOD_ALT
+| GLFW_MOD_SUPER
+
 let glfwDefaultWindowHints: unit => unit;
 let glfwWindowHint: (windowHint, bool) => unit;
 
@@ -57,6 +73,12 @@ let glfwSetCharCallback: (window, glfwCharCallback) => unit;
 type glfwFramebufferSizeCallback = (window, int, int) => unit;
 let glfwSetFramebufferSizeCallback:
   (window, glfwFramebufferSizeCallback) => unit;
+
+type glfwCursorPos = {
+    mouseX: float,
+    mouseY: float
+};
+let glfwGetCursorPos: window => glfwCursorPos;
 
 let printFrameBufferSize: window => unit;
 

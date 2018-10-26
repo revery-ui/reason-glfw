@@ -12,8 +12,22 @@ function caml_glfwInit() {
         }
     });
 
-    joo_global_object.window.addEventListener("keypress", function (keyEvent) {
+    joo_global_object._mouseState = {};
+    joo_global_object.window.addEventListener("mousemove", function (e) {
+        var activeWindow = joo_global_object._activeWindow;
+        joo_global_object._mouseState.x = e.pageX - activeWindow.x;
+        joo_global_object._mouseState.y = e.pageY - activeWindow.y;
 
+        var wins = joo_global_object._activeWindows;
+        for (var i = 0; i < wins.length; i++) {
+            var win = wins[i];
+            if (win.onCursorPos) {
+                win.onCursorPos(win, e.pageX - win.x, e.pageY - win.y);
+            }
+        }
+    });
+
+    joo_global_object.window.addEventListener("keypress", function (keyEvent) {
         if (keyEvent.key && keyEvent.key.length === 1) {
             var codepoint = keyEvent.key.codePointAt(0);
             var wins = joo_global_object._activeWindows;
@@ -23,6 +37,15 @@ function caml_glfwInit() {
         }
     });
 };
+
+// Provides: caml_glfwGetCursorPos
+// Requires: caml_js_to_array
+function caml_glfwGetCursorPos(w) {
+    // TODO: Window parameter is currently ignored, but 
+    // we should calculate the mouse position relative to it.
+
+    return caml_js_to_array([joo_global_object._mouseState.x, joo_global_object._mouseState.y]);
+}
 
 // Provides: caml_glfwGetTime_byte
 function caml_glfwGetTime_byte() {
@@ -110,6 +133,9 @@ function caml_glfwCreateWindow(width, height, title) {
         isMaximized: false,
         onSetFramebufferSize: null,
         onChar: null,
+        onCursorPos: null,
+        x: 0,
+        y: 0,
     };
 
     var notifyChar = function (codepoint) {
@@ -140,6 +166,8 @@ function caml_glfwCreateWindow(width, height, title) {
 function caml_glfwSetWindowPos(w, x, y) {
     var canvas = w.canvas;
     canvas.style.transform = "translate(" + x.toString() + "px, " + y.toString() + "px)";
+    w.x = x;
+    w.y = y;
 }
 
 // Provides: caml_glfwSetWindowSize
@@ -168,6 +196,11 @@ function caml_glfwSetFramebufferSizeCallback(w, callback) {
     w.onSetFramebufferSize = callback;
 }
 
+// Provides: caml_glfwSetCursorPosCallback
+function caml_glfwSetCursorPosCallback(w, callback) {
+    w.onCursorPos = callback;
+}
+
 // Provides: caml_glfwSetCharCallback
 function caml_glfwSetCharCallback(w, callback) {
     w.onChar = callback;
@@ -191,6 +224,7 @@ function caml_glfwMakeContextCurrent(win) {
     var context = win.canvas.getContext('webgl');
     var gl = context;
     joo_global_object.window.__glfw__gl__ = context;
+    joo_global_object.window._activeWindow = win;
 
     joo_global_object.variantToTextureType = {
         '0': gl.TEXTURE_2D,

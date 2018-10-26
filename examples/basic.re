@@ -122,6 +122,14 @@ let run = () => {
     let time = Unix.gettimeofday();
     delta := delta^ +. time -. prevTime^;
     prevTime := time;
+/* type glfwMouseButtonCallback = (window, glfwMouseButton, glfwButtonState, array(glfwModifierKey)) => unit; */
+/* let glfwSetMouseButtonCallback = (window, glfwMouseButtonCallback) => unit; */
+
+/* let glfwGetMouseButton = (window, glfwMouseButton) => glfwButtonState; */
+
+/* let glfwScrollCallback = (window, float, float) => unit; */
+/* type glfwSetScrollCallback = (window, glfwScrollCallback) => unit; */
+
 
     glClearColor(0.0, 0., 0., 1.);
     glClearDepth(1.0);
@@ -169,6 +177,9 @@ let run = () => {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+  
+    /* let pos = glfwGetCursorPos(w); */
+    /* print_endline ("Mouse position : " ++ string_of_float(pos.mouseX) ++ ", " ++ string_of_float(pos.mouseY)); */
     glfwSwapBuffers(w);
   };
 
