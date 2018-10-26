@@ -25,6 +25,35 @@ external glfwSetWindowTitle: (window, string) => unit = "caml_glfwSetWindowTitle
 [@noalloc] external glfwGetTime: unit => ([@unboxed] float) = "caml_glfwGetTime_byte" "caml_glfwGetTime";
 [@noalloc] external glfwSetTime: ([@unboxed] float) => unit = "caml_glfwSetTime_byte" "caml_glfwSetTime";
 
+module Modifier {
+    type t = int;
+
+    let _mod_shift = 0x0001;
+    let _mod_control = 0x0002;
+    let _mod_alt = 0x0004;
+    let _mod_super = 0x0008;
+
+    let of_int = (x: int) => {
+        x
+    };
+
+    let isShiftPressed = (m: t) => {
+        (m land _mod_shift) == _mod_shift;
+    };
+
+    let isControlPressed = (m: t) => {
+        (m land _mod_control) == _mod_control;
+    };
+
+    let isAltPressed = (m: t) => {
+        (m land _mod_alt) == _mod_alt;
+    };
+
+    let isSuperPressed = (m: t) => {
+        (m land _mod_super) == _mod_super;
+    };
+}
+
 module Monitor {
     type t;
 
