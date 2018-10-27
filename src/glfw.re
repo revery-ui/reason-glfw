@@ -19,6 +19,7 @@ external glfwSetWindowSize: (window, int, int) => unit =
 [@noalloc] external glfwShowWindow: (window) => unit = "caml_glfwShowWindow";
 [@noalloc] external glfwHideWindow: (window) => unit = "caml_glfwHideWindow";
 external glfwMaximizeWindow: (window) => unit = "caml_glfwMaximizeWindow";
+[@noalloc] external glfwSetWindowOpacity: (window, float) => unit = "caml_glfwSetWindowOpacity";
 external glfwSetWindowTitle: (window, string) => unit = "caml_glfwSetWindowTitle";
 [@noalloc] external glfwSwapInterval: int => unit = "caml_glfwSwapInterval";
 

@@ -186,6 +186,11 @@ function caml_glfwSetWindowTitle(w, title) {
     document.title = t;
 }
 
+// Provides: caml_glfwSetWindowOpacity
+function caml_glfwSetWindowOpacity(w, opacity) {
+    w.style.opacity = opacity;
+}
+
 // Provides: caml_glfwWindowHint
 function caml_glfwWindowHint(hint, val) {
     joo_global_object.console.warn("Unsupported API: glfwWindowHint");

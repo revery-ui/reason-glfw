@@ -12,6 +12,7 @@ let glfwSwapBuffers: window => unit;
 let glfwSetWindowPos: (window, int, int) => unit;
 let glfwSetWindowSize: (window, int, int) => unit;
 let glfwMaximizeWindow: (window) => unit;
+let glfwSetWindowOpacity: (window, float) => unit;
 let glfwSetWindowTitle: (window, string) => unit;
 let glfwShowWindow: (window) => unit;
 let glfwHideWindow: (window) => unit;

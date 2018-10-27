@@ -152,8 +152,17 @@ extern "C" {
     caml_glfwSetWindowTitle(value vWindow, value vTitle) {
         WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
         char *szTitle = String_val(vTitle);
-        printf(" - Setting title: %s\n", szTitle);
         glfwSetWindowTitle(pWindowInfo->pWindow, szTitle);
+        return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwSetWindowOpacity(value vWindow, value vOpacity) {
+        WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
+        float fOpacity = Double_val(vOpacity);
+        /* TODO: This isn't supported yet - need glfw@3.3 */
+        /* glfwSetWindowOpacity(pWindowInfo->pWindow, fOpacity); */
+        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         return Val_unit;
     }
 

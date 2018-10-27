@@ -38,6 +38,7 @@ let run = () => {
   glfwSetWindowPos(w, (vidMode.width - 800) / 2, (vidMode.height - 600) / 2);
   glfwSetWindowSize(w, 800, 600);
   glfwSetWindowTitle(w, "reason-glfw example");
+  glfwSetWindowOpacity(w, 0.5);
 
   glViewport(0, 0, 800, 600);
 
