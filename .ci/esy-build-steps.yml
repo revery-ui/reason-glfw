@@ -12,4 +12,3 @@ steps:
   - script: esy install
     continueOnError: false
   - script: esy build
-  - script: esy b dune runtest
