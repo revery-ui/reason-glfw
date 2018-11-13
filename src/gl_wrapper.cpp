@@ -288,7 +288,6 @@ extern "C" {
         char *s;
         s = String_val(vAttributeName);
         int val = glGetAttribLocation(shaderProgram, s);
-        printf("- attribute: %s - loc: %d\n", s, val);
         return (value)val;
     }
 
@@ -299,7 +298,6 @@ extern "C" {
         s = String_val(vAttributeName);
 
         int val = glGetUniformLocation(shaderProgram, s);
-        printf(" -uniform: %s - loc: %d\n", s, val);
         return (value)val;
     }
 
@@ -503,7 +501,6 @@ extern "C" {
     caml_glCreateBuffer(value unit) {
         unsigned int VBO;
         glGenBuffers(1, &VBO);
-        printf("glCreateBuffer: %d \n", VBO);
         return (value)VBO;
     }
 
