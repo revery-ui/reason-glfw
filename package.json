@@ -18,22 +18,16 @@
   "peerDependencies": {
     "ocaml": "~4.6.0"
   },
-  "resolutions": {
-    "esy-cmake": "github:bryphe/esy-cmake#5a40a8e",
-    "@opam/menhir": "20171013",
-    "@opam/re": "1.8.0",
-    "refmterr": "github:bryphe/BetterErrors#76500c2"
-  },
   "dependencies": {
-    "@opam/dune": "*",
-    "@esy-ocaml/reason": "*",
-    "refmterr": "*",
+    "@opam/dune": "^1.5.0",
+    "@esy-ocaml/reason": "^3.3.7",
+    "refmterr": "^3.1.0",
     "@opam/js_of_ocaml": "*",
     "@opam/js_of_ocaml-compiler": "*",
     "@opam/js_of_ocaml-lwt": "*",
     "@opam/lwt": "^4.0.0",
     "@opam/lwt_ppx": "^1.1.0",
-    "esy-cmake": "*",
+    "esy-cmake": "^0.3.2",
     "reason-gl-matrix": "^0.2.0"
   },
   "devDependencies": {
