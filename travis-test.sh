@@ -5,7 +5,7 @@ echo Travis build - detected OS is: "$OS_NAME"
 
 set -e
 
-# if [[ "$OS_NAME" == "Linux" ]]; then
+if [[ "$OS_NAME" == "Linux" ]]; then
   # Initialize display driver
   DISPLAY=:99.0
   export DISPLAY
@@ -23,4 +23,4 @@ set -e
 
   # Only run tests on Linux, for now-
   dune runtest
-# fi
+fi
