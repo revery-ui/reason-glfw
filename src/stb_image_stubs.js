@@ -26,6 +26,8 @@ function caml_stb_image_dimensions(img) {
 
 // Provides: caml_stb_image_from_color
 function caml_stb_image_from_color(r, g, b, a) {
-    var pixel = new joo_global_object.Uint8Array([r, g, b, a]);
-    return pixel;
+    var img = new joo_global_object.Image();
+    joo_global_object.console.warn("TODO: fromColor API")
+    // TODO: Create a data URI or something from the color to put this as a placeholder
+    return img;
 }

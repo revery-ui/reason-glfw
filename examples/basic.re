@@ -52,6 +52,7 @@ let run = () => {
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
   let%lwt img = Image.load("UVCheckerMap02-512.png");
+  /* let img = Image.fromColor(255, 0, 0, 255); */
   let dimensions = Image.getDimensions(img);
   print_endline(
     "- width: "
