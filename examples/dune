@@ -8,4 +8,4 @@
 
 (install
     (section bin)
-    (files test.jpg))
+    (files test.jpg UVCheckerMap02-512.png))
