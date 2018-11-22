@@ -60,6 +60,14 @@ let run = () => {
     ++ string_of_int(dimensions.height),
   );
 
+  let frameBufferSize = glfwGetFramebufferSize(w);
+  print_endline(
+    "framebuffersize: "
+    ++ string_of_int(frameBufferSize.width)
+    ++ "x"
+    ++ string_of_int(frameBufferSize.height),
+  );
+
   let vsSource = {|
         #ifndef GL_ES
         #define lowp
@@ -239,6 +247,9 @@ let run = () => {
 
   glfwRenderLoop(_t => {
     render();
+
+    /* Run the GC so we can catch any GC-related crashes early! */
+    Gc.full_major();
 
     glfwPollEvents();
     glfwWindowShouldClose(w);

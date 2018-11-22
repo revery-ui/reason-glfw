@@ -2,27 +2,42 @@ open Reglm;
 
 module Key = Glfw_key;
 
-type window;
+module Window = {
+  type t;
+
+  type windowSize = {
+    width: int,
+    height: int,
+  };
+
+  type frameBufferSize = {
+    width: int,
+    height: int,
+  };
+};
 
 /* GLFW */
 external glfwInit: unit => bool = "caml_glfwInit";
-external glfwCreateWindow: (int, int, string) => window =
+external glfwCreateWindow: (int, int, string) => Window.t =
   "caml_glfwCreateWindow";
-external glfwMakeContextCurrent: window => unit =
+external glfwMakeContextCurrent: Window.t => unit =
   "caml_glfwMakeContextCurrent";
-external glfwWindowShouldClose: window => bool = "caml_glfwWindowShouldClose";
+external glfwWindowShouldClose: Window.t => bool =
+  "caml_glfwWindowShouldClose";
 external glfwPollEvents: unit => unit = "caml_glfwPollEvents";
 external glfwTerminate: unit => unit = "caml_glfwTerminate";
-external glfwSwapBuffers: window => unit = "caml_glfwSwapBuffers";
-external glfwSetWindowSize: (window, int, int) => unit =
+external glfwSwapBuffers: Window.t => unit = "caml_glfwSwapBuffers";
+external glfwSetWindowSize: (Window.t, int, int) => unit =
   "caml_glfwSetWindowSize";
 [@noalloc]
-external glfwSetWindowPos: (window, int, int) => unit =
+external glfwSetWindowPos: (Window.t, int, int) => unit =
   "caml_glfwSetWindowPos";
-[@noalloc] external glfwShowWindow: window => unit = "caml_glfwShowWindow";
-[@noalloc] external glfwHideWindow: window => unit = "caml_glfwHideWindow";
-external glfwMaximizeWindow: window => unit = "caml_glfwMaximizeWindow";
-external glfwSetWindowTitle: (window, string) => unit =
+external glfwGetFramebufferSize: Window.t => Window.frameBufferSize =
+  "caml_glfwGetFramebufferSize";
+[@noalloc] external glfwShowWindow: Window.t => unit = "caml_glfwShowWindow";
+[@noalloc] external glfwHideWindow: Window.t => unit = "caml_glfwHideWindow";
+external glfwMaximizeWindow: Window.t => unit = "caml_glfwMaximizeWindow";
+external glfwSetWindowTitle: (Window.t, string) => unit =
   "caml_glfwSetWindowTitle";
 [@noalloc] external glfwSwapInterval: int => unit = "caml_glfwSwapInterval";
 
@@ -129,20 +144,21 @@ let glfwRenderLoop = callback =>
   | _ => glfwJavascriptRenderLoop(callback)
   };
 
-type glfwCharCallback = (window, int) => unit;
-external glfwSetCharCallback: (window, glfwCharCallback) => unit =
+type glfwCharCallback = (Window.t, int) => unit;
+external glfwSetCharCallback: (Window.t, glfwCharCallback) => unit =
   "caml_glfwSetCharCallback";
 
 /* Internal implementation of glfwKeyCallback, since we need to cast some of
    integers to types */
-type _glfwKeyCallback = (window, int, int, ButtonState.t, int) => unit;
-external _glfwSetKeyCallback: (window, _glfwKeyCallback) => unit =
+type _glfwKeyCallback = (Window.t, int, int, ButtonState.t, int) => unit;
+external _glfwSetKeyCallback: (Window.t, _glfwKeyCallback) => unit =
   "caml_glfwSetKeyCallback";
 
-type glfwKeyCallback = (window, Key.t, int, ButtonState.t, Modifier.t) => unit;
+type glfwKeyCallback =
+  (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;
 
-let glfwSetKeyCallback = (window, callback) =>
-  _glfwSetKeyCallback(window, (w, k, scancode, buttonState, modifier) =>
+let glfwSetKeyCallback = (win, callback) =>
+  _glfwSetKeyCallback(win, (w, k, scancode, buttonState, modifier) =>
     callback(
       w,
       Key.of_int(k),
@@ -152,20 +168,19 @@ let glfwSetKeyCallback = (window, callback) =>
     )
   );
 
-type glfwScrollCallback = (window, float, float) => unit;
-external glfwSetScrollCallback: (window, glfwScrollCallback) => unit = "caml_glfwSetScrollCallback";
+type glfwScrollCallback = (Window.t, float, float) => unit;
+external glfwSetScrollCallback: (Window.t, glfwScrollCallback) => unit = "caml_glfwSetScrollCallback";
 
-type glfwFramebufferSizeCallback = (window, int, int) => unit;
+type glfwFramebufferSizeCallback = (Window.t, int, int) => unit;
 external glfwSetFramebufferSizeCallback:
-  (window, glfwFramebufferSizeCallback) => unit =
+  (Window.t, glfwFramebufferSizeCallback) => unit =
   "caml_glfwSetFramebufferSizeCallback";
 
 type glfwCursorPos = {
   mouseX: float,
   mouseY: float,
 };
-
-external caml_glfwGetCursorPos: window => array(float) =
+external caml_glfwGetCursorPos: Window.t => array(float) =
   "caml_glfwGetCursorPos";
 
 let glfwGetCursorPos = w => {
@@ -328,4 +343,4 @@ external glDrawArrays: (drawMode, int, int) => unit = "caml_glDrawArrays";
 external glDrawElements: (drawMode, int, glType, int) => unit =
   "caml_glDrawElements";
 
-external printFrameBufferSize: window => unit = "caml_printFrameBufferSize";
+external printFrameBufferSize: Window.t => unit = "caml_printFrameBufferSize";
