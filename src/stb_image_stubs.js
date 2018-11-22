@@ -11,7 +11,7 @@ function caml_stb_image_load(imgName, onSuccess, onFailure) {
         onFailure(caml_js_to_string("failed to load image: " + err.toString()));
     };
 
-    image.src = "test.jpg";
+    image.src = imgName;
 }
 
 // Provides: caml_stb_image_debug_print
