@@ -79,6 +79,8 @@ let run = () => {
   let vsSource = {|
         #ifndef GL_ES
         #define lowp
+        #else
+        precision mediump float;
         #endif
 
         attribute vec3 aVertexPosition;
@@ -101,6 +103,8 @@ let run = () => {
   let fsSource = {|
         #ifndef GL_ES
         #define lowp
+        #else
+        precision mediump float;
         #endif
 
         varying lowp vec4 vColor;
