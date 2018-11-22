@@ -51,7 +51,8 @@ let run = () => {
   /* Update pack alignment to allow single-channel images */
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-  let%lwt img = Image.load("test.jpg");
+  let%lwt img = Image.load("UVCheckerMap02-512.png");
+  /* let img = Image.fromColor(255, 0, 0, 255); */
   let dimensions = Image.getDimensions(img);
   print_endline(
     "- width: "
@@ -59,6 +60,14 @@ let run = () => {
     ++ " - height: "
     ++ string_of_int(dimensions.height),
   );
+
+  let texture = glCreateTexture();
+  glBindTexture(GL_TEXTURE_2D, texture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_2D, img);
 
   let frameBufferSize = glfwGetFramebufferSize(w);
   print_endline(
@@ -71,6 +80,8 @@ let run = () => {
   let vsSource = {|
         #ifndef GL_ES
         #define lowp
+        #else
+        precision mediump float;
         #endif
 
         attribute vec3 aVertexPosition;
@@ -81,22 +92,33 @@ let run = () => {
         uniform mat4 uWorldMatrix;
 
         varying lowp vec4 vColor;
+        varying lowp vec3 vPos;
 
         void main() {
             gl_Position = uProjectionMatrix * uViewMatrix * uWorldMatrix * vec4(aVertexPosition, 1.0);
             vColor = aVertexColor;
+            vPos = aVertexPosition;
         }
     |};
   print_endline(vsSource);
   let fsSource = {|
         #ifndef GL_ES
         #define lowp
+        #else
+        precision mediump float;
         #endif
 
         varying lowp vec4 vColor;
+        varying lowp vec3 vPos;
+
+        uniform sampler2D uSampler;
 
         void main() {
-            gl_FragColor = vec4(vColor.r, vColor.g, vColor.b, 0.5);
+            vec4 t1 = texture2D(uSampler, vPos.yz);
+            vec4 t2 = texture2D(uSampler, vPos.xz);
+            vec4 t3 = texture2D(uSampler, vPos.xy);
+            vec4 t = t1 + t2 + t3;
+            gl_FragColor = vec4(vColor.r * t.r, vColor.g * t.g, vColor.b * t.b, 0.5);
             // gl_FragColor = vec4(vTexCoord, 0.0, 1.0);
             //gl_FragColor = texture2D(texture, vTexCoord);
         }
