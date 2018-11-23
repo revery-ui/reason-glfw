@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/4gcoritaowypu9va/branch/master?svg=true)](https://ci.appveyor.com/project/bryphe/reason-glfw/branch/master)
+[![Build Status](https://bryphe.visualstudio.com/reason-glfw/_apis/build/status/bryphe.reason-glfw)](https://bryphe.visualstudio.com/reason-glfw/_build/latest?definitionId=9)
 [![Build Status](https://travis-ci.org/bryphe/reason-glfw.svg?branch=master)](https://travis-ci.org/bryphe/reason-glfw) 
 [![npm version](https://badge.fury.io/js/reason-glfw.svg)](https://badge.fury.io/js/reason-glfw)
 
