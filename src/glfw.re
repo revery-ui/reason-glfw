@@ -185,6 +185,9 @@ let glfwSetKeyCallback = (win, callback) =>
     )
   );
 
+type glfwCursorPosCallback = (Window.t, float, float) => unit;
+external glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit = "caml_glfwSetCursorPosCallback";
+
 /* Internal implementation of glfwMouseButtonCallback, since we need to cast some integers to types */
 type _glfwMouseButtonCallback = (Window.t, MouseButton.t, ButtonState.t, int) => unit;
 external _glfwSetMouseButtonCallback: (Window.t, _glfwMouseButtonCallback) => unit = "caml_glfwSetMouseButtonCallback";
