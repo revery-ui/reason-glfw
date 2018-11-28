@@ -52,10 +52,12 @@ let flags =
         @ ccopt("-framework CoreVideo")
 ;;
 
+let extra_cxx_flags = ["-x c++"]
+
 let cxx_flags =
     match get_os with
     | Windows -> c_flags @ ["-fno-exceptions"; "-fno-rtti"; "-lstdc++"]
-    | _ -> c_flags
+    | _ -> c_flags @ extra_cxx_flags
 ;;
 
 Configurator.V1.Flags.write_sexp "c_flags.sexp" c_flags;
