@@ -221,7 +221,8 @@ type textureParameter =
 
 type textureParameterValue =
   | GL_REPEAT
-  | GL_LINEAR;
+  | GL_LINEAR
+  | GL_CLAMP_TO_EDGE;
 
 type texturePixelDataFormat =
   | GL_RGB

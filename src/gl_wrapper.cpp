@@ -121,6 +121,8 @@ extern "C" {
                 return GL_REPEAT;
             case 1:
                 return GL_LINEAR;
+            case 2:
+                return GL_CLAMP_TO_EDGE;
             default:
                 warn("Unexpected texture parameter value!");
                 return 0;
