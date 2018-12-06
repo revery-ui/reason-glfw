@@ -375,7 +375,8 @@ function caml_glfwMakeContextCurrent(win) {
 
     joo_global_object.variantToTextureParameterValue = {
         '0': gl.REPEAT,
-        '1': gl.LINEAR
+        '1': gl.LINEAR,
+        '2': gl.CLAMP_TO_EDGE,
     }
 
     joo_global_object.variantToTexturePixelDataFormat = {
