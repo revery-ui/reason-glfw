@@ -126,6 +126,7 @@ let glfwRenderLoop: (glfwRenderLoopCallback) => unit;
 let glClearColor: (float, float, float, float) => unit;
 let glClearDepth: float => unit;
 let glViewport: (int, int, int, int) => unit;
+let glScissor: (int, int, int, int) => unit;
 
 type shader;
 type shaderType =
@@ -140,10 +141,6 @@ let glCreateShader: shaderType => shader;
 let glShaderSource: (shader, string) => unit;
 let glCompileShader: shader => shaderCompilationResult;
 let glDeleteShader: shader => unit;
-
-type enableOptions =
-  | GL_DEPTH_TEST
-  | GL_BLEND;
 
 let glEnable: enableOptions => unit;
 let glDisable: enableOptions => unit;
