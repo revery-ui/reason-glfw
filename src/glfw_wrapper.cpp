@@ -18,6 +18,7 @@ extern "C" {
 
     struct WindowInfo {
         GLFWwindow* pWindow;
+        bool isDestroyed;
         value vSetFramebufferSizeCallback;
         value vSetWindowSizeCallback;
         value vSetCursorPosCallback;
@@ -193,6 +194,7 @@ extern "C" {
 
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
+      pWindowInfo->isDestroyed = false;
       pWindowInfo->vSetFramebufferSizeCallback = Val_unit;
       pWindowInfo->vSetWindowSizeCallback = Val_unit;
       pWindowInfo->vSetCursorPosCallback = Val_unit;
@@ -504,8 +506,13 @@ extern "C" {
     caml_glfwWindowShouldClose(value window)
     {
         WindowInfo *wd = (WindowInfo *)window;
-        int val = glfwWindowShouldClose(wd->pWindow);
-        return Val_bool(val);
+
+        if (wd->isDestroyed) {
+            return Val_true;
+        } else {
+            int val = glfwWindowShouldClose(wd->pWindow);
+            return Val_bool(val);
+        }
     }
 
     CAMLprim value
@@ -513,6 +520,15 @@ extern "C" {
         WindowInfo *wd = (WindowInfo *)vWindow;
         glfwShowWindow(wd->pWindow);
         return Val_unit;
+    }
+
+    CAMLprim value
+    caml_glfwDestroyWindow(value vWindow) {
+        WindowInfo* wd = (WindowInfo*)vWindow;
+        if (!wd->isDestroyed) {
+          wd->isDestroyed = true;
+          glfwDestroyWindow(wd->pWindow);
+        }
     }
 
     CAMLprim value
