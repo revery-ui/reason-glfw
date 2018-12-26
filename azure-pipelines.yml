@@ -18,10 +18,10 @@ jobs:
     # ESY__NPM_ROOT: /opt/hostedtoolcache/node/8.14.0/x64/lib/node_modules/esy
 
   steps:
-  - template: use-node.yml
-  - template: restore-build-cache.yml
-  - template: esy-build-steps.yml
-  - template: publish-build-cache.yml
+  - template: .ci/use-node.yml
+  - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  - template: .ci/publish-build-cache.yml
 
 - job: MacOS
   timeoutInMinutes: 0
@@ -36,10 +36,10 @@ jobs:
     # ESY__NPM_ROOT: /usr/local/lib/node_modules/esy
 
   steps:
-  - template: use-node.yml
-  - template: restore-build-cache.yml
-  - template: esy-build-steps.yml
-  - template: publish-build-cache.yml
+  - template: .ci/use-node.yml
+  - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  - template: .ci/publish-build-cache.yml
 
 - job: Windows
   timeoutInMinutes: 0
@@ -54,10 +54,10 @@ jobs:
     # ESY__NPM_ROOT: /C/npm/prefix/node_modules/esy
 
   steps:
-  - template: use-node.yml
-  - template: restore-build-cache.yml
-  - template: esy-build-steps.yml
-  - template: publish-build-cache.yml
+  - template: .ci/use-node.yml
+  - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  - template: .ci/publish-build-cache.yml
 
 - job: Release
   timeoutInMinutes: 0
