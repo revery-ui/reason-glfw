@@ -213,6 +213,22 @@ let glfwGetCursorPos = w => {
   v;
 };
 
+type glfwCursor;
+type glfwCursorShape =
+  | GLFW_ARROW_CURSOR
+  | GLFW_IBEAM_CURSOR
+  | GLFW_CROSSHAIR_CURSOR
+  | GLFW_HAND_CURSOR
+  | GLFW_HRESIZE_CURSOR
+  | GLFW_VRESIZE_CURSOR;
+
+external glfwCreateStandardCursor: glfwCursorShape => glfwCursor =
+  "caml_glfwCreateStandardCursor";
+[@noalloc] external glfwDestroyCursor: glfwCursor => unit =
+  "caml_glfwDestroyCursor";
+[@noalloc] external glfwSetCursor: Window.t => glfwCursor => unit =
+  "caml_glfwSetCursor";
+
 /* GL */
 type shader;
 type shaderType =
