@@ -45,7 +45,7 @@ jobs:
   - template: publish-build-cache.yml
 
 - job: Windows
-  timeoutInMinutes: 0
+  timeoutInMinutes: 80
   pool:
     vmImage: 'vs2017-win2016'
 
