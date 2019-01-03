@@ -341,7 +341,10 @@ type texturePixelDataFormat =
 type glType =
   | GL_FLOAT
   | GL_UNSIGNED_BYTE
-  | GL_UNSIGNED_SHORT;
+  | GL_UNSIGNED_SHORT
+  | GL_UNSIGNED_SHORT_5_6_5
+  | GL_UNSIGNED_SHORT_4_4_4_4
+  | GL_UNSIGNED_SHORT_5_5_5_1;
 
 external glCreateTexture: unit => texture = "caml_glCreateTexture";
 external glBindTexture: (textureType, texture) => unit = "caml_glBindTexture";
@@ -381,3 +384,7 @@ external glDrawElements: (drawMode, int, glType, int) => unit =
   "caml_glDrawElements";
 
 external printFrameBufferSize: Window.t => unit = "caml_printFrameBufferSize";
+
+external glReadPixels:
+  (int, int, int, int, texturePixelDataFormat, glType, 'pixelBuffer) => unit =
+  "caml_glReadPixels_bytecode" "caml_glReadPixels_native";

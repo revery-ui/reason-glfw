@@ -231,7 +231,10 @@ type texturePixelDataFormat =
 type glType =
   | GL_FLOAT
   | GL_UNSIGNED_BYTE
-  | GL_UNSIGNED_SHORT;
+  | GL_UNSIGNED_SHORT
+  | GL_UNSIGNED_SHORT_5_6_5
+  | GL_UNSIGNED_SHORT_4_4_4_4
+  | GL_UNSIGNED_SHORT_5_5_5_1;
 
 type texture;
 let glCreateTexture: unit => texture;
@@ -271,3 +274,6 @@ type drawMode =
 
 let glDrawArrays: (drawMode, int, int) => unit;
 let glDrawElements: (drawMode, int, glType, int) => unit;
+
+let glReadPixels:
+  (int, int, int, int, texturePixelDataFormat, glType, 'pixelBuffer) => unit;

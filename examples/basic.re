@@ -319,8 +319,23 @@ let run = () => {
 
   /* glfwMaximizeWindow(w); */
 
+  let captureWindow(w, filename) {
+    let size = glfwGetFramebufferSize(w);
+    let image = Image.create(~width=size.width, ~height=size.height,
+                             ~numChannels=4, ~channelSize=1);
+    let buffer = Image.getBuffer(image);
+    glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    Image.save(image, filename);
+    Image.destroy(image);
+  };
+
+  let frame = ref(0);
   glfwRenderLoop(_t => {
     render();
+    if (frame^ == 60) {
+      captureWindow(w, Printf.sprintf("scrot%d.tga", frame^));
+    };
+    frame := frame^ + 1;
 
     /* Run the GC so we can catch any GC-related crashes early! */
     Gc.full_major();
