@@ -16,7 +16,8 @@ matrix:
            - libegl1-mesa-dev
            - mesa-utils
            - mesa-utils-extra
-  - os: osx # OSX 10.12
+  - os: osx
+
     node_js: 8
 install:
 - travis_retry npm install -g esy@0.4.0
