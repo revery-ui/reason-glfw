@@ -79,7 +79,7 @@ let run = () => {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexImage2D(GL_TEXTURE_2D, img);
+  reglfwTexImage2D(GL_TEXTURE_2D, img);
 
   let frameBufferSize = glfwGetFramebufferSize(w);
   print_endline(
@@ -222,11 +222,11 @@ let run = () => {
 
     glUniformMatrix4fv(projectionUniform, projectionMatrix);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
-    glVertexAttribPointer(posAttribute, 3, GL_FLOAT, false);
+    glVertexAttribPointer(posAttribute, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(posAttribute);
 
     glBindBuffer(GL_ARRAY_BUFFER, cb);
-    glVertexAttribPointer(colorAttribute, 4, GL_FLOAT, false);
+    glVertexAttribPointer(colorAttribute, 4, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(colorAttribute);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
@@ -235,13 +235,20 @@ let run = () => {
     glfwSwapBuffers(w);
   };
 
-  glfwSetScrollCallback(w, (_w, deltaX, deltaY) => {
-    print_endline("SCROLL: " ++ string_of_float(deltaX) ++ ", " ++ string_of_float(deltaY));
-  });
+  glfwSetScrollCallback(w, (_w, deltaX, deltaY) =>
+    print_endline(
+      "SCROLL: "
+      ++ string_of_float(deltaX)
+      ++ ", "
+      ++ string_of_float(deltaY),
+    )
+  );
 
-  glfwSetCursorPosCallback(w, (_w, x, y) => {
-    print_endline("CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y));
-  })
+  glfwSetCursorPosCallback(w, (_w, x, y) =>
+    print_endline(
+      "CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y),
+    )
+  );
 
   glfwSetKeyCallback(
     w,
@@ -263,7 +270,7 @@ let run = () => {
 
       if (_key == GLFW_KEY_X) {
         glfwDestroyWindow(_w);
-      }
+      };
     },
   );
 
@@ -276,7 +283,9 @@ let run = () => {
     )
   );
 
-  glfwSetMouseButtonCallback(w, (_w, button, buttonState, m) => {
+  glfwSetMouseButtonCallback(
+    w,
+    (_w, button, buttonState, m) => {
       let controlPressed = string_of_bool(Modifier.isControlPressed(m));
       let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
       print_endline(
@@ -289,14 +298,18 @@ let run = () => {
         ++ "| state: "
         ++ ButtonState.show(buttonState),
       );
-  })
+    },
+  );
 
   glfwSetFramebufferSizeCallback(
     w,
     (_, w, h) => {
       glViewport(0, 0, w, h);
       print_endline(
-        "Framebuffer size changed: " ++ string_of_int(w) ++ ", " ++ string_of_int(h),
+        "Framebuffer size changed: "
+        ++ string_of_int(w)
+        ++ ", "
+        ++ string_of_int(h),
       );
       width := w;
       height := h;
@@ -308,7 +321,10 @@ let run = () => {
     w,
     (_, w, h) => {
       print_endline(
-        "Window size changed: " ++ string_of_int(w) ++ ", " ++ string_of_int(h),
+        "Window size changed: "
+        ++ string_of_int(w)
+        ++ ", "
+        ++ string_of_int(h),
       );
       width := w;
       height := h;

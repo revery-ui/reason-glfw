@@ -1,0 +1,74 @@
+diff a/src/gl_wrapper.cpp b/src/gl_wrapper.cpp	(rejected hunks)
+@@ -38,7 +38,7 @@ extern "C" {
+                 return 0;
+         }
+     }
+-    
++
+     GLenum variantToEnableOption(value vVal) {
+         switch (Int_val(vVal)) {
+             case 0:
+@@ -141,6 +151,24 @@ extern "C" {
+         }
+     }
+ 
++    GLenum variantToFormat(value vFormat) {
++        switch(Int_val(vFormat)) {
++            case 0:
++                return GL_ALPHA;
++            case 1:
++                return GL_LUMINANCE;
++            case 2:
++                return GL_LUMINANCE_ALPHA;
++            case 3:
++                return GL_RGB;
++            case 4:
++                return GL_RGBA;
++            default:
++                warn("Unexpected format value!");
++                return 0;
++        }
++    }
++
+     CAMLprim value
+     caml_glClearColor(value vr, value vg, value vb, value va) {
+         float r = Double_val(vr);
+@@ -581,4 +715,38 @@ extern "C" {
+         printf("TODO: glUnbindBuffer\n");
+         return Val_unit;
+     }
++
++    CAMLprim value
++    caml_reglfwTexImage2D(value vTarget, value vImage) {
++
++        ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
++
++        GLenum format;
++        switch (pImage->numChannels) {
++            case 1:
++                format = GL_ALPHA;
++                break;
++            case 2:
++                format = GL_LUMINANCE_ALPHA;
++                break;
++            case 3:
++                format = GL_RGB;
++                break;
++            case 4:
++            default:
++                format = GL_RGBA;
++        }
++
++        glTexImage2D(
++                variantToTarget(vTarget),
++                0, // TODO: Support for specifying the level of detail
++                format,
++                pImage->width,
++                pImage->height,
++                0,
++                format,
++                GL_UNSIGNED_BYTE,  // TODO: Support for floating-point textures!
++                pImage->data);
++        return Val_unit;
++    }
+ }

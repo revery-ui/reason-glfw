@@ -44,48 +44,48 @@ module MouseButton {
     | GLFW_MOUSE_BUTTON_5
     | GLFW_MOUSE_BUTTON_6
     | GLFW_MOUSE_BUTTON_7
-    | GLFW_MOUSE_BUTTON_8
+    | GLFW_MOUSE_BUTTON_8;
 
-    let show: t => string;
+  let show: t => string;
 };
 
-module Monitor {
-    type t;
+module Monitor: {
+  type t;
 
-    type position = {
-        x: int,
-        y: int,
-    };
-}
+  type position = {
+    x: int,
+    y: int,
+  };
+};
 
-module VideoMode {
-    type t = {
-        width: int,
-        height: int,
-    };
-}
+module VideoMode: {
+  type t = {
+    width: int,
+    height: int,
+  };
+};
 
 let glfwGetPrimaryMonitor: unit => Monitor.t;
 let glfwGetVideoMode: Monitor.t => VideoMode.t;
 let glfwGetMonitorPos: Monitor.t => Monitor.position;
 
 type windowHint =
-| GLFW_RESIZABLE
-| GLFW_VISIBLE
-| GLFW_DECORATED
-| GLFW_FOCUSED
-| GLFW_AUTO_ICONIFY
-| GLFW_FLOATING
-| GLFW_MAXIMIZED;
+  | GLFW_RESIZABLE
+  | GLFW_VISIBLE
+  | GLFW_DECORATED
+  | GLFW_FOCUSED
+  | GLFW_AUTO_ICONIFY
+  | GLFW_FLOATING
+  | GLFW_MAXIMIZED;
 
-module ButtonState {
-    type t =
+module ButtonState: {
+  type t =
     | GLFW_PRESS
     | GLFW_RELEASE
     | GLFW_REPEAT;
 
-    let show: t => string;
-}
+  let show: t => string;
+};
 
 let glfwDefaultWindowHints: unit => unit;
 let glfwWindowHint: (windowHint, bool) => unit;
@@ -175,8 +175,8 @@ let glBlendFunc: (blendFunc, blendFunc) => unit;
 type program;
 
 type shaderLinkResult =
-| LinkSuccess
-| LinkFailure(string);
+  | LinkSuccess
+  | LinkFailure(string);
 
 let glCreateProgram: unit => program;
 let glAttachShader: (program, shader) => unit;
@@ -225,7 +225,10 @@ type textureParameterValue =
   | GL_LINEAR
   | GL_CLAMP_TO_EDGE;
 
-type texturePixelDataFormat =
+type format =
+  | GL_ALPHA
+  | GL_LUMINANCE
+  | GL_LUMINANCE_ALPHA
   | GL_RGB
   | GL_RGBA;
 
@@ -243,14 +246,22 @@ let glBindTexture: (textureType, texture) => unit;
 let glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit;
 let glTexImage2D:
-  (textureType, Image.t) => unit;
+  (
+    textureType,
+    int,
+    format,
+    format,
+    glType,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit;
 let glGenerateMipmap: textureType => unit;
 
 type bufferType =
   | GL_ARRAY_BUFFER
   | GL_ELEMENT_ARRAY_BUFFER;
 
-let glVertexAttribPointer: (attribLocation, int, glType, bool) => unit;
+let glVertexAttribPointer: (attribLocation, int, glType, bool, int, int) => unit;
 let glEnableVertexAttribArray: attribLocation => unit;
 
 type buffer;
@@ -262,12 +273,7 @@ type drawType =
   | GL_STATIC_DRAW;
 
 let glBufferData:
-  (
-    bufferType,
-    Bigarray.Array1.t('a, 'b, Bigarray.c_layout),
-    drawType
-  ) =>
-  unit;
+  (bufferType, Bigarray.Array1.t('a, 'b, Bigarray.c_layout), drawType) => unit;
 
 type drawMode =
   | GL_TRIANGLES
@@ -277,4 +283,8 @@ let glDrawArrays: (drawMode, int, int) => unit;
 let glDrawElements: (drawMode, int, glType, int) => unit;
 
 let glReadPixels:
-  (int, int, int, int, texturePixelDataFormat, glType, 'pixelBuffer) => unit;
+  (int, int, int, int, format, glType, 'pixelBuffer) => unit;
+
+/* Reglfw */
+
+let reglfwTexImage2D: (textureType, Image.t) => unit;

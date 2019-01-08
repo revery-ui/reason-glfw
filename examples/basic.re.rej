@@ -1,0 +1,9 @@
+diff a/examples/basic.re b/examples/basic.re	(rejected hunks)
+@@ -304,7 +320,6 @@ let run = () => {
+     },
+   );
+ 
+-
+   /* glfwMaximizeWindow(w); */
+ 
+   glfwRenderLoop(_t => {

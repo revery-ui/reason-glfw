@@ -1,0 +1,57 @@
+diff a/src/glfw.re b/src/glfw.re	(rejected hunks)
+@@ -327,13 +342,42 @@ type glType =
+   | GL_UNSIGNED_BYTE
+   | GL_UNSIGNED_SHORT;
+ 
++let glTypeToByteCount = glType =>
++  switch (glType) {
++  | GL_FLOAT => 4
++  | GL_UNSIGNED_BYTE => 1
++  | GL_UNSIGNED_SHORT => 2
++  };
++
+ external glCreateTexture: unit => texture = "caml_glCreateTexture";
+-external glBindTexture: (textureType, texture) => unit = "caml_glBindTexture";
++external glBindTexture: (target, texture) => unit = "caml_glBindTexture";
+ external glTexParameteri:
+-  (textureType, textureParameter, textureParameterValue) => unit =
++  (target, textureParameter, textureParameterValue) => unit =
+   "caml_glTexParameteri";
+-external glTexImage2D: (textureType, Image.t) => unit = "caml_glTexImage2D";
+-external glGenerateMipmap: textureType => unit = "caml_glGenerateMipmap";
++external glTexImage2D:
++  (
++    target,
++    int,
++    format,
++    format,
++    glType,
++    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
++  ) =>
++  unit =
++  "caml_glTexImage2D_extension" "caml_glTexImage2D";
++
++external glTexImage3D:
++  (
++    target,
++    int,
++    format,
++    format,
++    glType,
++    Bigarray.Array3.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
++  ) =>
++  unit =
++  "caml_glTexImage3D_extension" "caml_glTexImage3D";
++external glGenerateMipmap: target => unit = "caml_glGenerateMipmap";
+ 
+ type bufferType =
+   | GL_ARRAY_BUFFER
+@@ -365,3 +410,7 @@ external glDrawElements: (drawMode, int, glType, int) => unit =
+   "caml_glDrawElements";
+ 
+ external printFrameBufferSize: Window.t => unit = "caml_printFrameBufferSize";
++
++/* Reglfw */
++
++external reglfwTexImage2D: (target, Image.t) => unit = "caml_reglfwTexImage2D";
+\ No newline at end of file
