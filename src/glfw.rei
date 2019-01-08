@@ -261,7 +261,7 @@ type bufferType =
   | GL_ARRAY_BUFFER
   | GL_ELEMENT_ARRAY_BUFFER;
 
-let glVertexAttribPointer: (attribLocation, int, glType, bool, int, int) => unit;
+let glVertexAttribPointer: (attribLocation, int, glType, bool) => unit;
 let glEnableVertexAttribArray: attribLocation => unit;
 
 type buffer;

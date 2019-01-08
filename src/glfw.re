@@ -393,8 +393,7 @@ external glBufferData:
   "caml_glBufferData";
 
 external glVertexAttribPointer:
-  (attribLocation, int, glType, bool, int, int) => unit =
-  "caml_glVertexAttribPointer_extension" "caml_glVertexAttribPointer";
+  (attribLocation, int, glType, bool) => unit = "caml_glVertexAttribPointer";
 external glEnableVertexAttribArray: attribLocation => unit =
   "caml_glEnableVertexAttribArray";
 

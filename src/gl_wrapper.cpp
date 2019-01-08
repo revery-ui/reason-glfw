@@ -604,40 +604,12 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glVertexAttribPointer(
-            value vIndex,
-            value vSize,
-            value vGlType,
-            value vNormalized,
-            value vStride,
-            value vOffset) {
-        CAMLparam5(vIndex, vSize, vGlType, vNormalized, vStride);
-        CAMLxparam1(vOffset);
-
-        GLuint index = (GLuint)vIndex;
-        GLint size = Int_val(vSize);
-        GLenum glType = variantToType(vGlType);
-        GLboolean normalized = Bool_val(vNormalized);
-        GLsizei stride = Int_val(vStride);
-        void* pointer = (void *) Int_val(vOffset);
-
-        printf("index: %u, size: %i, type: %u, normalized: %c, stride: %i, pointer: %p\n",
-                index, size, glType, normalized, stride, pointer);
-        glVertexAttribPointer(index, size, glType, normalized, stride, pointer);
-
-        CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value
-    caml_glVertexAttribPointer_extension(value *argv, int argn)
-    {
-        return caml_glVertexAttribPointer(
-                argv[0],
-                argv[1],
-                argv[2],
-                argv[3],
-                argv[4],
-                argv[5]);
+    caml_glVertexAttribPointer(value vAttrib, value vNumComponents) {
+        // TODO: Params!
+        int attributeLocation = (int)(vAttrib);
+        int numComponents = Int_val(vNumComponents);
+        glVertexAttribPointer(attributeLocation, numComponents, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        return Val_unit;
     }
 
     CAMLprim value

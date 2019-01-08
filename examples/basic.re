@@ -222,11 +222,11 @@ let run = () => {
 
     glUniformMatrix4fv(projectionUniform, projectionMatrix);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
-    glVertexAttribPointer(posAttribute, 3, GL_FLOAT, false, 0, 0);
+    glVertexAttribPointer(posAttribute, 3, GL_FLOAT, false);
     glEnableVertexAttribArray(posAttribute);
 
     glBindBuffer(GL_ARRAY_BUFFER, cb);
-    glVertexAttribPointer(colorAttribute, 4, GL_FLOAT, false, 0, 0);
+    glVertexAttribPointer(colorAttribute, 4, GL_FLOAT, false);
     glEnableVertexAttribArray(colorAttribute);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
