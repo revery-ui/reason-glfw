@@ -13,30 +13,30 @@ let glfwTerminate: unit => unit;
 let glfwSwapBuffers: Window.t => unit;
 let glfwSetWindowPos: (Window.t, int, int) => unit;
 let glfwSetWindowSize: (Window.t, int, int) => unit;
-let glfwGetFramebufferSize: (Window.t) => Window.frameBufferSize;
-let glfwGetWindowSize: (Window.t) => Window.windowSize;
-let glfwMaximizeWindow: (Window.t) => unit;
+let glfwGetFramebufferSize: Window.t => Window.frameBufferSize;
+let glfwGetWindowSize: Window.t => Window.windowSize;
+let glfwMaximizeWindow: Window.t => unit;
 let glfwSetWindowTitle: (Window.t, string) => unit;
-let glfwShowWindow: (Window.t) => unit;
-let glfwHideWindow: (Window.t) => unit;
-let glfwDestroyWindow: (Window.t) => unit;
+let glfwShowWindow: Window.t => unit;
+let glfwHideWindow: Window.t => unit;
+let glfwDestroyWindow: Window.t => unit;
 let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
 
-module Modifier {
-    type t;
+module Modifier: {
+  type t;
 
-    let of_int: int => t;
+  let of_int: int => t;
 
-    let isShiftPressed: t => bool;
-    let isControlPressed: t => bool;
-    let isAltPressed: t => bool;
-    let isSuperPressed: t => bool;
-}
+  let isShiftPressed: t => bool;
+  let isControlPressed: t => bool;
+  let isAltPressed: t => bool;
+  let isSuperPressed: t => bool;
+};
 
-module MouseButton {
-    type t =
+module MouseButton: {
+  type t =
     | GLFW_MOUSE_LEFT
     | GLFW_MOUSE_RIGHT
     | GLFW_MOUSE_MIDDLE
@@ -96,24 +96,25 @@ let glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit;
 type glfwCharCallback = (Window.t, int) => unit;
 let glfwSetCharCallback: (Window.t, glfwCharCallback) => unit;
 
-type glfwKeyCallback = (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;
+type glfwKeyCallback =
+  (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;
 let glfwSetKeyCallback: (Window.t, glfwKeyCallback) => unit;
 
 type glfwScrollCallback = (Window.t, float, float) => unit;
 let glfwSetScrollCallback: (Window.t, glfwScrollCallback) => unit;
 
-type glfwMouseButtonCallback = (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
+type glfwMouseButtonCallback =
+  (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
 let glfwSetMouseButtonCallback: (Window.t, glfwMouseButtonCallback) => unit;
 
 let glfwSetFramebufferSizeCallback:
   (Window.t, glfwFramebufferSizeCallback) => unit;
 
-let glfwSetWindowSizeCallback:
-  (Window.t, glfwWindowSizeCallback) => unit;
+let glfwSetWindowSizeCallback: (Window.t, glfwWindowSizeCallback) => unit;
 
 type glfwCursorPos = {
-    mouseX: float,
-    mouseY: float
+  mouseX: float,
+  mouseY: float,
 };
 let glfwGetCursorPos: Window.t => glfwCursorPos;
 
@@ -125,15 +126,15 @@ type glfwCursorShape =
   | GLFW_HAND_CURSOR
   | GLFW_HRESIZE_CURSOR
   | GLFW_VRESIZE_CURSOR;
-let glfwCreateStandardCursor: (glfwCursorShape) => glfwCursor;
-let glfwDestroyCursor: (glfwCursor) => unit;
+let glfwCreateStandardCursor: glfwCursorShape => glfwCursor;
+let glfwDestroyCursor: glfwCursor => unit;
 let glfwSetCursor: (Window.t, glfwCursor) => unit;
 
 let printFrameBufferSize: Window.t => unit;
 
-type glfwRenderLoopCallback = (float) => bool;
+type glfwRenderLoopCallback = float => bool;
 
-let glfwRenderLoop: (glfwRenderLoopCallback) => unit;
+let glfwRenderLoop: glfwRenderLoopCallback => unit;
 
 /* GL */
 
@@ -283,8 +284,11 @@ let glDrawArrays: (drawMode, int, int) => unit;
 let glDrawElements: (drawMode, int, glType, int) => unit;
 
 let glReadPixels:
-  (int, int, int, int, format, glType, 'pixelBuffer) => unit;
-
-/* Reglfw */
-
-let reglfwTexImage2D: (textureType, Image.t) => unit;
+  (
+    int,
+    int,
+    format,
+    glType,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit;

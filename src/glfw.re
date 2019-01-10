@@ -232,10 +232,10 @@ type glfwCursorShape =
 
 external glfwCreateStandardCursor: glfwCursorShape => glfwCursor =
   "caml_glfwCreateStandardCursor";
-[@noalloc] external glfwDestroyCursor: glfwCursor => unit =
-  "caml_glfwDestroyCursor";
-[@noalloc] external glfwSetCursor: Window.t => glfwCursor => unit =
-  "caml_glfwSetCursor";
+[@noalloc]
+external glfwDestroyCursor: glfwCursor => unit = "caml_glfwDestroyCursor";
+[@noalloc]
+external glfwSetCursor: (Window.t, glfwCursor) => unit = "caml_glfwSetCursor";
 
 /* GL */
 type shader;
@@ -373,7 +373,7 @@ external glTexImage2D:
     Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
   ) =>
   unit =
-  "caml_glTexImage2D_extension" "caml_glTexImage2D";
+  "caml_glTexImage2D_bytecode" "caml_glTexImage2D_native";
 external glGenerateMipmap: textureType => unit = "caml_glGenerateMipmap";
 
 type bufferType =
@@ -392,8 +392,8 @@ external glBufferData:
   (bufferType, Bigarray.Array1.t('a, 'b, Bigarray.c_layout), drawType) => unit =
   "caml_glBufferData";
 
-external glVertexAttribPointer:
-  (attribLocation, int, glType, bool) => unit = "caml_glVertexAttribPointer";
+external glVertexAttribPointer: (attribLocation, int, glType, bool) => unit =
+  "caml_glVertexAttribPointer";
 external glEnableVertexAttribArray: attribLocation => unit =
   "caml_glEnableVertexAttribArray";
 
@@ -408,9 +408,12 @@ external glDrawElements: (drawMode, int, glType, int) => unit =
 external printFrameBufferSize: Window.t => unit = "caml_printFrameBufferSize";
 
 external glReadPixels:
-  (int, int, int, int, format, glType, 'pixelBuffer) => unit =
-  "caml_glReadPixels_bytecode" "caml_glReadPixels_native";
-
-/* Reglfw */
-
-external reglfwTexImage2D: (textureType, Image.t) => unit = "caml_reglfwTexImage2D";
+  (
+    int,
+    int,
+    format,
+    glType,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit =
+  "caml_glReadPixels";

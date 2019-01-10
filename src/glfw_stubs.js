@@ -85,7 +85,7 @@ function caml_glfwInit() {
 // Provides: caml_glfwGetCursorPos
 // Requires: caml_js_to_array
 function caml_glfwGetCursorPos(w) {
-    // TODO: Window parameter is currently ignored, but 
+    // TODO: Window parameter is currently ignored, but
     // we should calculate the mouse position relative to it.
 
     return caml_js_to_array([joo_global_object._mouseState.x, joo_global_object._mouseState.y]);
@@ -388,9 +388,8 @@ function caml_glfwMaximizeWindow(w) {
 
 // Provides: caml_glfwMakeContextCurrent
 function caml_glfwMakeContextCurrent(win) {
-    var context = win.canvas.getContext('webgl');
-    var gl = context;
-    joo_global_object.window.__glfw__gl__ = context;
+    var gl = win.canvas.getContext('webgl');
+    joo_global_object.window.__glfw__gl__ = gl;
     joo_global_object.window._activeWindow = win;
 
     joo_global_object.variantToTextureType = {
@@ -428,12 +427,12 @@ function caml_glfwMakeContextCurrent(win) {
         '2': gl.CLAMP_TO_EDGE,
     }
 
-    joo_global_object.variantToTexturePixelDataFormat = {
+    joo_global_object.variantToFormat = {
         '0': gl.RGB,
         '1': gl.RGBA,
     }
 
-    joo_global_object.variantToGlType = {
+    joo_global_object.variantToType = {
         '0': gl.FLOAT,
         '1': gl.UNSIGNED_BYTE,
         '2': gl.UNSIGNED_SHORT,
@@ -449,7 +448,7 @@ function caml_glfwMakeContextCurrent(win) {
         '1': gl.TRIANGLE_STRIP
     }
 
-    joo_global_object.gl = context;
+    joo_global_object.gl = gl;
 }
 
 // Provides: caml_glfwDestroyWindow

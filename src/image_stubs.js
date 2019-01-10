@@ -41,7 +41,14 @@ function caml_destroyImage(image) {
 
 // Provides: caml_getImageBuffer
 function caml_getImageBuffer(image) {
-  return image.data;
+  var canvas = document.createElement("canvas");
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0);
+  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  var pixels = new Uint8Array(imageData.data.buffer);
+  return caml_ba_create_from(pixels, null, 0, 3 /* uint8 */, 0 /* c layout */, [canvas.width, canvas.height]);
 }
 
 var caml_saveImage_anchor;

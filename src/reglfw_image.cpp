@@ -3,6 +3,7 @@
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
 #include <caml/alloc.h>
+#include <caml/bigarray.h>
 
 #include "reglfw_image.h"
 
@@ -36,8 +37,10 @@ extern "C" {
     CAMLprim value
     caml_getImageBuffer(value vImage) {
       CAMLparam1(vImage);
+      CAMLlocal1(ret);
       ReglfwImageInfo *image = (ReglfwImageInfo *) vImage;
-      CAMLreturn((value) image->data);
+      ret = caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 2, image->data, image->width, image->height);
+      CAMLreturn(ret);
     }
 
     // Based on https://github.com/Jba03/glReadPixels_example/blob/master/tga.cpp

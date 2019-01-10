@@ -101,7 +101,7 @@ function caml_glDrawArrays(vDrawMode, first, count) {
 // Provides: caml_glDrawElements
 function caml_glDrawElements(vDrawMode, count, vDataType, first) {
     var drawMode = joo_global_object.variantToDrawMode[vDrawMode];
-    var dataType = joo_global_object.variantToGlType[vDataType];
+    var dataType = joo_global_object.variantToType[vDataType];
     joo_global_object.gl.drawElements(drawMode, count, dataType, first);
 }
 
@@ -239,10 +239,17 @@ function caml_glTexParameteri(vTextureType, vTextureParameter, vTextureParameter
     joo_global_object.gl.texParameteri(textureType, textureParameter, textureParameterValue);
 }
 
-// Provides: caml_glTexImage2D
-function caml_glTexImage2D(vTextureType, vImage) {
+// Provides: caml_glTexImage2D_bytecode
+function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vFormat, vType, vPixels) {
     var textureType = joo_global_object.variantToTextureType[vTextureType];
-    joo_global_object.gl.texImage2D(textureType, 0, joo_global_object.gl.RGBA, joo_global_object.gl.RGBA, joo_global_object.gl.UNSIGNED_BYTE, vImage);
+    var internalFormat = joo_global_object.variantToFormat[vInternalFormat];
+    var width = vPixels.nth_dim(0);
+    var height = vPixels.nth_dim(1);
+    var format = joo_global_object.variantToFormat[format];
+    var type = joo_global_object.variantToType[vType];
+    var pixels = vPixels.data;
+
+    joo_global_object.gl.texImage2D(textureType, vLevel, internalFormat, width, height, format, type, pixels);
 }
 
 // Provides: caml_glGenerateMipmap
@@ -262,10 +269,8 @@ function caml_glEnableVertexAttribArray(attributeLocation) {
     joo_global_object.gl.enableVertexAttribArray(attributeLocation);
 }
 
-// Provides: caml_glReadPixels_bytecode
-function caml_glReadPixels_bytecode(x, y, width, height, vFormat, vType, data) {
-  // Implements the _bytecode version since we have >7 parameters and because
-  // js_of_ocaml uses the bytecode backend.
+// Provides: caml_glReadPixels
+function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
   var format, type;
 
   switch (vFormat) {
@@ -286,7 +291,10 @@ function caml_glReadPixels_bytecode(x, y, width, height, vFormat, vType, data) {
   default: throw "Unrecognized pixel type";
   }
 
-  joo_global_object.gl.readPixels(x, y, width, height, format, type, data);
+  var width = vPixels.nth_dim(0);
+  var height = vPixels.nth_dim(1);
+  var pixels = vPixels.data;
+  joo_global_object.gl.readPixels(x, y, width, height, format, type, pixels);
 
   // If we're on a little-endian system, the R/B channels are swapped
   // So let's determine endianness...
@@ -298,9 +306,9 @@ function caml_glReadPixels_bytecode(x, y, width, height, vFormat, vType, data) {
     // We are little-endian. Onto the swap...
     var numChannels = format == joo_global_object.gl.RGBA ? 4 : 3;
     for (var i = 0; i < width * height * numChannels; i += numChannels) {
-      var tmp = data[i];
-      data[i] = data[i+2];
-      data[i+2] = tmp;
+      var tmp = pixels[i];
+      pixels[i] = pixels[i+2];
+      pixels[i+2] = tmp;
     }
   }
 }

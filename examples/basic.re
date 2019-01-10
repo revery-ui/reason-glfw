@@ -2,6 +2,16 @@ open Reglfw;
 open Reglfw.Glfw;
 open Reglm;
 
+let isNative =
+  switch (Sys.backend_type) {
+  | Native => true
+  | Bytecode => true
+  | _ => false
+  };
+
+let getExecutingDirectory = () =>
+  isNative ? Filename.dirname(Sys.argv[0]) ++ Filename.dir_sep : "";
+
 let loadShader = (shaderType, source) => {
   let shader = glCreateShader(shaderType);
   let () = glShaderSource(shader, source);
@@ -63,9 +73,11 @@ let run = () => {
   /* Update pack alignment to allow single-channel images */
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-  let%lwt img = Image.load("UVCheckerMap02-512.png");
+  let%lwt img =
+    Image.load(getExecutingDirectory() ++ "UVCheckerMap02-512.png");
   /* let img = Image.fromColor(255, 0, 0, 255); */
   let dimensions = Image.getDimensions(img);
+  let pixels = Image.getBuffer(img);
   print_endline(
     "- width: "
     ++ string_of_int(dimensions.width)
@@ -79,7 +91,7 @@ let run = () => {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  reglfwTexImage2D(GL_TEXTURE_2D, img);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
   let frameBufferSize = glfwGetFramebufferSize(w);
   print_endline(
@@ -332,15 +344,19 @@ let run = () => {
     },
   );
 
-
   /* glfwMaximizeWindow(w); */
 
-  let captureWindow(w, filename) {
+  let captureWindow = (w, filename) => {
     let size = glfwGetFramebufferSize(w);
-    let image = Image.create(~width=size.width, ~height=size.height,
-                             ~numChannels=4, ~channelSize=1);
+    let image =
+      Image.create(
+        ~width=size.width,
+        ~height=size.height,
+        ~numChannels=4,
+        ~channelSize=1,
+      );
     let buffer = Image.getBuffer(image);
-    glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
     Image.save(image, filename);
     Image.destroy(image);
   };

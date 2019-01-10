@@ -481,7 +481,7 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glTexImage2D(
+    caml_glTexImage2D_native(
             value vTextureType,
             value vLevel,
             value vInternalFormat,
@@ -514,9 +514,15 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glTexImage2D_extension(value *argv, int argn)
+    caml_glTexImage2D_bytecode(value *argv, int argn)
     {
-        return caml_glTexImage2D(
+        GLsizei width = Caml_ba_array_val(argv[5])->dim[0];
+        GLsizei height = Caml_ba_array_val(argv[5])->dim[1];
+        GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(argv[5]);
+        printf("target: %u, level: %i, internalFormat: %u, width: %i, height: %i, format: %u, type: %u, pPixels: %p\n",
+                variantToTextureType(argv[0]), Int_val(argv[1]), variantToFormat(argv[2]), width, height,
+                variantToFormat(argv[3]), variantToType(argv[4]), pPixels);
+        return caml_glTexImage2D_native(
                 argv[0],
                 argv[1],
                 argv[2],
@@ -618,111 +624,36 @@ extern "C" {
         return Val_unit;
     }
 
-    /* 2 copies of this stub, since the OCaml runtime requires a native
-       version & a bytecode version for functions with >5 parameters. */
     CAMLprim value
-    caml_glReadPixels_native(value vX, value vY, value vWidth, value vHeight,
-                             value vFormat, value vType, value vData) {
-      CAMLparam5(vX, vY, vWidth, vHeight, vFormat);
-      CAMLxparam2(vType, vData);
+    caml_glReadPixels(value vX, value vY, value vFormat, value vType, value vPixels) {
+        CAMLparam5(vX, vY, vFormat, vType, vPixels);
 
-      GLint x = (GLint) Int_val(vX);
-      GLint y = (GLint) Int_val(vY);
+        GLint x = (GLint) Int_val(vX);
+        GLint y = (GLint) Int_val(vY);
 
-      GLsizei width = (GLsizei) Int_val(vWidth);
-      GLsizei height = (GLsizei) Int_val(vHeight);
+        GLenum format = variantToFormat(vFormat);
+        GLenum type = variantToType(vType);
 
-      GLenum format = variantToFormat(vFormat);
-      GLenum type = variantToType(vType);
 
-      void *data = (void *) vData;
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[0];
+        GLsizei height = Caml_ba_array_val(vPixels)->dim[1];
+        GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
-      glReadPixels(x, y, width, height, format, type, data);
+        glReadPixels(x, y, width, height, format, type, pPixels);
 
-      // If we're on a little-endian system, the R/B channels are swapped
-      // So let's determine endianness...
-      unsigned int marker = 0x12345678;
-      if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
-        // We are little-endian. Onto the swap...
-        int numChannels = format == GL_RGBA ? 4 : 3;
-        for (int i = 0; i < width * height * numChannels; i += numChannels) {
-          uint8_t tmp = *((uint8_t *) data + i);
-          *((uint8_t *) data + i) = *((uint8_t *) data + i + 2);
-          *((uint8_t *) data + i + 2) = tmp;
-        }
-      }
-
-      CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value
-    caml_glReadPixels_bytecode(value * argv, int argc) {
-      value vX = argv[0], vY = argv[1], vWidth = argv[2],
-            vHeight = argv[3], vFormat = argv[4],
-            vType = argv[5], vData = argv[6];
-      CAMLparam5(vX, vY, vWidth, vHeight, vFormat);
-      CAMLxparam2(vType, vData);
-
-      GLint x = (GLint) Int_val(vX);
-      GLint y = (GLint) Int_val(vY);
-
-      GLsizei width = (GLsizei) Int_val(vWidth);
-      GLsizei height = (GLsizei) Int_val(vHeight);
-
-      GLenum format = variantToFormat(vFormat);
-      GLenum type = variantToType(vType);
-
-      void *data = (void *) vData;
-
-      glReadPixels(x, y, width, height, format, type, data);
-
-      // If we're on a little-endian system, the R/B channels are swapped
-      // So let's determine endianness...
-      unsigned int marker = 0x12345678;
-      if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
-        // We are little-endian. Onto the swap...
-        int numChannels = format == GL_RGBA ? 4 : 3;
-        for (int i = 0; i < width * height * numChannels; i += numChannels) {
-          uint8_t tmp = *((uint8_t *) data + i);
-          *((uint8_t *) data + i) = *((uint8_t *) data + i + 2);
-          *((uint8_t *) data + i + 2) = tmp;
-        }
-      }
-
-      CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value
-    caml_reglfwTexImage2D(value vTextureType, value vImage) {
-
-        ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
-
-        GLenum format;
-        switch (pImage->numChannels) {
-            case 1:
-                format = GL_ALPHA;
-                break;
-            case 2:
-                format = GL_LUMINANCE_ALPHA;
-                break;
-            case 3:
-                format = GL_RGB;
-                break;
-            case 4:
-            default:
-                format = GL_RGBA;
+        // If we're on a little-endian system, the R/B channels are swapped
+        // So let's determine endianness...
+        unsigned int marker = 0x12345678;
+        if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
+            // We are little-endian. Onto the swap...
+            int numChannels = format == GL_RGBA ? 4 : 3;
+            for (int i = 0; i < width * height * numChannels; i += numChannels) {
+            uint8_t tmp = *((uint8_t *) pPixels + i);
+            *((uint8_t *) pPixels + i) = *((uint8_t *) pPixels + i + 2);
+            *((uint8_t *) pPixels + i + 2) = tmp;
+            }
         }
 
-        glTexImage2D(
-                variantToTextureType(vTextureType),
-                0, // TODO: Support for specifying the level of detail
-                format,
-                pImage->width,
-                pImage->height,
-                0,
-                format,
-                GL_UNSIGNED_BYTE,  // TODO: Support for floating-point textures!
-                pImage->data);
-        return Val_unit;
+        CAMLreturn(Val_unit);
     }
 }
