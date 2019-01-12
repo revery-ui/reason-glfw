@@ -32,10 +32,17 @@ let load = imgName => {
 };
 
 external create:
-  (~width: int, ~height: int, ~numChannels: int, ~channelSize: int) => t =
+  Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) => t =
   "caml_createImage";
 external destroy: t => unit = "caml_destroyImage";
-external getBuffer:
+external getPixels:
   t => Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) =
-  "caml_getImageBuffer";
+  "caml_getImagePixels";
+external setPixels:
+  (
+    t,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit =
+  "caml_setImagePixels";
 external save: (t, string) => unit = "caml_saveImage";

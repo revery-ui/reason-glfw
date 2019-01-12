@@ -634,8 +634,9 @@ extern "C" {
         GLenum format = variantToFormat(vFormat);
         GLenum type = variantToType(vType);
 
+        int numChannels = format == GL_RGBA ? 4 : 3;
 
-        GLsizei width = Caml_ba_array_val(vPixels)->dim[0];
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[0] / numChannels;
         GLsizei height = Caml_ba_array_val(vPixels)->dim[1];
         GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
@@ -646,7 +647,6 @@ extern "C" {
         unsigned int marker = 0x12345678;
         if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
             // We are little-endian. Onto the swap...
-            int numChannels = format == GL_RGBA ? 4 : 3;
             for (int i = 0; i < width * height * numChannels; i += numChannels) {
             uint8_t tmp = *((uint8_t *) pPixels + i);
             *((uint8_t *) pPixels + i) = *((uint8_t *) pPixels + i + 2);

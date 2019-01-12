@@ -16,8 +16,14 @@ let getDimensions: t => dimensions;
 let debug_print: t => unit;
 
 let create:
-  (~width: int, ~height: int, ~numChannels: int, ~channelSize: int) => t;
+  Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) => t;
 let destroy: t => unit;
-let getBuffer:
+let getPixels:
   t => Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout);
+let setPixels:
+  (
+    t,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit;
 let save: (t, string) => unit;

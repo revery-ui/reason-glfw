@@ -77,7 +77,7 @@ let run = () => {
     Image.load(getExecutingDirectory() ++ "UVCheckerMap02-512.png");
   /* let img = Image.fromColor(255, 0, 0, 255); */
   let dimensions = Image.getDimensions(img);
-  let pixels = Image.getBuffer(img);
+  let pixels = Image.getPixels(img);
   print_endline(
     "- width: "
     ++ string_of_int(dimensions.width)
@@ -348,15 +348,15 @@ let run = () => {
 
   let captureWindow = (w, filename) => {
     let size = glfwGetFramebufferSize(w);
-    let image =
-      Image.create(
-        ~width=size.width,
-        ~height=size.height,
-        ~numChannels=4,
-        ~channelSize=1,
+    let pixels =
+      Bigarray.Array2.create(
+        Bigarray.int8_unsigned,
+        Bigarray.c_layout,
+        size.width * 4, /* RGBA */
+        size.height,
       );
-    let buffer = Image.getBuffer(image);
-    glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    let image = Image.create(pixels);
     Image.save(image, filename);
     Image.destroy(image);
   };

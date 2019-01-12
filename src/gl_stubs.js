@@ -271,13 +271,18 @@ function caml_glEnableVertexAttribArray(attributeLocation) {
 
 // Provides: caml_glReadPixels
 function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
-  var format, type;
+  var format, type, numChannels;
 
   switch (vFormat) {
   case 0:
-    console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
-    format = joo_global_object.gl.RGB; break;
-  case 1: format = joo_global_object.gl.RGBA; break;
+    joo_global_object.console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
+    format = joo_global_object.gl.RGB;
+    numChannels = 3;
+    break;
+  case 1:
+    format = joo_global_object.gl.RGBA;
+    numChannels = 4;
+    break;
   default: throw "Unrecognized pixel format";
   }
 
@@ -291,20 +296,19 @@ function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
   default: throw "Unrecognized pixel type";
   }
 
-  var width = vPixels.nth_dim(0);
+  var width = vPixels.nth_dim(0) / numChannels;
   var height = vPixels.nth_dim(1);
   var pixels = vPixels.data;
   joo_global_object.gl.readPixels(x, y, width, height, format, type, pixels);
 
   // If we're on a little-endian system, the R/B channels are swapped
   // So let's determine endianness...
-  var marker = new ArrayBuffer(4);
-  var u32view = new Uint32Array(marker);
+  var marker = new joo_global_object.ArrayBuffer(4);
+  var u32view = new joo_global_object.Uint32Array(marker);
   u32view[0] = 0x12345678;
-  var u8view = new Uint8Array(marker);
+  var u8view = new joo_global_object.Uint8Array(marker);
   if (u8view[0] == 0x78 && type == joo_global_object.gl.UNSIGNED_BYTE) {
     // We are little-endian. Onto the swap...
-    var numChannels = format == joo_global_object.gl.RGBA ? 4 : 3;
     for (var i = 0; i < width * height * numChannels; i += numChannels) {
       var tmp = pixels[i];
       pixels[i] = pixels[i+2];
