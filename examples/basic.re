@@ -352,8 +352,8 @@ let run = () => {
       Bigarray.Array2.create(
         Bigarray.int8_unsigned,
         Bigarray.c_layout,
-        size.width * 4, /* RGBA */
         size.height,
+        size.width * 4 /* RGBA */
       );
     glReadPixels(0, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     let image = Image.create(pixels);

@@ -503,8 +503,8 @@ extern "C" {
 
         GLenum format = variantToFormat(vFormat);
         GLsizei numChannels = formatToNumChannels(format);
-        GLsizei width = Caml_ba_array_val(vPixels)->dim[0] / numChannels;
-        GLsizei height = Caml_ba_array_val(vPixels)->dim[1];
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[1] / numChannels;
+        GLsizei height = Caml_ba_array_val(vPixels)->dim[0];
         GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
         printf("target: %u, level: %i, internalFormat: %u, width: %i, height: %i, format: %u, type: %u, pPixels: %p\n",
@@ -528,12 +528,6 @@ extern "C" {
     CAMLprim value
     caml_glTexImage2D_bytecode(value *argv, int argn)
     {
-        GLsizei width = Caml_ba_array_val(argv[5])->dim[0];
-        GLsizei height = Caml_ba_array_val(argv[5])->dim[1];
-        GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(argv[5]);
-        printf("target: %u, level: %i, internalFormat: %u, width: %i, height: %i, format: %u, type: %u, pPixels: %p\n",
-                variantToTextureType(argv[0]), Int_val(argv[1]), variantToFormat(argv[2]), width, height,
-                variantToFormat(argv[3]), variantToType(argv[4]), pPixels);
         return caml_glTexImage2D_native(
                 argv[0],
                 argv[1],
@@ -648,8 +642,8 @@ extern "C" {
 
         int numChannels = format == GL_RGBA ? 4 : 3;
 
-        GLsizei width = Caml_ba_array_val(vPixels)->dim[0] / numChannels;
-        GLsizei height = Caml_ba_array_val(vPixels)->dim[1];
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[1] / numChannels;
+        GLsizei height = Caml_ba_array_val(vPixels)->dim[0];
         GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
         glReadPixels(x, y, width, height, format, type, pPixels);

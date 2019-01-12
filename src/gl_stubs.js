@@ -245,8 +245,8 @@ function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vForm
     var internalFormat = joo_global_object.variantToFormat[vInternalFormat];
     var format = joo_global_object.variantToFormat[vFormat];
     var numChannels = joo_global_object.formatToNumChannels[format];
-    var width = vPixels.nth_dim(0) / numChannels;
-    var height = vPixels.nth_dim(1);
+    var width = vPixels.nth_dim(1) / numChannels;
+    var height = vPixels.nth_dim(0);
     var format = joo_global_object.variantToFormat[format];
     var type = joo_global_object.variantToType[vType];
     var pixels = vPixels.data;
@@ -298,8 +298,8 @@ function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
   default: throw "Unrecognized pixel type";
   }
 
-  var width = vPixels.nth_dim(0) / numChannels;
-  var height = vPixels.nth_dim(1);
+  var width = vPixels.nth_dim(1) / numChannels;
+  var height = vPixels.nth_dim(0);
   var pixels = vPixels.data;
   joo_global_object.gl.readPixels(x, y, width, height, format, type, pixels);
 
