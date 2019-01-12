@@ -228,8 +228,6 @@ type textureParameterValue =
 
 type format =
   | GL_ALPHA
-  | GL_LUMINANCE
-  | GL_LUMINANCE_ALPHA
   | GL_RGB
   | GL_RGBA;
 

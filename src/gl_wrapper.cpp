@@ -152,16 +152,26 @@ extern "C" {
             case 0:
                 return GL_ALPHA;
             case 1:
-                return GL_LUMINANCE;
-            case 2:
-                return GL_LUMINANCE_ALPHA;
-            case 3:
                 return GL_RGB;
-            case 4:
+            case 2:
                 return GL_RGBA;
             default:
                 warn("Unsupported pixel format!");
                 return 0;
+        }
+    }
+
+    GLsizei formatToNumChannels(GLenum format) {
+        switch(format) {
+            case GL_ALPHA:
+                return 1;
+            case GL_RGB:
+                return 3;
+            case GL_RGBA:
+                return 4;
+            default:
+                warn("Unsupported pixel format!");
+                return 4;
         }
     }
 
@@ -491,7 +501,9 @@ extern "C" {
         CAMLparam5(vTextureType, vLevel, vInternalFormat, vFormat, vType);
         CAMLxparam1(vPixels);
 
-        GLsizei width = Caml_ba_array_val(vPixels)->dim[0];
+        GLenum format = variantToFormat(vFormat);
+        GLsizei numChannels = formatToNumChannels(format);
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[0] / numChannels;
         GLsizei height = Caml_ba_array_val(vPixels)->dim[1];
         GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
@@ -502,7 +514,7 @@ extern "C" {
         glTexImage2D(
                 variantToTextureType(vTextureType),
                 Int_val(vLevel),
-                variantToFormat(vInternalFormat),
+                format,
                 width,
                 height,
                 0,

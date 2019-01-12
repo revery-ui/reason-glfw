@@ -243,7 +243,9 @@ function caml_glTexParameteri(vTextureType, vTextureParameter, vTextureParameter
 function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vFormat, vType, vPixels) {
     var textureType = joo_global_object.variantToTextureType[vTextureType];
     var internalFormat = joo_global_object.variantToFormat[vInternalFormat];
-    var width = vPixels.nth_dim(0);
+    var format = joo_global_object.variantToFormat[vFormat];
+    var numChannels = joo_global_object.formatToNumChannels[format];
+    var width = vPixels.nth_dim(0) / numChannels;
     var height = vPixels.nth_dim(1);
     var format = joo_global_object.variantToFormat[format];
     var type = joo_global_object.variantToType[vType];

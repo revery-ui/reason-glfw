@@ -34,7 +34,8 @@ extern "C" {
       CAMLparam1(vImage);
       CAMLlocal1(ret);
       ReglfwImageInfo *image = (ReglfwImageInfo *) vImage;
-      ret = caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 2, image->data, image->width, image->height);
+      int numChannels = 4; // RGBA
+      ret = caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 2, image->data, image->width * numChannels, image->height);
       CAMLreturn(ret);
     }
 
@@ -42,8 +43,9 @@ extern "C" {
     caml_setImagePixels(value vImage, value vPixels) {
       CAMLparam2(vImage, vPixels);
       ReglfwImageInfo *image = (ReglfwImageInfo *) vImage;
+      int numChannels = 4; // RGBA
 
-      image->width = Caml_ba_array_val(vPixels)->dim[0];
+      image->width = Caml_ba_array_val(vPixels)->dim[0] / numChannels;
       image->height = Caml_ba_array_val(vPixels)->dim[1];
       image->data = (unsigned char *)Caml_ba_data_val(vPixels);
 
