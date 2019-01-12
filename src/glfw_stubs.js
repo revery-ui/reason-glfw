@@ -434,9 +434,9 @@ function caml_glfwMakeContextCurrent(win) {
     }
 
     joo_global_object.formatToNumChannels = {
-        [gl.ALPHA + '']: 1,
-        [gl.RGB + '']: 3,
-        [gl.RGBA + '']: 4,
+        '6406': 1, // ALPHA
+        '6407': 3, // RGB
+        '6408': 4, // RGBA
     }
 
     joo_global_object.variantToType = {
