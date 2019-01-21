@@ -272,6 +272,7 @@ extern "C" {
     caml_glDeleteShader(value vShader) {
         GLuint shader = (GLuint)vShader;
         glDeleteShader(shader);
+        return Val_unit;
     }
 
     CAMLprim value

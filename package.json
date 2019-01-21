@@ -5,16 +5,27 @@
   "license": "MIT",
   "esy": {
     "build": [
-        ["dune", "build", "--root", "."],
-        ["dune", "build", "--root", ".", "./bin_js/test_glfw.bc.js"]
+      [
+        "dune",
+        "build",
+        "--root",
+        "."
+      ],
+      [
+        "dune",
+        "build",
+        "--root",
+        ".",
+        "./bin_js/test_glfw.bc.js"
+      ]
     ],
     "install": [
-        "esy-installer"
+      "esy-installer"
     ],
-    "buildsInSource":"_build"
+    "buildsInSource": "_build"
   },
   "peerDependencies": {
-    "ocaml": "~4.6.0"
+    "ocaml": "^4.6.0"
   },
   "dependencies": {
     "@opam/dune": "^1.5.0",
@@ -33,6 +44,6 @@
     "@opam/cmdliner": "1.0.2"
   },
   "devDependencies": {
-    "ocaml": "~4.6.0"
+    "ocaml": "^4.6.0"
   }
 }

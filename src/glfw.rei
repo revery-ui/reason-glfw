@@ -5,7 +5,8 @@ module Key = Glfw_key;
 include (module type of Glfw_types);
 
 let glfwInit: unit => bool;
-let glfwCreateWindow: (int, int, string) => Window.t;
+let glfwCreateWindow:
+  (int, int, ~sharedWindow: Window.t=?, string) => Window.t;
 let glfwMakeContextCurrent: Window.t => unit;
 let glfwWindowShouldClose: Window.t => bool;
 let glfwPollEvents: unit => unit;
@@ -13,30 +14,30 @@ let glfwTerminate: unit => unit;
 let glfwSwapBuffers: Window.t => unit;
 let glfwSetWindowPos: (Window.t, int, int) => unit;
 let glfwSetWindowSize: (Window.t, int, int) => unit;
-let glfwGetFramebufferSize: (Window.t) => Window.frameBufferSize;
-let glfwGetWindowSize: (Window.t) => Window.windowSize;
-let glfwMaximizeWindow: (Window.t) => unit;
+let glfwGetFramebufferSize: Window.t => Window.frameBufferSize;
+let glfwGetWindowSize: Window.t => Window.windowSize;
+let glfwMaximizeWindow: Window.t => unit;
 let glfwSetWindowTitle: (Window.t, string) => unit;
-let glfwShowWindow: (Window.t) => unit;
-let glfwHideWindow: (Window.t) => unit;
-let glfwDestroyWindow: (Window.t) => unit;
+let glfwShowWindow: Window.t => unit;
+let glfwHideWindow: Window.t => unit;
+let glfwDestroyWindow: Window.t => unit;
 let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
 
-module Modifier {
-    type t;
+module Modifier: {
+  type t;
 
-    let of_int: int => t;
+  let of_int: int => t;
 
-    let isShiftPressed: t => bool;
-    let isControlPressed: t => bool;
-    let isAltPressed: t => bool;
-    let isSuperPressed: t => bool;
-}
+  let isShiftPressed: t => bool;
+  let isControlPressed: t => bool;
+  let isAltPressed: t => bool;
+  let isSuperPressed: t => bool;
+};
 
-module MouseButton {
-    type t =
+module MouseButton: {
+  type t =
     | GLFW_MOUSE_LEFT
     | GLFW_MOUSE_RIGHT
     | GLFW_MOUSE_MIDDLE
@@ -44,48 +45,48 @@ module MouseButton {
     | GLFW_MOUSE_BUTTON_5
     | GLFW_MOUSE_BUTTON_6
     | GLFW_MOUSE_BUTTON_7
-    | GLFW_MOUSE_BUTTON_8
+    | GLFW_MOUSE_BUTTON_8;
 
-    let show: t => string;
+  let show: t => string;
 };
 
-module Monitor {
-    type t;
+module Monitor: {
+  type t;
 
-    type position = {
-        x: int,
-        y: int,
-    };
-}
+  type position = {
+    x: int,
+    y: int,
+  };
+};
 
-module VideoMode {
-    type t = {
-        width: int,
-        height: int,
-    };
-}
+module VideoMode: {
+  type t = {
+    width: int,
+    height: int,
+  };
+};
 
 let glfwGetPrimaryMonitor: unit => Monitor.t;
 let glfwGetVideoMode: Monitor.t => VideoMode.t;
 let glfwGetMonitorPos: Monitor.t => Monitor.position;
 
 type windowHint =
-| GLFW_RESIZABLE
-| GLFW_VISIBLE
-| GLFW_DECORATED
-| GLFW_FOCUSED
-| GLFW_AUTO_ICONIFY
-| GLFW_FLOATING
-| GLFW_MAXIMIZED;
+  | GLFW_RESIZABLE
+  | GLFW_VISIBLE
+  | GLFW_DECORATED
+  | GLFW_FOCUSED
+  | GLFW_AUTO_ICONIFY
+  | GLFW_FLOATING
+  | GLFW_MAXIMIZED;
 
-module ButtonState {
-    type t =
+module ButtonState: {
+  type t =
     | GLFW_PRESS
     | GLFW_RELEASE
     | GLFW_REPEAT;
 
-    let show: t => string;
-}
+  let show: t => string;
+};
 
 let glfwDefaultWindowHints: unit => unit;
 let glfwWindowHint: (windowHint, bool) => unit;
@@ -96,24 +97,25 @@ let glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit;
 type glfwCharCallback = (Window.t, int) => unit;
 let glfwSetCharCallback: (Window.t, glfwCharCallback) => unit;
 
-type glfwKeyCallback = (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;
+type glfwKeyCallback =
+  (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;
 let glfwSetKeyCallback: (Window.t, glfwKeyCallback) => unit;
 
 type glfwScrollCallback = (Window.t, float, float) => unit;
 let glfwSetScrollCallback: (Window.t, glfwScrollCallback) => unit;
 
-type glfwMouseButtonCallback = (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
+type glfwMouseButtonCallback =
+  (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
 let glfwSetMouseButtonCallback: (Window.t, glfwMouseButtonCallback) => unit;
 
 let glfwSetFramebufferSizeCallback:
   (Window.t, glfwFramebufferSizeCallback) => unit;
 
-let glfwSetWindowSizeCallback:
-  (Window.t, glfwWindowSizeCallback) => unit;
+let glfwSetWindowSizeCallback: (Window.t, glfwWindowSizeCallback) => unit;
 
 type glfwCursorPos = {
-    mouseX: float,
-    mouseY: float
+  mouseX: float,
+  mouseY: float,
 };
 let glfwGetCursorPos: Window.t => glfwCursorPos;
 
@@ -125,15 +127,15 @@ type glfwCursorShape =
   | GLFW_HAND_CURSOR
   | GLFW_HRESIZE_CURSOR
   | GLFW_VRESIZE_CURSOR;
-let glfwCreateStandardCursor: (glfwCursorShape) => glfwCursor;
-let glfwDestroyCursor: (glfwCursor) => unit;
+let glfwCreateStandardCursor: glfwCursorShape => glfwCursor;
+let glfwDestroyCursor: glfwCursor => unit;
 let glfwSetCursor: (Window.t, glfwCursor) => unit;
 
 let printFrameBufferSize: Window.t => unit;
 
-type glfwRenderLoopCallback = (float) => bool;
+type glfwRenderLoopCallback = float => bool;
 
-let glfwRenderLoop: (glfwRenderLoopCallback) => unit;
+let glfwRenderLoop: glfwRenderLoopCallback => unit;
 
 /* GL */
 
@@ -175,8 +177,8 @@ let glBlendFunc: (blendFunc, blendFunc) => unit;
 type program;
 
 type shaderLinkResult =
-| LinkSuccess
-| LinkFailure(string);
+  | LinkSuccess
+  | LinkFailure(string);
 
 let glCreateProgram: unit => program;
 let glAttachShader: (program, shader) => unit;
@@ -242,8 +244,7 @@ let glCreateTexture: unit => texture;
 let glBindTexture: (textureType, texture) => unit;
 let glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit;
-let glTexImage2D:
-  (textureType, Image.t) => unit;
+let glTexImage2D: (textureType, Image.t) => unit;
 let glGenerateMipmap: textureType => unit;
 
 type bufferType =
@@ -262,12 +263,7 @@ type drawType =
   | GL_STATIC_DRAW;
 
 let glBufferData:
-  (
-    bufferType,
-    Bigarray.Array1.t('a, 'b, Bigarray.c_layout),
-    drawType
-  ) =>
-  unit;
+  (bufferType, Bigarray.Array1.t('a, 'b, Bigarray.c_layout), drawType) => unit;
 
 type drawMode =
   | GL_TRIANGLES

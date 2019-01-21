@@ -6,7 +6,8 @@ include Glfw_types;
 
 /* GLFW */
 external glfwInit: unit => bool = "caml_glfwInit";
-external glfwCreateWindow: (int, int, string) => Window.t =
+external glfwCreateWindow:
+  (int, int, ~sharedWindow: Window.t=?, string) => Window.t =
   "caml_glfwCreateWindow";
 external glfwMakeContextCurrent: Window.t => unit =
   "caml_glfwMakeContextCurrent";
@@ -29,7 +30,8 @@ external glfwGetFramebufferSize: Window.t => Window.frameBufferSize =
 external glfwMaximizeWindow: Window.t => unit = "caml_glfwMaximizeWindow";
 external glfwSetWindowTitle: (Window.t, string) => unit =
   "caml_glfwSetWindowTitle";
-[@noalloc] external glfwDestroyWindow: Window.t => unit = "caml_glfwDestroyWindow"; 
+[@noalloc]
+external glfwDestroyWindow: Window.t => unit = "caml_glfwDestroyWindow";
 [@noalloc] external glfwSwapInterval: int => unit = "caml_glfwSwapInterval";
 
 [@noalloc]
@@ -58,8 +60,8 @@ module Modifier = {
   let isSuperPressed = (m: t) => m land _mod_super == _mod_super;
 };
 
-module MouseButton {
-    type t =
+module MouseButton = {
+  type t =
     | GLFW_MOUSE_LEFT
     | GLFW_MOUSE_RIGHT
     | GLFW_MOUSE_MIDDLE
@@ -67,9 +69,10 @@ module MouseButton {
     | GLFW_MOUSE_BUTTON_5
     | GLFW_MOUSE_BUTTON_6
     | GLFW_MOUSE_BUTTON_7
-    | GLFW_MOUSE_BUTTON_8
+    | GLFW_MOUSE_BUTTON_8;
 
-    let show = (t) => switch(t) {
+  let show = t =>
+    switch (t) {
     | GLFW_MOUSE_LEFT => "Left"
     | GLFW_MOUSE_RIGHT => "Right"
     | GLFW_MOUSE_MIDDLE => "Middle"
@@ -177,28 +180,33 @@ let glfwSetKeyCallback = (win, callback) =>
   );
 
 type glfwCursorPosCallback = (Window.t, float, float) => unit;
-external glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit = "caml_glfwSetCursorPosCallback";
+external glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit =
+  "caml_glfwSetCursorPosCallback";
 
 /* Internal implementation of glfwMouseButtonCallback, since we need to cast some integers to types */
-type _glfwMouseButtonCallback = (Window.t, MouseButton.t, ButtonState.t, int) => unit;
-external _glfwSetMouseButtonCallback: (Window.t, _glfwMouseButtonCallback) => unit = "caml_glfwSetMouseButtonCallback";
+type _glfwMouseButtonCallback =
+  (Window.t, MouseButton.t, ButtonState.t, int) => unit;
+external _glfwSetMouseButtonCallback:
+  (Window.t, _glfwMouseButtonCallback) => unit =
+  "caml_glfwSetMouseButtonCallback";
 
-type glfwMouseButtonCallback = (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
+type glfwMouseButtonCallback =
+  (Window.t, MouseButton.t, ButtonState.t, Modifier.t) => unit;
 let glfwSetMouseButtonCallback = (win, callback) => {
-    _glfwSetMouseButtonCallback(win, (w, m, b, modifier) => {
-        callback(w, m, b, Modifier.of_int(modifier));
-    });
+  _glfwSetMouseButtonCallback(win, (w, m, b, modifier) =>
+    callback(w, m, b, Modifier.of_int(modifier))
+  );
 };
 
 type glfwScrollCallback = (Window.t, float, float) => unit;
-external glfwSetScrollCallback: (Window.t, glfwScrollCallback) => unit = "caml_glfwSetScrollCallback";
+external glfwSetScrollCallback: (Window.t, glfwScrollCallback) => unit =
+  "caml_glfwSetScrollCallback";
 
 external glfwSetFramebufferSizeCallback:
   (Window.t, glfwFramebufferSizeCallback) => unit =
   "caml_glfwSetFramebufferSizeCallback";
 
-external glfwSetWindowSizeCallback:
-  (Window.t, glfwWindowSizeCallback) => unit =
+external glfwSetWindowSizeCallback: (Window.t, glfwWindowSizeCallback) => unit =
   "caml_glfwSetWindowSizeCallback";
 
 type glfwCursorPos = {
@@ -226,10 +234,10 @@ type glfwCursorShape =
 
 external glfwCreateStandardCursor: glfwCursorShape => glfwCursor =
   "caml_glfwCreateStandardCursor";
-[@noalloc] external glfwDestroyCursor: glfwCursor => unit =
-  "caml_glfwDestroyCursor";
-[@noalloc] external glfwSetCursor: Window.t => glfwCursor => unit =
-  "caml_glfwSetCursor";
+[@noalloc]
+external glfwDestroyCursor: glfwCursor => unit = "caml_glfwDestroyCursor";
+[@noalloc]
+external glfwSetCursor: (Window.t, glfwCursor) => unit = "caml_glfwSetCursor";
 
 /* GL */
 type shader;
@@ -247,8 +255,9 @@ external glClearDepth: float => unit = "caml_glClearDepth";
 external glCreateShader: shaderType => shader = "caml_glCreateShader";
 external glShaderSource: (shader, string) => unit = "caml_glShaderSource";
 
-[@noalloc] external glViewport: (int, int, int, int) => unit = "caml_glViewport";
-[@noalloc] external glScissor:  (int, int, int, int) => unit = "caml_glScissor"; 
+[@noalloc]
+external glViewport: (int, int, int, int) => unit = "caml_glViewport";
+[@noalloc] external glScissor: (int, int, int, int) => unit = "caml_glScissor";
 
 [@noalloc] external glEnable: enableOptions => unit = "caml_glEnable";
 [@noalloc] external glDisable: enableOptions => unit = "caml_glDisable";
