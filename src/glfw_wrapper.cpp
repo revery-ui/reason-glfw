@@ -15,7 +15,11 @@
 
 #include <reglfw_image.h>
 
+
 extern "C" {
+
+#define Val_none Val_int(0)
+#define Some_val(v) Field(v,0)
 
     struct WindowInfo {
         GLFWwindow* pWindow;
@@ -201,17 +205,32 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glfwCreateWindow(value iWidth, value iHeight, value sTitle)
+    caml_glfwCreateWindow(value iWidth, value iHeight, value vSharedContext, value sTitle)
     {
-      CAMLparam3(iWidth, iHeight, sTitle);
+      CAMLparam4(iWidth, iHeight, vSharedContext, sTitle);
 
       GLFWwindow* wd;           /* window desciptor/handle */
       int w = Int_val(iWidth);
       int h = Int_val(iHeight);
       char *s = String_val(sTitle);
 
-      wd = glfwCreateWindow(w, h, s,
-                            NULL, NULL);
+      /* 
+      vSharedContext is an optional labeled argument in OCaml
+      Depending on the value of vSharedContext we create a normal window if is none
+      or a window with shared context https://www.glfw.org/docs/latest/context_guide.html#context_sharing if the value exists
+      Using this binding as an example: https://www.linux-nantes.org/~fmonnier/OCaml/ocaml-wrapping-c.html#ref_optlabel
+      */
+
+      // It might be none, we check that against the Val_none macro defined at the top
+      if (vSharedContext == Val_none) {
+        wd = glfwCreateWindow(w, h, s, NULL, NULL);
+      } else {
+        // It might be a real value, so we get it by using the Some_val macro and cast it to a WindowInfo
+        WindowInfo* sharedWindowInfo = (WindowInfo *)Some_val(vSharedContext);
+        GLFWwindow* sharedWindow = sharedWindowInfo->pWindow;
+        wd = glfwCreateWindow(w, h, s, NULL, sharedWindow);
+      };
+
 
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
@@ -596,6 +615,8 @@ extern "C" {
           wd->isDestroyed = true;
           glfwDestroyWindow(wd->pWindow);
         }
+
+        return Val_unit;
     }
 
     CAMLprim value

@@ -29,15 +29,25 @@ let initShaderProgram = (vsSource, fsSource) => {
 
 let run = () => {
   let _ = glfwInit();
-  let w = glfwCreateWindow(100, 50, "test");
-  glfwMakeContextCurrent(w);
+  let primaryWindow = glfwCreateWindow(100, 50, "test");
+  glfwMakeContextCurrent(primaryWindow);
 
   let monitor = glfwGetPrimaryMonitor();
   let vidMode = glfwGetVideoMode(monitor);
 
-  glfwSetWindowPos(w, (vidMode.width - 800) / 2, (vidMode.height - 600) / 2);
-  glfwSetWindowSize(w, 800, 600);
-  glfwSetWindowTitle(w, "reason-glfw example");
+  glfwSetWindowPos(
+    primaryWindow,
+    (vidMode.width - 800) / 2,
+    (vidMode.height - 600) / 2,
+  );
+  glfwSetWindowSize(primaryWindow, 800, 600);
+  glfwSetWindowTitle(primaryWindow, "reason-glfw example");
+
+  let secondaryWindow =
+    glfwCreateWindow(100, 50, ~sharedContext=primaryWindow, "secondWindow");
+  glfwSetWindowPos(secondaryWindow, vidMode.width / 2, vidMode.height / 2);
+  glfwSetWindowSize(secondaryWindow, 800, 600);
+  glfwSetWindowTitle(secondaryWindow, "second window");
 
   let cursors = [|
     glfwCreateStandardCursor(GLFW_ARROW_CURSOR),
@@ -49,7 +59,7 @@ let run = () => {
   |];
   Random.self_init();
   let cursor = Random.int(Array.length(cursors));
-  glfwSetCursor(w, cursors[cursor]);
+  glfwSetCursor(primaryWindow, cursors[cursor]);
 
   glViewport(0, 0, 800, 600);
 
@@ -81,7 +91,7 @@ let run = () => {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, img);
 
-  let frameBufferSize = glfwGetFramebufferSize(w);
+  let frameBufferSize = glfwGetFramebufferSize(primaryWindow);
   print_endline(
     "framebuffersize: "
     ++ string_of_int(frameBufferSize.width)
@@ -165,7 +175,8 @@ let run = () => {
   let prevTime = ref(Unix.gettimeofday());
 
   let delta = ref(0.);
-  let render = () => {
+  let render = window => {
+    glfwMakeContextCurrent(window);
     let time = Unix.gettimeofday();
     delta := delta^ +. time -. prevTime^;
     prevTime := time;
@@ -188,6 +199,8 @@ let run = () => {
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     glUseProgram(shaderProgram);
     let m = Mat4.create();
@@ -232,19 +245,26 @@ let run = () => {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
 
-    glfwSwapBuffers(w);
+    glfwSwapBuffers(window);
   };
 
-  glfwSetScrollCallback(w, (_w, deltaX, deltaY) => {
-    print_endline("SCROLL: " ++ string_of_float(deltaX) ++ ", " ++ string_of_float(deltaY));
-  });
+  glfwSetScrollCallback(primaryWindow, (_w, deltaX, deltaY) =>
+    print_endline(
+      "SCROLL: "
+      ++ string_of_float(deltaX)
+      ++ ", "
+      ++ string_of_float(deltaY),
+    )
+  );
 
-  glfwSetCursorPosCallback(w, (_w, x, y) => {
-    print_endline("CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y));
-  })
+  glfwSetCursorPosCallback(primaryWindow, (_w, x, y) =>
+    print_endline(
+      "CURSOR: " ++ string_of_float(x) ++ ", " ++ string_of_float(y),
+    )
+  );
 
   glfwSetKeyCallback(
-    w,
+    primaryWindow,
     (_w, _key, _scancode, buttonState, m) => {
       let controlPressed = string_of_bool(Modifier.isControlPressed(m));
       let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
@@ -263,11 +283,11 @@ let run = () => {
 
       if (_key == GLFW_KEY_X) {
         glfwDestroyWindow(_w);
-      }
+      };
     },
   );
 
-  glfwSetCharCallback(w, (_w, codepoint) =>
+  glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
     print_endline(
       "CHAR: "
       ++ string_of_int(codepoint)
@@ -276,7 +296,9 @@ let run = () => {
     )
   );
 
-  glfwSetMouseButtonCallback(w, (_w, button, buttonState, m) => {
+  glfwSetMouseButtonCallback(
+    primaryWindow,
+    (_w, button, buttonState, m) => {
       let controlPressed = string_of_bool(Modifier.isControlPressed(m));
       let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
       print_endline(
@@ -289,51 +311,71 @@ let run = () => {
         ++ "| state: "
         ++ ButtonState.show(buttonState),
       );
-  })
+    },
+  );
 
   glfwSetFramebufferSizeCallback(
-    w,
-    (_, w, h) => {
+    primaryWindow,
+    (window, w, h) => {
       glViewport(0, 0, w, h);
       print_endline(
-        "Framebuffer size changed: " ++ string_of_int(w) ++ ", " ++ string_of_int(h),
+        "Framebuffer size changed: "
+        ++ string_of_int(w)
+        ++ ", "
+        ++ string_of_int(h),
       );
       width := w;
       height := h;
-      render();
+      render(window);
     },
   );
 
   glfwSetWindowSizeCallback(
-    w,
-    (_, w, h) => {
+    primaryWindow,
+    (window, w, h) => {
       print_endline(
-        "Window size changed: " ++ string_of_int(w) ++ ", " ++ string_of_int(h),
+        "Window size changed: "
+        ++ string_of_int(w)
+        ++ ", "
+        ++ string_of_int(h),
       );
       width := w;
       height := h;
-      render();
+      render(window);
     },
   );
 
-
   /* glfwMaximizeWindow(w); */
 
-  let captureWindow(w, filename) {
+  let captureWindow = (w, filename) => {
     let size = glfwGetFramebufferSize(w);
-    let image = Image.create(~width=size.width, ~height=size.height,
-                             ~numChannels=4, ~channelSize=1);
+    let image =
+      Image.create(
+        ~width=size.width,
+        ~height=size.height,
+        ~numChannels=4,
+        ~channelSize=1,
+      );
     let buffer = Image.getBuffer(image);
-    glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glReadPixels(
+      0,
+      0,
+      size.width,
+      size.height,
+      GL_RGBA,
+      GL_UNSIGNED_BYTE,
+      buffer,
+    );
     Image.save(image, filename);
     Image.destroy(image);
   };
 
   let frame = ref(0);
   glfwRenderLoop(_t => {
-    render();
+    render(primaryWindow);
+    render(secondaryWindow);
     if (frame^ == 60) {
-      captureWindow(w, Printf.sprintf("scrot%d.tga", frame^));
+      captureWindow(primaryWindow, Printf.sprintf("scrot%d.tga", frame^));
     };
     frame := frame^ + 1;
 
@@ -341,7 +383,7 @@ let run = () => {
     Gc.full_major();
 
     glfwPollEvents();
-    glfwWindowShouldClose(w);
+    glfwWindowShouldClose(primaryWindow);
   });
 
   print_endline("Done!");
