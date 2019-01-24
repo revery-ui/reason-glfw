@@ -15,7 +15,6 @@
 
 #include <reglfw_image.h>
 
-
 extern "C" {
 
 #define Val_none Val_int(0)
@@ -95,7 +94,7 @@ extern "C" {
     WindowInfo* getWindowInfoFromWindow(GLFWwindow *w) {
         WindowInfo *pInfo;
         for (int i = 0; i < sActiveWindowCount; i++) {
-            if (sActiveWindows[i] && sActiveWindows[i]->pWindow) {
+            if (sActiveWindows[i] && sActiveWindows[i]->pWindow && sActiveWindows[i]->pWindow == w) {
                 pInfo = sActiveWindows[i];
             }
         }
@@ -230,7 +229,6 @@ extern "C" {
         GLFWwindow* sharedWindow = sharedWindowInfo->pWindow;
         wd = glfwCreateWindow(w, h, s, NULL, sharedWindow);
       };
-
 
       struct WindowInfo* pWindowInfo = (WindowInfo *)malloc(sizeof(WindowInfo));
       pWindowInfo->pWindow = wd;
