@@ -73,17 +73,24 @@ function caml_getImagePixels(image) {
 
 // Provides: caml_setImagePixels
 function caml_setImagePixels(image, vPixels) {
-  if (image.src) {
-    try {
-      joo_global_object.URL.revokeObjectURL(image.src);
-    } catch (error) {}
-  }
-
+  var numChannels = 4; // RGBA
+  var width = vPixels.nth_dim(1) / numChannels;
+  var height = vPixels.nth_dim(0);
   var pixels = vPixels.data;
-  var blob = new joo_global_object.Blob([pixels], { type: "image/bmp" });
-  var objectUrl = joo_global_object.URL.createObjectURL(blob);
 
-  image.src = objectUrl;
+  var canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  var ctx = canvas.getContext("2d");
+  var imageData = new joo_global_object.ImageData(
+    new joo_global_object.Uint8ClampedArray(pixels),
+    width,
+    height
+  );
+  ctx.putImageData(imageData, 0, 0);
+  var dataUrl = canvas.toDataURL();
+
+  image.src = dataUrl;
 }
 
 // Provides: caml_saveImage
