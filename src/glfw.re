@@ -41,6 +41,8 @@ external glfwGetTime: unit => [@unboxed] float =
 external glfwSetTime: ([@unboxed] float) => unit =
   "caml_glfwSetTime_byte" "caml_glfwSetTime";
 
+[@noalloc] external glfwGetNativeWindow: Window.t => NativeWindow.t = "caml_glfwGetNativeWindow";
+
 module Modifier = {
   type t = int;
 

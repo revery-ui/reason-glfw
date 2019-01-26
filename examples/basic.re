@@ -370,6 +370,8 @@ let run = () => {
     Image.destroy(image);
   };
 
+  let _ = glfwGetNativeWindow(primaryWindow);
+
   let frame = ref(0);
   glfwRenderLoop(_t => {
     render(primaryWindow);

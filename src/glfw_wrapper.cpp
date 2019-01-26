@@ -13,6 +13,19 @@
 
 #include <GLFW/glfw3.h>
 
+
+// Include native GLFW access functions
+// Documentation here: https://www.glfw.org/docs/latest/group__native.html
+#ifdef _WIN32
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #include <winuser.h>
+#elif __APPLE__
+    #define GLFW_EXPOSE_NATIVE_COCOA
+#else
+    #define GLFW_EXPOSE_NATIVE_X11
+#endif
+#include <GLFW/glfw3native.h>
+
 #include <reglfw_image.h>
 
 extern "C" {
@@ -201,6 +214,44 @@ extern "C" {
         if (pWinInfo && pWinInfo->vCharCallback != Val_unit) {
             (void) caml_callback2((value)pWinInfo->vCharCallback, ((value)(void *)pWinInfo), Val_int(codepoint));
         }
+    }
+
+    CAMLprim value
+    caml_glfwGetNativeWindow(value vWindow) {
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+#ifdef _WIN32
+        HWND hwnd = glfwGetWin32Window(pWinInfo->pWindow);
+        HWND hwndEdit = CreateWindowExA(
+            0, 
+            "EDIT",
+            NULL,
+            WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+            0, 0, 0, 0,
+            hwnd,
+            (HMENU) 100,
+            (HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
+            NULL);
+
+        MoveWindow(hwndEdit, 0, 0, 200, 200, TRUE);
+
+        HWND hwndButton = CreateWindow(
+         "BUTTON",
+         "OK",
+         WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+         200, 
+         200,
+         100,
+         100,
+         hwnd,
+         NULL,
+         (HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
+         NULL
+        );
+        printf("native window handle: %p\n", hwnd);
+#else
+        printf("NO native handle available\n");
+#endif
     }
 
     CAMLprim value

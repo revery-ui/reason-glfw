@@ -25,6 +25,8 @@ let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
 
+let glfwGetNativeWindow: Window.t => NativeWindow.t;
+
 module Modifier: {
   type t;
 
