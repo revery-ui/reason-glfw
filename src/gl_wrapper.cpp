@@ -507,10 +507,6 @@ extern "C" {
         GLsizei height = Caml_ba_array_val(vPixels)->dim[0];
         GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
 
-        printf("target: %u, level: %i, internalFormat: %u, width: %i, height: %i, format: %u, type: %u, pPixels: %p\n",
-                variantToTextureType(vTextureType), Int_val(vLevel), variantToFormat(vInternalFormat), width, height,
-                variantToFormat(vFormat), variantToType(vType), pPixels);
-
         glTexImage2D(
                 variantToTextureType(vTextureType),
                 Int_val(vLevel),
