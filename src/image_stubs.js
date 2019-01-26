@@ -1,5 +1,8 @@
 // Provides: caml_getPixelArray
 function caml_getPixelArray(image) {
+  if (image.naturalWidth === 0 && image.naturalHeight === 0) {
+    return new joo_global_object.Uint8Array();
+  }
   var canvas = document.createElement("canvas");
   canvas.width = image.naturalWidth;
   canvas.height = image.naturalHeight;
@@ -41,8 +44,11 @@ function caml_downloadImage(filename, text) {
 }
 
 // Provides: caml_createImage
-function caml_createImage(width, height) {
-  return new joo_global_object.Image(width, height);
+// Requires: caml_setImagePixels
+function caml_createImage(vPixels) {
+  var image = new joo_global_object.Image();
+  caml_setImagePixels(image, vPixels);
+  return image;
 }
 
 // Provides: caml_destroyImage
@@ -50,10 +56,10 @@ function caml_destroyImage(image) {
   // no op
 }
 
-// Provides: getImagePixels
+// Provides: caml_getImagePixels
 // Requires: caml_ba_create_from
 // Requires: caml_getPixelArray
-function getImagePixels(image) {
+function caml_getImagePixels(image) {
   var pixels = caml_getPixelArray(image);
   return caml_ba_create_from(
     pixels,
@@ -65,8 +71,8 @@ function getImagePixels(image) {
   );
 }
 
-// Provides: setImagePixels
-function setImagePixels(image, vPixels) {
+// Provides: caml_setImagePixels
+function caml_setImagePixels(image, vPixels) {
   if (image.src) {
     try {
       joo_global_object.URL.revokeObjectURL(image.src);
@@ -104,7 +110,7 @@ function caml_saveImage(image, path) {
     bufferView.setUint16(bufferIndex, pixelHeader[i], true);
     bufferIndex += 2;
   }
-  for (var i = 0; i < image.data.length; i++) {
+  for (var i = 0; i < pixels.byteLength; i++) {
     bufferView.setUint8(bufferIndex, image.data[i]);
     bufferIndex++;
   }

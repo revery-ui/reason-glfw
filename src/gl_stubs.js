@@ -244,14 +244,13 @@ function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vForm
     var textureType = joo_global_object.variantToTextureType[vTextureType];
     var internalFormat = joo_global_object.variantToFormat[vInternalFormat];
     var format = joo_global_object.variantToFormat[vFormat];
+    var type = joo_global_object.variantToType[vType];
     var numChannels = joo_global_object.formatToNumChannels[format];
     var width = vPixels.nth_dim(1) / numChannels;
     var height = vPixels.nth_dim(0);
-    var format = joo_global_object.variantToFormat[format];
-    var type = joo_global_object.variantToType[vType];
     var pixels = vPixels.data;
 
-    joo_global_object.gl.texImage2D(textureType, vLevel, internalFormat, width, height, format, type, pixels);
+    joo_global_object.gl.texImage2D(textureType, vLevel, internalFormat, width, height, 0, format, type, pixels);
 }
 
 // Provides: caml_glGenerateMipmap
@@ -275,27 +274,12 @@ function caml_glEnableVertexAttribArray(attributeLocation) {
 function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
   var format, type, numChannels;
 
-  switch (vFormat) {
-  case 0:
-    joo_global_object.console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
-    format = joo_global_object.gl.RGB;
-    numChannels = 3;
-    break;
-  case 1:
-    format = joo_global_object.gl.RGBA;
-    numChannels = 4;
-    break;
-  default: throw "Unrecognized pixel format";
-  }
+  var format = joo_global_object.variantToFormat[vFormat];
+  var numChannels = joo_global_object.formatToNumChannels[format];
+  var type = joo_global_object.variantToType[vType];
 
-  switch (vType) {
-  case 0: type = joo_global_object.gl.UNSIGNED_FLOAT; break;
-  case 1: type = joo_global_object.gl.UNSIGNED_BYTE; break;
-  case 2: type = joo_global_object.gl.UNSIGNED_SHORT; break;
-  case 3: type = joo_global_object.gl.UNSIGNED_SHORT_5_6_5; break;
-  case 4: type = joo_global_object.gl.UNSIGNED_SHORT_4_4_4_4; break;
-  case 5: type = joo_global_object.gl.UNSIGNED_SHORT_5_5_5_1; break;
-  default: throw "Unrecognized pixel type";
+  if (format === joo_global_object.gl.RGB) {
+    joo_global_object.console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
   }
 
   var width = vPixels.nth_dim(1) / numChannels;
