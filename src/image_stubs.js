@@ -60,6 +60,7 @@ function caml_destroyImage(image) {
 // Requires: caml_ba_create_from
 // Requires: caml_getPixelArray
 function caml_getImagePixels(image) {
+  var numChannels = 4; // RGBA
   var pixels = caml_getPixelArray(image);
   return caml_ba_create_from(
     pixels,
@@ -67,7 +68,7 @@ function caml_getImagePixels(image) {
     0, // general type
     3, // kind: uint8
     0, // c layout
-    [image.width, image.height]
+    [image.height, image.width * numChannels]
   );
 }
 
