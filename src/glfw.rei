@@ -5,7 +5,8 @@ module Key = Glfw_key;
 include (module type of Glfw_types);
 
 let glfwInit: unit => bool;
-let glfwCreateWindow: (int, int, string) => Window.t;
+let glfwCreateWindow:
+  (int, int, ~sharedContext: Window.t=?, string) => Window.t;
 let glfwMakeContextCurrent: Window.t => unit;
 let glfwWindowShouldClose: Window.t => bool;
 let glfwPollEvents: unit => unit;

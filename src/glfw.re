@@ -6,7 +6,8 @@ include Glfw_types;
 
 /* GLFW */
 external glfwInit: unit => bool = "caml_glfwInit";
-external glfwCreateWindow: (int, int, string) => Window.t =
+external glfwCreateWindow:
+  (int, int, ~sharedContext: Window.t=?, string) => Window.t =
   "caml_glfwCreateWindow";
 external glfwMakeContextCurrent: Window.t => unit =
   "caml_glfwMakeContextCurrent";
