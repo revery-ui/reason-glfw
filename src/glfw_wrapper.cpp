@@ -21,6 +21,7 @@
     #include <winuser.h>
 #elif __APPLE__
     #define GLFW_EXPOSE_NATIVE_COCOA
+    #import "ReveryCocoa.h"
 #else
     #define GLFW_EXPOSE_NATIVE_X11
 #endif
@@ -250,11 +251,10 @@ extern "C" {
         );
         printf("native window handle: %p\n", hwnd);
 #elif __APPLE__
-       NSWindow* win = glfwGetCocoaWindow(pWinInfo->pWindow);
-       NSTextField *input = [[NSTextField alloc]] initWithFrame:NSMakeRect(0, 0, 200, 24)];
-       [input setStringValue:defaultValue];
-       [input autorelease];
-       [win setAccessoryView:input];
+       printf("tried to render input\n");
+       void* win = glfwGetCocoaWindow(pWinInfo->pWindow);
+       test_render(win);
+       printf("tried to render input: %p\n", win);
 #else
         printf("NO native handle available\n");
 #endif

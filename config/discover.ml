@@ -20,7 +20,8 @@ let get_os =
         | _ -> Unknown
 
 
-let c_flags = ["-I"; (Sys.getenv "GLFW_INCLUDE_PATH"); "-I"; "./../../../include"; "-I"; "./../../../src"]
+let c_flags = ["-I"; (Sys.getenv "GLFW_INCLUDE_PATH"); "-I"; "./../../../include"; "-I"; "./../../../src"; "-x"; "objective-c"]
+let cxx_flags = ["-I"; (Sys.getenv "GLFW_INCLUDE_PATH"); "-I"; "./../../../include"; "-I"; "./../../../src"]
 
 let libPath = "-L" ^ (Sys.getenv "GLFW_LIB_PATH")
 
@@ -55,7 +56,7 @@ let flags =
 let cxx_flags =
     match get_os with
     | Windows -> c_flags @ ["-fno-exceptions"; "-fno-rtti"; "-lstdc++"]
-    | _ -> c_flags
+    | _ -> cxx_flags
 ;;
 
 Configurator.V1.Flags.write_sexp "c_flags.sexp" c_flags;
