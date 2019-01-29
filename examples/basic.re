@@ -370,6 +370,9 @@ let run = () => {
     Image.destroy(image);
   };
 
+  let nativeWindow = glfwGetNativeWindow(primaryWindow);
+  print_endline ("Native window handle/pointer: " ++ string_of_int(Obj.magic(nativeWindow)));
+
   let frame = ref(0);
   glfwRenderLoop(_t => {
     render(primaryWindow);

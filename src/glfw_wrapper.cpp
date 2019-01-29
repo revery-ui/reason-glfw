@@ -13,6 +13,19 @@
 
 #include <GLFW/glfw3.h>
 
+
+// Include native GLFW access functions
+// Documentation here: https://www.glfw.org/docs/latest/group__native.html
+#ifdef _WIN32
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #include <winuser.h>
+#elif __APPLE__
+    #define GLFW_EXPOSE_NATIVE_COCOA
+#else
+    #define GLFW_EXPOSE_NATIVE_X11
+#endif
+#include <GLFW/glfw3native.h>
+
 #include <reglfw_image.h>
 
 extern "C" {
@@ -201,6 +214,22 @@ extern "C" {
         if (pWinInfo && pWinInfo->vCharCallback != Val_unit) {
             (void) caml_callback2((value)pWinInfo->vCharCallback, ((value)(void *)pWinInfo), Val_int(codepoint));
         }
+    }
+
+    CAMLprim value
+    caml_glfwGetNativeWindow(value vWindow) {
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+#ifdef _WIN32
+        HWND hwnd = glfwGetWin32Window(pWinInfo->pWindow);
+        return (value)hwnd;
+#elif __APPLE__
+       void* pWin = glfwGetCocoaWindow(pWinInfo->pWindow);
+       return (value)pWin;
+#else
+       long unsigned int lWin = glfwGetX11Window(pWinInfo->pWindow);
+       return (value)lWin;
+#endif
     }
 
     CAMLprim value
