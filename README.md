@@ -11,7 +11,7 @@
 `esy` is used for building, so if you don't have `esy`, install it:
 
 ```
-npm install -g esy@0.2.11
+npm install -g esy@0.4.9
 ```
 
 - `esy install`
