@@ -41,7 +41,9 @@ external glfwGetTime: unit => [@unboxed] float =
 external glfwSetTime: ([@unboxed] float) => unit =
   "caml_glfwSetTime_byte" "caml_glfwSetTime";
 
-[@noalloc] external glfwGetNativeWindow: Window.t => NativeWindow.t = "caml_glfwGetNativeWindow";
+[@noalloc]
+external glfwGetNativeWindow: Window.t => NativeWindow.t =
+  "caml_glfwGetNativeWindow";
 
 module Modifier = {
   type t = int;
@@ -108,6 +110,8 @@ external glfwGetPrimaryMonitor: unit => Monitor.t =
 external glfwGetVideoMode: Monitor.t => VideoMode.t = "caml_glfwGetVideoMode";
 external glfwGetMonitorPos: Monitor.t => Monitor.position =
   "caml_glfwGetMonitorPos";
+external glfwGetMonitorPhysicalSize: Monitor.t =
+  "caml_glfwGetMonitorPhysicalSize";
 
 type windowHint =
   | GLFW_RESIZABLE

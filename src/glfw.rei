@@ -59,6 +59,11 @@ module Monitor: {
     x: int,
     y: int,
   };
+
+  type dimensions = {
+    width: int,
+    height: int,
+  };
 };
 
 module VideoMode: {
@@ -71,6 +76,7 @@ module VideoMode: {
 let glfwGetPrimaryMonitor: unit => Monitor.t;
 let glfwGetVideoMode: Monitor.t => VideoMode.t;
 let glfwGetMonitorPos: Monitor.t => Monitor.position;
+let glfwGetMonitorPhysicalSize: Monitor.t => Monitor.dimensions;
 
 type windowHint =
   | GLFW_RESIZABLE

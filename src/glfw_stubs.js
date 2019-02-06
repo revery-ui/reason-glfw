@@ -142,7 +142,12 @@ function caml_glfwGetVideoMode() {
 function caml_glfwGetMonitorPos() {
     return [0, 0, 0];
 };
-//
+
+// Provides: caml_glfwGetMonitorPhysicalSize
+function caml_glfwGetMonitorPhysicalSize() {
+  return [0, 0, 0];
+};
+
 // Provides: caml_glfwGetWindowSize
 function caml_glfwGetWindowSize(w) {
     var pixelRatio = joo_global_object.window.devicePixelRatio;
