@@ -543,6 +543,23 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glfwGetPrimaryMonitorPhysicalSize(value vMonitor)
+    {
+        CAMLparam1(vMonitor);
+        CAMLlocal1(size)
+        GLFWmonitor* pMonitor = (GLFWmonitor*)vMonitor;
+
+        int widthMM, heightMM;
+        glfwGetMonitorPhysicalSize(monitor, &widthMM, &heightMM);
+
+        ret = caml_alloc(2, 0)
+        Store_field(size, 0, Val_int(widthMM));
+        Store_field(size, 0, Val_int(heightMM));
+
+        CAMLreturn(ret);
+    }
+
+    CAMLprim value
     caml_glfwSetCursorPosCallback(value vWindow, value vCallback) {
         CAMLparam2(vWindow, vCallback);
 
