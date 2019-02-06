@@ -543,18 +543,18 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glfwGetPrimaryMonitorPhysicalSize(value vMonitor)
+    caml_glfwGetMonitorPhysicalSize(value vMonitor)
     {
         CAMLparam1(vMonitor);
-        CAMLlocal1(size)
-        GLFWmonitor* pMonitor = (GLFWmonitor*)vMonitor;
+        CAMLlocal1(ret);
+        GLFWmonitor* zMonitor = (GLFWmonitor*)vMonitor;
 
         int widthMM, heightMM;
-        glfwGetMonitorPhysicalSize(monitor, &widthMM, &heightMM);
+        glfwGetMonitorPhysicalSize(zMonitor, &widthMM, &heightMM);
 
-        ret = caml_alloc(2, 0)
-        Store_field(size, 0, Val_int(widthMM));
-        Store_field(size, 0, Val_int(heightMM));
+        ret = caml_alloc(2, 0);
+        Store_field(ret, 0, Val_int(widthMM));
+        Store_field(ret, 0, Val_int(heightMM));
 
         CAMLreturn(ret);
     }

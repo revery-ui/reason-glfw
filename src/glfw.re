@@ -95,6 +95,11 @@ module Monitor = {
     x: int,
     y: int,
   };
+
+  type dimensions = {
+    width: int,
+    height: int,
+  };
 };
 
 module VideoMode = {
@@ -110,7 +115,7 @@ external glfwGetPrimaryMonitor: unit => Monitor.t =
 external glfwGetVideoMode: Monitor.t => VideoMode.t = "caml_glfwGetVideoMode";
 external glfwGetMonitorPos: Monitor.t => Monitor.position =
   "caml_glfwGetMonitorPos";
-external glfwGetMonitorPhysicalSize: Monitor.t =
+external glfwGetMonitorPhysicalSize: Monitor.t => Monitor.dimensions =
   "caml_glfwGetMonitorPhysicalSize";
 
 type windowHint =
