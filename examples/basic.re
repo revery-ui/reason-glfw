@@ -35,6 +35,15 @@ let run = () => {
   let monitor = glfwGetPrimaryMonitor();
   let vidMode = glfwGetVideoMode(monitor);
 
+  let physicalSize = glfwGetMonitorPhysicalSize(monitor);
+
+  let dpi = float_of_int(vidMode.width) /. (float_of_int(physicalSize.width) /. 25.4);
+  let dpiH = float_of_int(vidMode.height) /. (float_of_int(physicalSize.height) /. 25.4);
+  print_endline ("Video width: " ++ string_of_int(vidMode.width));
+  print_endline ("Physical width: " ++ string_of_int(physicalSize.width));                
+  print_endline ("DPI (width): " ++ string_of_float(dpi));
+  print_endline ("DPI (height): " ++ string_of_float(dpiH));
+
   glfwSetWindowPos(
     primaryWindow,
     (vidMode.width - 800) / 2,
@@ -90,6 +99,15 @@ let run = () => {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, img);
+
+
+  let windowSize = glfwGetWindowSize(primaryWindow);
+  print_endline(
+    "windowsize: "
+    ++ string_of_int(windowSize.width)
+    ++ "x"
+    ++ string_of_int(windowSize.height),
+  );
 
   let frameBufferSize = glfwGetFramebufferSize(primaryWindow);
   print_endline(
