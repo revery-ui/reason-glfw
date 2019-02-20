@@ -24,8 +24,10 @@ let glfwDestroyWindow: Window.t => unit;
 let glfwSwapInterval: int => unit;
 let glfwGetTime: unit => float;
 let glfwSetTime: float => unit;
+let glfwSetWindowIcon: Window.t => unit;
 
 let glfwGetNativeWindow: Window.t => NativeWindow.t;
+
 
 module Modifier: {
   type t;
