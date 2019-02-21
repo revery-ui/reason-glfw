@@ -629,18 +629,13 @@ extern "C" {
         WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
 
         int numberOfImages = 1;
-        /* GLFWimage* images = (GLFWimage*) malloc(sizeof(GLFWimage) * numberOfImages); */
-         /* GLFWimage* images = new GLFWimage[1]; */
         GLFWimage images[1];
         char *szPath = String_val(vPath);
 
         int channels;
         int width;
         int height;
-        /* images[0].pixels = stbi_load(szPath, &width, &height, &channels, 4); */
-        /* images[0].width = width; */
-        images[0].pixels = stbi_load(szPath, &images[0].width, &images[0].height, 0, 4);       /* images[0].height = height; */
-        printf ("glfwSetWindowIcon: width: %d height: %d channels: %d\n", width, height, channels);
+        images[0].pixels = stbi_load(szPath, &images[0].width, &images[0].height, 0, 4);
         glfwSetWindowIcon(pWindowInfo->pWindow, 1, images);
 
         return Val_unit;
