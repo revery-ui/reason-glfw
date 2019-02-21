@@ -61,7 +61,7 @@ let run = () => {
   let cursor = Random.int(Array.length(cursors));
   glfwSetCursor(primaryWindow, cursors[cursor]);
 
-  glfwSetWindowIcon(primaryWindow);
+  glfwSetWindowIcon(primaryWindow, "favicon01.png");
 
   glViewport(0, 0, 800, 600);
 
