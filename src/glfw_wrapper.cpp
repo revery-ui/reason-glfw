@@ -14,6 +14,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "stb_image.h"
 
 // Include native GLFW access functions
 // Documentation here: https://www.glfw.org/docs/latest/group__native.html
@@ -621,6 +622,23 @@ extern "C" {
       GLFWcursor *cd = (GLFWcursor *) cursor;
       glfwSetCursor(wd->pWindow, cd);
       CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glfwSetWindowIcon(value vWindow, value vPath) {
+        WindowInfo* pWindowInfo = (WindowInfo *)vWindow;
+
+        int numberOfImages = 1;
+        GLFWimage images[1];
+        char *szPath = String_val(vPath);
+
+        int channels;
+        int width;
+        int height;
+        images[0].pixels = stbi_load(szPath, &images[0].width, &images[0].height, 0, 4);
+        glfwSetWindowIcon(pWindowInfo->pWindow, 1, images);
+
+        return Val_unit;
     }
 
     CAMLprim value

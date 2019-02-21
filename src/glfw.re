@@ -43,6 +43,9 @@ external glfwSetTime: ([@unboxed] float) => unit =
   "caml_glfwSetTime_byte" "caml_glfwSetTime";
 
 [@noalloc]
+external glfwSetWindowIcon: (Window.t, string) => unit = "caml_glfwSetWindowIcon";
+
+[@noalloc]
 external glfwGetNativeWindow: Window.t => NativeWindow.t =
   "caml_glfwGetNativeWindow";
 

@@ -346,6 +346,16 @@ function caml_glfwSetWindowTitle(w, title) {
     document.title = t;
 }
 
+// Provides: caml_glfwSetWindowIcon
+function caml_glfwSetWindowIcon(w, path) {
+    var p = path.toString();
+    var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = p;
+    document.getElementsByTagName('head')[0].appendChild(link);
+}
+
 // Provides: caml_glfwWindowHint
 function caml_glfwWindowHint(hint, val) {
     joo_global_object.console.warn("Unsupported API: glfwWindowHint");
