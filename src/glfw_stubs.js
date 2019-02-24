@@ -146,9 +146,9 @@ function caml_glfwGetMonitorPos() {
 // Provides: caml_glfwGetMonitorPhysicalSize
 function caml_glfwGetMonitorPhysicalSize() {
   var win = joo_global_object.window;
-  var dpi = win.devicePixelRatio * 96;
-  var widthMM = win.innerWidth / (25.4 * dpi);
-  var heightMM = win.innerHeight / (25.4 * dpi);
+  var dpi = 96;
+  var widthMM = (win.innerWidth * 25.4) / dpi;
+  var heightMM = (win.innerHeight * 25.4) / dpi;
   return [0, widthMM, heightMM];
 };
 
