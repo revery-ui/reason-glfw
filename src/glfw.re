@@ -395,7 +395,6 @@ external glBindTexture: (textureType, texture) => unit = "caml_glBindTexture";
 external glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit =
   "caml_glTexParameteri";
-<<<<<<< HEAD
 external glTexImage2D:
   (
     textureType,
@@ -407,10 +406,7 @@ external glTexImage2D:
   ) =>
   unit =
   "caml_glTexImage2D_bytecode" "caml_glTexImage2D_native";
-=======
-external glTexImage2D: (textureType, Image.t) => unit = "caml_glTexImage2D";
 [@noalloc]
->>>>>>> master
 external glGenerateMipmap: textureType => unit = "caml_glGenerateMipmap";
 
 type bufferType =
