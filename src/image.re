@@ -1,7 +1,6 @@
 /* Image loading / handling */
 
 type t;
-type pixelBuffer;
 
 exception ImageLoadException(string);
 
@@ -32,8 +31,18 @@ let load = imgName => {
   promise;
 };
 
-external create: (~width:int, ~height:int, ~numChannels:int,
-                  ~channelSize:int) => t = "caml_createImage";
+external create:
+  Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) => t =
+  "caml_createImage";
 external destroy: t => unit = "caml_destroyImage";
-external getBuffer: t => pixelBuffer = "caml_getImageBuffer";
+external getPixels:
+  t => Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) =
+  "caml_getImagePixels";
+external setPixels:
+  (
+    t,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit =
+  "caml_setImagePixels";
 external save: (t, string) => unit = "caml_saveImage";

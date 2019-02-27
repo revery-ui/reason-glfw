@@ -13,22 +13,20 @@ extern "C" {
     CAMLprim value
     caml_stb_image_load(value vPath, value vSuccess, value vFailure) {
         CAMLparam3(vPath, vSuccess, vFailure);
-        int width, height, numChannels;
-        
+        int width, height;
+
         char* path = String_val(vPath);
         printf("Loading image %s\n", path);
 
-        unsigned char *data = stbi_load(path, &width, &height, &numChannels, 0);
+        unsigned char *data = stbi_load(path, &width, &height, NULL, 4);
 
         if (!data) {
             caml_callback(vFailure, caml_copy_string("Unable to load image."));
         } else {
-            printf("Load result - width: %d height: %d numChannels: %d\n", width, height, numChannels);
+            printf("Load result - width: %d height: %d\n", width, height);
             struct ReglfwImageInfo* pImageInfo = (ReglfwImageInfo *)malloc(sizeof(ReglfwImageInfo));
             pImageInfo->width = width;
             pImageInfo->height = height;
-            pImageInfo->numChannels = numChannels;
-            pImageInfo->channelSize = 1;
             pImageInfo->data = data;
             caml_callback(vSuccess, (value)pImageInfo);
         }
@@ -65,8 +63,6 @@ extern "C" {
         struct ReglfwImageInfo* pImageInfo = (ReglfwImageInfo *)malloc(sizeof(ReglfwImageInfo));
         pImageInfo->width = 1;
         pImageInfo->height = 1;
-        pImageInfo->numChannels = 4;
-        pImageInfo->channelSize = 1;
         pImageInfo->data = data;
 
         return (value)pImageInfo;
@@ -76,7 +72,7 @@ extern "C" {
     caml_stb_image_debug_print(value vImage) {
         ReglfwImageInfo *pImage = (ReglfwImageInfo*)vImage;
 
-        printf("Debug - width: %d height: %d numChannels: %d\n", pImage->width, pImage->height, pImage->numChannels);
+        printf("Debug - width: %d height: %d\n", pImage->width, pImage->height);
         return Val_unit;
     }
 }

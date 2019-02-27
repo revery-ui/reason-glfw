@@ -101,7 +101,7 @@ function caml_glDrawArrays(vDrawMode, first, count) {
 // Provides: caml_glDrawElements
 function caml_glDrawElements(vDrawMode, count, vDataType, first) {
     var drawMode = joo_global_object.variantToDrawMode[vDrawMode];
-    var dataType = joo_global_object.variantToGlType[vDataType];
+    var dataType = joo_global_object.variantToType[vDataType];
     joo_global_object.gl.drawElements(drawMode, count, dataType, first);
 }
 
@@ -239,10 +239,18 @@ function caml_glTexParameteri(vTextureType, vTextureParameter, vTextureParameter
     joo_global_object.gl.texParameteri(textureType, textureParameter, textureParameterValue);
 }
 
-// Provides: caml_glTexImage2D
-function caml_glTexImage2D(vTextureType, vImage) {
+// Provides: caml_glTexImage2D_bytecode
+function caml_glTexImage2D_bytecode(vTextureType, vLevel, vInternalFormat, vFormat, vType, vPixels) {
     var textureType = joo_global_object.variantToTextureType[vTextureType];
-    joo_global_object.gl.texImage2D(textureType, 0, joo_global_object.gl.RGBA, joo_global_object.gl.RGBA, joo_global_object.gl.UNSIGNED_BYTE, vImage);
+    var internalFormat = joo_global_object.variantToFormat[vInternalFormat];
+    var format = joo_global_object.variantToFormat[vFormat];
+    var type = joo_global_object.variantToType[vType];
+    var numChannels = joo_global_object.formatToNumChannels[format];
+    var width = vPixels.nth_dim(1) / numChannels;
+    var height = vPixels.nth_dim(0);
+    var pixels = vPixels.data;
+
+    joo_global_object.gl.texImage2D(textureType, vLevel, internalFormat, width, height, 0, format, type, pixels);
 }
 
 // Provides: caml_glGenerateMipmap
@@ -262,45 +270,35 @@ function caml_glEnableVertexAttribArray(attributeLocation) {
     joo_global_object.gl.enableVertexAttribArray(attributeLocation);
 }
 
-// Provides: caml_glReadPixels_bytecode
-function caml_glReadPixels_bytecode(x, y, width, height, vFormat, vType, data) {
-  // Implements the _bytecode version since we have >7 parameters and because
-  // js_of_ocaml uses the bytecode backend.
-  var format, type;
+// Provides: caml_glReadPixels
+function caml_glReadPixels(x, y, vFormat, vType, vPixels) {
+  var format, type, numChannels;
 
-  switch (vFormat) {
-  case 0:
-    console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
-    format = joo_global_object.gl.RGB; break;
-  case 1: format = joo_global_object.gl.RGBA; break;
-  default: throw "Unrecognized pixel format";
+  var format = joo_global_object.variantToFormat[vFormat];
+  var numChannels = joo_global_object.formatToNumChannels[format];
+  var type = joo_global_object.variantToType[vType];
+
+  if (format === joo_global_object.gl.RGB) {
+    joo_global_object.console.log("Warning: Your browser most likely doesn't support GL_RGB. Try GL_RGBA if you see an error");
   }
 
-  switch (vType) {
-  case 0: type = joo_global_object.gl.UNSIGNED_FLOAT; break;
-  case 1: type = joo_global_object.gl.UNSIGNED_BYTE; break;
-  case 2: type = joo_global_object.gl.UNSIGNED_SHORT; break;
-  case 3: type = joo_global_object.gl.UNSIGNED_SHORT_5_6_5; break;
-  case 4: type = joo_global_object.gl.UNSIGNED_SHORT_4_4_4_4; break;
-  case 5: type = joo_global_object.gl.UNSIGNED_SHORT_5_5_5_1; break;
-  default: throw "Unrecognized pixel type";
-  }
-
-  joo_global_object.gl.readPixels(x, y, width, height, format, type, data);
+  var width = vPixels.nth_dim(1) / numChannels;
+  var height = vPixels.nth_dim(0);
+  var pixels = vPixels.data;
+  joo_global_object.gl.readPixels(x, y, width, height, format, type, pixels);
 
   // If we're on a little-endian system, the R/B channels are swapped
   // So let's determine endianness...
-  var marker = new ArrayBuffer(4);
-  var u32view = new Uint32Array(marker);
+  var marker = new joo_global_object.ArrayBuffer(4);
+  var u32view = new joo_global_object.Uint32Array(marker);
   u32view[0] = 0x12345678;
-  var u8view = new Uint8Array(marker);
+  var u8view = new joo_global_object.Uint8Array(marker);
   if (u8view[0] == 0x78 && type == joo_global_object.gl.UNSIGNED_BYTE) {
     // We are little-endian. Onto the swap...
-    var numChannels = format == joo_global_object.gl.RGBA ? 4 : 3;
     for (var i = 0; i < width * height * numChannels; i += numChannels) {
-      var tmp = data[i];
-      data[i] = data[i+2];
-      data[i+2] = tmp;
+      var tmp = pixels[i];
+      pixels[i] = pixels[i+2];
+      pixels[i+2] = tmp;
     }
   }
 }

@@ -21,8 +21,7 @@
     ],
     "install": [
       "esy-installer"
-    ],
-    "buildsInSource": "_build"
+    ]
   },
   "peerDependencies": {
     "ocaml": "^4.6.0"

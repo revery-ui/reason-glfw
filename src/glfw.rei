@@ -237,7 +237,8 @@ type textureParameterValue =
   | GL_LINEAR
   | GL_CLAMP_TO_EDGE;
 
-type texturePixelDataFormat =
+type format =
+  | GL_ALPHA
   | GL_RGB
   | GL_RGBA;
 
@@ -254,7 +255,16 @@ let glCreateTexture: unit => texture;
 let glBindTexture: (textureType, texture) => unit;
 let glTexParameteri:
   (textureType, textureParameter, textureParameterValue) => unit;
-let glTexImage2D: (textureType, Image.t) => unit;
+let glTexImage2D:
+  (
+    textureType,
+    int,
+    format,
+    format,
+    glType,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit;
 let glGenerateMipmap: textureType => unit;
 
 type bufferType =
@@ -283,4 +293,11 @@ let glDrawArrays: (drawMode, int, int) => unit;
 let glDrawElements: (drawMode, int, glType, int) => unit;
 
 let glReadPixels:
-  (int, int, int, int, texturePixelDataFormat, glType, 'pixelBuffer) => unit;
+  (
+    int,
+    int,
+    format,
+    glType,
+    Bigarray.Array2.t(int, Bigarray.int8_unsigned_elt, Bigarray.c_layout)
+  ) =>
+  unit;

@@ -147,14 +147,32 @@ extern "C" {
         }
     }
 
-    GLenum variantToPixelFormat(value vFormat) {
-      switch (Int_val(vFormat)) {
-      case 0: return GL_RGB;
-      case 1: return GL_RGBA;
-      default:
-        warn("Unsupported pixel format!");
-        return 0;
-      }
+    GLenum variantToFormat(value vFormat) {
+        switch(Int_val(vFormat)) {
+            case 0:
+                return GL_ALPHA;
+            case 1:
+                return GL_RGB;
+            case 2:
+                return GL_RGBA;
+            default:
+                warn("Unsupported pixel format!");
+                return 0;
+        }
+    }
+
+    GLsizei formatToNumChannels(GLenum format) {
+        switch(format) {
+            case GL_ALPHA:
+                return 1;
+            case GL_RGB:
+                return 3;
+            case GL_RGBA:
+                return 4;
+            default:
+                warn("Unsupported pixel format!");
+                return 4;
+        }
     }
 
     CAMLprim value
@@ -200,7 +218,7 @@ extern "C" {
 
     CAMLprim value
     caml_glScissor(value vX, value vY, value vWidth, value vHeight) {
-        int x = Int_val(vX);    
+        int x = Int_val(vX);
         int y = Int_val(vY);
         int width = Int_val(vWidth);
         int height = Int_val(vHeight);
@@ -323,10 +341,10 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glGetUniformLocation(value vProgram, value vAttributeName) {
+    caml_glGetUniformLocation(value vProgram, value vUniformName) {
         unsigned int shaderProgram = (unsigned int)vProgram;
         char *s;
-        s = String_val(vAttributeName);
+        s = String_val(vUniformName);
 
         int val = glGetUniformLocation(shaderProgram, s);
         return (value)val;
@@ -473,37 +491,48 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glTexImage2D(value vTextureType, value vImage) {
+    caml_glTexImage2D_native(
+            value vTextureType,
+            value vLevel,
+            value vInternalFormat,
+            value vFormat,
+            value vType,
+            value vPixels) {
+        CAMLparam5(vTextureType, vLevel, vInternalFormat, vFormat, vType);
+        CAMLxparam1(vPixels);
+        CAMLlocal1(vData);
 
-        ReglfwImageInfo *pImage = (ReglfwImageInfo *)vImage;
-
-        GLenum channels;
-        switch (pImage->numChannels) {
-            case 1:
-                channels = GL_ALPHA;
-                break;
-            case 2:
-                channels = GL_LUMINANCE_ALPHA;
-                break;
-            case 3:
-                channels = GL_RGB;
-                break;
-            case 4:
-            default:
-                channels = GL_RGBA;
-        }
+        GLenum format = variantToFormat(vFormat);
+        GLsizei numChannels = formatToNumChannels(format);
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[1] / numChannels;
+        GLsizei height = Caml_ba_array_val(vPixels)->dim[0];
+        vData = (value)Caml_ba_data_val(vPixels);
+        GLvoid *pPixels = (GLvoid *)vData;
 
         glTexImage2D(
-                variantToTextureType(vTextureType), 
+                variantToTextureType(vTextureType),
+                Int_val(vLevel),
+                format,
+                width,
+                height,
                 0,
-                channels,
-                pImage->width,
-                pImage->height,
-                0,
-                channels,
-                GL_UNSIGNED_BYTE,  // TODO: Support for floating-point textures!
-                pImage->data);
-        return Val_unit;
+                variantToFormat(vFormat),
+                variantToType(vType),
+                pPixels);
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glTexImage2D_bytecode(value *argv, int argn)
+    {
+        return caml_glTexImage2D_native(
+                argv[0],
+                argv[1],
+                argv[2],
+                argv[3],
+                argv[4],
+                argv[5]);
     }
 
     CAMLprim value
@@ -578,9 +607,9 @@ extern "C" {
     }
 
     CAMLprim value
-    caml_glEnableVertexAttribArray(value vAttributeLocation) {
-        int attributeLocation = (int)(vAttributeLocation);
-        glEnableVertexAttribArray(attributeLocation);
+    caml_glEnableVertexAttribArray(value vIndex) {
+        int index = (int)(vIndex);
+        glEnableVertexAttribArray(index);
         return Val_unit;
     }
 
@@ -599,77 +628,36 @@ extern "C" {
         return Val_unit;
     }
 
-    /* 2 copies of this stub, since the OCaml runtime requires a native
-       version & a bytecode version for functions with >5 parameters. */
     CAMLprim value
-    caml_glReadPixels_native(value vX, value vY, value vWidth, value vHeight,
-                             value vFormat, value vType, value vData) {
-      CAMLparam5(vX, vY, vWidth, vHeight, vFormat);
-      CAMLxparam2(vType, vData);
+    caml_glReadPixels(value vX, value vY, value vFormat, value vType, value vPixels) {
+        CAMLparam5(vX, vY, vFormat, vType, vPixels);
 
-      GLint x = (GLint) Int_val(vX);
-      GLint y = (GLint) Int_val(vY);
+        GLint x = (GLint) Int_val(vX);
+        GLint y = (GLint) Int_val(vY);
 
-      GLsizei width = (GLsizei) Int_val(vWidth);
-      GLsizei height = (GLsizei) Int_val(vHeight);
+        GLenum format = variantToFormat(vFormat);
+        GLenum type = variantToType(vType);
 
-      GLenum format = variantToPixelFormat(vFormat);
-      GLenum type = variantToType(vType);
-
-      void *data = (void *) vData;
-
-      glReadPixels(x, y, width, height, format, type, data);
-
-      // If we're on a little-endian system, the R/B channels are swapped
-      // So let's determine endianness...
-      unsigned int marker = 0x12345678;
-      if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
-        // We are little-endian. Onto the swap...
         int numChannels = format == GL_RGBA ? 4 : 3;
-        for (int i = 0; i < width * height * numChannels; i += numChannels) {
-          uint8_t tmp = *((uint8_t *) data + i);
-          *((uint8_t *) data + i) = *((uint8_t *) data + i + 2);
-          *((uint8_t *) data + i + 2) = tmp;
+
+        GLsizei width = Caml_ba_array_val(vPixels)->dim[1] / numChannels;
+        GLsizei height = Caml_ba_array_val(vPixels)->dim[0];
+        GLvoid *pPixels = (GLvoid *)Caml_ba_data_val(vPixels);
+
+        glReadPixels(x, y, width, height, format, type, pPixels);
+
+        // If we're on a little-endian system, the R/B channels are swapped
+        // So let's determine endianness...
+        unsigned int marker = 0x12345678;
+        if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
+            // We are little-endian. Onto the swap...
+            for (int i = 0; i < width * height * numChannels; i += numChannels) {
+            uint8_t tmp = *((uint8_t *) pPixels + i);
+            *((uint8_t *) pPixels + i) = *((uint8_t *) pPixels + i + 2);
+            *((uint8_t *) pPixels + i + 2) = tmp;
+            }
         }
-      }
 
-      CAMLreturn(Val_unit);
-    }
-
-    CAMLprim value
-    caml_glReadPixels_bytecode(value * argv, int argc) {
-      value vX = argv[0], vY = argv[1], vWidth = argv[2],
-            vHeight = argv[3], vFormat = argv[4],
-            vType = argv[5], vData = argv[6];
-      CAMLparam5(vX, vY, vWidth, vHeight, vFormat);
-      CAMLxparam2(vType, vData);
-
-      GLint x = (GLint) Int_val(vX);
-      GLint y = (GLint) Int_val(vY);
-
-      GLsizei width = (GLsizei) Int_val(vWidth);
-      GLsizei height = (GLsizei) Int_val(vHeight);
-
-      GLenum format = variantToPixelFormat(vFormat);
-      GLenum type = variantToType(vType);
-
-      void *data = (void *) vData;
-
-      glReadPixels(x, y, width, height, format, type, data);
-
-      // If we're on a little-endian system, the R/B channels are swapped
-      // So let's determine endianness...
-      unsigned int marker = 0x12345678;
-      if (*(char *) &marker == 0x78 && type == GL_UNSIGNED_BYTE) {
-        // We are little-endian. Onto the swap...
-        int numChannels = format == GL_RGBA ? 4 : 3;
-        for (int i = 0; i < width * height * numChannels; i += numChannels) {
-          uint8_t tmp = *((uint8_t *) data + i);
-          *((uint8_t *) data + i) = *((uint8_t *) data + i + 2);
-          *((uint8_t *) data + i + 2) = tmp;
-        }
-      }
-
-      CAMLreturn(Val_unit);
+        CAMLreturn(Val_unit);
     }
 }
