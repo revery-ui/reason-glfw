@@ -9,8 +9,32 @@ external glfwInit: unit => bool = "caml_glfwInit";
 external glfwCreateWindow:
   (int, int, ~sharedContext: Window.t=?, string) => Window.t =
   "caml_glfwCreateWindow";
-external glfwMakeContextCurrent: Window.t => unit =
+
+let _lastWindow: ref(option(Window.t)) = ref(None);
+
+[@noalloc] external _glfwMakeContextCurrent: Window.t => unit =
   "caml_glfwMakeContextCurrent";
+
+let glfwMakeContextCurrent = (win) => {
+
+    switch (_lastWindow^) {
+    | None => {
+        _glfwMakeContextCurrent(win);
+        _lastWindow := Some(win);
+    }
+    | Some(w) when (w != win) => {
+        ignore(w);
+        _glfwMakeContextCurrent(win);
+        _lastWindow := Some(win);
+    }
+    | Some(_) => ()
+    }
+
+};
+
+
+
+
 external glfwWindowShouldClose: Window.t => bool =
   "caml_glfwWindowShouldClose";
 
