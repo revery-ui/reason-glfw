@@ -71,7 +71,7 @@ let run = () => {
   let cursor = Random.int(Array.length(cursors));
   glfwSetCursor(primaryWindow, cursors[cursor]);
 
-  glfwSetWindowIcon(primaryWindow, "favicon01.png");
+  glfwSetWindowIcon(primaryWindow, getExecutingDirectory() ++ "favicon01.png");
 
   glViewport(0, 0, 800, 600);
 
@@ -87,6 +87,7 @@ let run = () => {
 
   let%lwt img =
     Image.load(getExecutingDirectory() ++ "UVCheckerMap02-512.png");
+
   /* let img = Image.fromColor(255, 0, 0, 255); */
   let dimensions = Image.getDimensions(img);
   let pixels = Image.getPixels(img);
