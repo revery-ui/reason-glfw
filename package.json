@@ -1,6 +1,6 @@
 {
   "name": "reason-glfw",
-  "version": "3.2.1020",
+  "version": "3.2.1021",
   "description": "GLFW bindings for OCaml",
   "license": "MIT",
   "esy": {
