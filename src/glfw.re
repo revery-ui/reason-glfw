@@ -9,8 +9,26 @@ external glfwInit: unit => bool = "caml_glfwInit";
 external glfwCreateWindow:
   (int, int, ~sharedContext: Window.t=?, string) => Window.t =
   "caml_glfwCreateWindow";
-external glfwMakeContextCurrent: Window.t => unit =
+
+let _lastWindow: ref(option(Window.t)) = ref(None);
+
+[@noalloc]
+external _glfwMakeContextCurrent: Window.t => unit =
   "caml_glfwMakeContextCurrent";
+
+let glfwMakeContextCurrent = win => {
+  switch (_lastWindow^) {
+  | None =>
+    _glfwMakeContextCurrent(win);
+    _lastWindow := Some(win);
+  | Some(w) when w != win =>
+    ignore(w);
+    _glfwMakeContextCurrent(win);
+    _lastWindow := Some(win);
+  | Some(_) => ()
+  };
+};
+
 external glfwWindowShouldClose: Window.t => bool =
   "caml_glfwWindowShouldClose";
 
@@ -43,7 +61,8 @@ external glfwSetTime: ([@unboxed] float) => unit =
   "caml_glfwSetTime_byte" "caml_glfwSetTime";
 
 [@noalloc]
-external glfwSetWindowIcon: (Window.t, string) => unit = "caml_glfwSetWindowIcon";
+external glfwSetWindowIcon: (Window.t, string) => unit =
+  "caml_glfwSetWindowIcon";
 
 [@noalloc]
 external glfwGetNativeWindow: Window.t => NativeWindow.t =
@@ -387,8 +406,7 @@ type glType =
   | GL_UNSIGNED_SHORT_4_4_4_4
   | GL_UNSIGNED_SHORT_5_5_5_1;
 
-[@noallooc]
-external glCreateTexture: unit => texture = "caml_glCreateTexture";
+[@noallooc] external glCreateTexture: unit => texture = "caml_glCreateTexture";
 [@noalloc]
 external glBindTexture: (textureType, texture) => unit = "caml_glBindTexture";
 [@noalloc]
@@ -416,12 +434,10 @@ type bufferType =
   | GL_ELEMENT_ARRAY_BUFFER;
 
 type buffer;
-[@noalloc]
-external glCreateBuffer: unit => buffer = "caml_glCreateBuffer";
+[@noalloc] external glCreateBuffer: unit => buffer = "caml_glCreateBuffer";
 [@noalloc]
 external glBindBuffer: (bufferType, buffer) => unit = "caml_glBindBuffer";
-[@noalloc]
-external glUnbindBuffer: bufferType => unit = "caml_glUnbindBuffer";
+[@noalloc] external glUnbindBuffer: bufferType => unit = "caml_glUnbindBuffer";
 
 type drawType =
   | GL_STATIC_DRAW;

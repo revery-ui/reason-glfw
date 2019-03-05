@@ -13,8 +13,8 @@ module Window = {
 };
 
 module NativeWindow = {
-    type t;
-}
+  type t;
+};
 
 type enableOptions =
   | GL_DEPTH_TEST
