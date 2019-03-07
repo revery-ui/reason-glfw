@@ -85,6 +85,17 @@ module Modifier = {
   let isAltPressed = (m: t) => m land _mod_alt == _mod_alt;
 
   let isSuperPressed = (m: t) => m land _mod_super == _mod_super;
+
+  let show = v => {
+    "shift: "
+    ++ string_of_bool(isShiftPressed(v))
+    ++ " alt: "
+    ++ string_of_bool(isAltPressed(v))
+    ++ " ctrl: "
+    ++ string_of_bool(isControlPressed(v))
+    ++ " super: "
+    ++ string_of_bool(isSuperPressed(v));
+  };
 };
 
 module MouseButton = {
@@ -192,6 +203,17 @@ let glfwRenderLoop = callback =>
 type glfwCharCallback = (Window.t, int) => unit;
 external glfwSetCharCallback: (Window.t, glfwCharCallback) => unit =
   "caml_glfwSetCharCallback";
+
+type _glfwCharModsCallback = (Window.t, int, int) => unit;
+external _glfwSetCharModsCallback: (Window.t, _glfwCharModsCallback) => unit =
+  "caml_glfwSetCharModsCallback";
+
+type glfwCharModsCallback = (Window.t, int, Modifier.t) => unit;
+
+let glfwSetCharModsCallback = (win, callback) =>
+  _glfwSetCharModsCallback(win, (w, k, modifier) =>
+    callback(w, k, Modifier.of_int(modifier))
+  );
 
 /* Internal implementation of glfwKeyCallback, since we need to cast some of
    integers to types */

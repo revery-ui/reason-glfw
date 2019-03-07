@@ -386,6 +386,11 @@ function caml_glfwSetCharCallback(w, callback) {
     w.onChar = callback;
 }
 
+// Provides: caml_glfwSetCharModsCallback
+function caml_glfwSetCharModsCallback(w, callback) {
+    joo_global_object.console.warn("Unsupported API: caml_glfwSetCharModsCallback");
+}
+
 // Provides: caml_glfwSetKeyCallback
 function caml_glfwSetKeyCallback(w, callback) {
     w.onKey = callback;
