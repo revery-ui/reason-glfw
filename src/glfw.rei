@@ -38,6 +38,8 @@ module Modifier: {
   let isControlPressed: t => bool;
   let isAltPressed: t => bool;
   let isSuperPressed: t => bool;
+
+  let show: t => string;
 };
 
 module MouseButton: {
@@ -106,6 +108,9 @@ let glfwSetCursorPosCallback: (Window.t, glfwCursorPosCallback) => unit;
 
 type glfwCharCallback = (Window.t, int) => unit;
 let glfwSetCharCallback: (Window.t, glfwCharCallback) => unit;
+
+type glfwCharModsCallback = (Window.t, int, Modifier.t) => unit;
+let glfwSetCharModsCallback: (Window.t, glfwCharModsCallback) => unit;
 
 type glfwKeyCallback =
   (Window.t, Key.t, int, ButtonState.t, Modifier.t) => unit;

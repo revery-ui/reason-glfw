@@ -281,17 +281,10 @@ let run = () => {
   glfwSetKeyCallback(
     primaryWindow,
     (_w, _key, _scancode, buttonState, m) => {
-      let controlPressed = string_of_bool(Modifier.isControlPressed(m));
-      let shiftPressed = string_of_bool(Modifier.isShiftPressed(m));
-      /* let altPressed = Modifier.isAltPressed(m); */
-
       print_endline(
         "KEY: "
         ++ string_of_int(Obj.magic(_key))
-        ++ "| ctrl: "
-        ++ controlPressed
-        ++ " | shift: "
-        ++ shiftPressed
+        ++ "| " ++ Modifier.show(m)
         ++ "| state: "
         ++ ButtonState.show(buttonState),
       );
@@ -300,6 +293,29 @@ let run = () => {
         glfwDestroyWindow(_w);
       };
     },
+  );
+
+  glfwSetCharCallback(primaryWindow, (_w, codepoint) =>
+    print_endline(
+      "CHAR: "
+      ++ string_of_int(codepoint)
+      ++ " | "
+      ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint))),
+    )
+  );
+
+  glfwSetCharModsCallback(
+    primaryWindow,
+    (_w, codepoint, m) => {
+      print_endline(
+      "CHAR MODS: "
+      ++ string_of_int(codepoint)
+      ++ " | "
+      ++ String.make(1, Uchar.to_char(Uchar.of_int(codepoint)))
+      ++ " | " 
+      ++ Modifier.show(m)
+      );
+    }
   );
 
   glfwSetCharCallback(primaryWindow, (_w, codepoint) =>

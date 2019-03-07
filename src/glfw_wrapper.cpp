@@ -44,6 +44,7 @@ extern "C" {
         value vKeyCallback;
         value vMouseButtonCallback;
         value vCharCallback;
+        value vCharModsCallback;
         value vScrollCallback;
     };
 
@@ -218,6 +219,14 @@ extern "C" {
         }
     }
 
+    void char_mods_callback(GLFWwindow *pWin, unsigned int codepoint, int modifier) {
+        WindowInfo *pWinInfo = getWindowInfoFromWindow(pWin);
+
+        if (pWinInfo && pWinInfo->vCharModsCallback != Val_unit) {
+            (void) caml_callback3((value)pWinInfo->vCharModsCallback, ((value)(void *)pWinInfo), Val_int(codepoint), Val_int(modifier));
+        }
+    }
+
     CAMLprim value
     caml_glfwGetNativeWindow(value vWindow) {
         WindowInfo *pWinInfo = (WindowInfo *)vWindow;
@@ -268,6 +277,7 @@ extern "C" {
       pWindowInfo->vSetWindowSizeCallback = Val_unit;
       pWindowInfo->vSetCursorPosCallback = Val_unit;
       pWindowInfo->vCharCallback = Val_unit;
+      pWindowInfo->vCharModsCallback = Val_unit;
       pWindowInfo->vKeyCallback = Val_unit;
       pWindowInfo->vMouseButtonCallback = Val_unit;
       pWindowInfo->vScrollCallback = Val_unit;
@@ -276,6 +286,7 @@ extern "C" {
       glfwSetWindowSizeCallback(wd, window_size_callback);
       glfwSetCursorPosCallback(wd, cursor_pos_callback);
       glfwSetCharCallback(wd, char_callback);
+      glfwSetCharModsCallback(wd, char_mods_callback);
       glfwSetKeyCallback(wd, key_callback);
       glfwSetMouseButtonCallback(wd, mouse_button_callback);
       glfwSetScrollCallback(wd, scroll_callback);
@@ -393,6 +404,24 @@ extern "C" {
             // collector knows it is being used.
             pWinInfo->vCharCallback = vCallback;
             caml_register_global_root(&(pWinInfo->vCharCallback));
+        }
+
+        CAMLreturn(Val_unit);
+    }
+
+    CAMLprim value
+    caml_glfwSetCharModsCallback(value vWindow, value vCallback) {
+        CAMLparam2(vWindow, vCallback);
+
+        WindowInfo *pWinInfo = (WindowInfo *)vWindow;
+
+        if (pWinInfo) {
+            // TODO: Recycle existing callback if any!
+
+            // We need to mark the closure as being a global root, so the garbage
+            // collector knows it is being used.
+            pWinInfo->vCharModsCallback = vCallback;
+            caml_register_global_root(&(pWinInfo->vCharModsCallback));
         }
 
         CAMLreturn(Val_unit);
