@@ -124,3 +124,5 @@ type t =
   | GLFW_KEY_MENU;
 
 let of_int: int => t;
+
+let show: t => string;
