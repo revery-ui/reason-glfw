@@ -28,7 +28,6 @@ let glfwSetWindowIcon: (Window.t, string) => unit;
 
 let glfwGetNativeWindow: Window.t => NativeWindow.t;
 
-
 module Modifier: {
   type t;
 

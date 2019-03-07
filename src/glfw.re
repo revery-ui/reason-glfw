@@ -86,12 +86,16 @@ module Modifier = {
 
   let isSuperPressed = (m: t) => m land _mod_super == _mod_super;
 
-  let show = (v) => {
-    "shift: " ++ string_of_bool(isShiftPressed(v))
-    ++ " alt: " ++ string_of_bool(isAltPressed(v))
-    ++ " ctrl: " ++ string_of_bool(isControlPressed(v))
-    ++ " super: " ++ string_of_bool(isSuperPressed(v));
-  }
+  let show = v => {
+    "shift: "
+    ++ string_of_bool(isShiftPressed(v))
+    ++ " alt: "
+    ++ string_of_bool(isAltPressed(v))
+    ++ " ctrl: "
+    ++ string_of_bool(isControlPressed(v))
+    ++ " super: "
+    ++ string_of_bool(isSuperPressed(v));
+  };
 };
 
 module MouseButton = {
