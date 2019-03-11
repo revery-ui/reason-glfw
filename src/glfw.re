@@ -264,6 +264,9 @@ external glfwSetFramebufferSizeCallback:
 external glfwSetWindowSizeCallback: (Window.t, glfwWindowSizeCallback) => unit =
   "caml_glfwSetWindowSizeCallback";
 
+external glfwSetWindowPosCallback: (Window.t, glfwWindowPosCallback) => unit =
+  "caml_glfwSetWindowPosCallback";
+
 type glfwCursorPos = {
   mouseX: float,
   mouseY: float,
