@@ -420,7 +420,7 @@ let run = () => {
     /* Run the GC so we can catch any GC-related crashes early! */
     Gc.full_major();
 
-    glfwPollEvents();
+    glfwWaitEventsTimeout(0.1);
     glfwWindowShouldClose(primaryWindow);
   });
 
