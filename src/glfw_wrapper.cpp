@@ -756,6 +756,20 @@ extern "C" {
     }
 
     CAMLprim value
+    caml_glfwWaitEvents(value unit)
+    {
+        glfwWaitEvents();
+        return Val_unit;
+    }
+    
+    CAMLprim value
+    caml_glfwWaitEventsTimeout(double timeout)
+    {
+        glfwWaitEventsTimeout(timeout);
+        return Val_unit;
+    }
+
+    CAMLprim value
     caml_glfwSwapBuffers(value window)
     {
         WindowInfo *wd = (WindowInfo*)window;
