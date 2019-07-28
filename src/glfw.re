@@ -34,6 +34,7 @@ external glfwWindowShouldClose: Window.t => bool =
 
 external glfwPollEvents: unit => unit = "caml_glfwPollEvents";
 external glfwWaitEvents: unit => unit = "caml_glfwWaitEvents";
+external glfwPostEmptyEvent: unit => unit = "caml_glfwPostEventEvent";
 [@noalloc] external glfwWaitEventsTimeout: [@unboxed] float => unit = "caml_glfwWaitEventsTimeout";
 external glfwTerminate: unit => unit = "caml_glfwTerminate";
 external glfwSwapBuffers: Window.t => unit = "caml_glfwSwapBuffers";

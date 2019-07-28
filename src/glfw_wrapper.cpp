@@ -754,6 +754,13 @@ extern "C" {
         glfwPollEvents();
         return Val_unit;
     }
+    
+    CAMLprim value
+    caml_glfwPostEmptyEvent(value unit)
+    {
+        glfwPostEmptyEvent();
+        return Val_unit;
+    }
 
     CAMLprim value
     caml_glfwWaitEvents(value unit)
