@@ -10,6 +10,9 @@ let glfwCreateWindow:
 let glfwMakeContextCurrent: Window.t => unit;
 let glfwWindowShouldClose: Window.t => bool;
 let glfwPollEvents: unit => unit;
+let glfwPostEmptyEvent: unit => unit;
+let glfwWaitEvents: unit => unit;
+let glfwWaitEventsTimeout: float => unit;
 let glfwTerminate: unit => unit;
 let glfwSwapBuffers: Window.t => unit;
 let glfwSetWindowPos: (Window.t, int, int) => unit;

@@ -421,6 +421,7 @@ let run = () => {
     Gc.full_major();
 
     glfwPollEvents();
+    /*glfwWaitEvents();*/
     glfwWindowShouldClose(primaryWindow);
   });
 
