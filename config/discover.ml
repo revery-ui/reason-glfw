@@ -22,6 +22,11 @@ let get_os =
 let root = Sys.getenv "cur__root"
 let c_flags = ["-I"; (Sys.getenv "GLFW_INCLUDE_PATH"); "-I"; Filename.concat root "include"; "-I"; Filename.concat root "src"]
 
+let c_flags = match get_os with
+    | Linux -> c_flags @ ["-fPIC"]
+    | _ -> c_flags
+;;
+
 let libPath = "-L" ^ (Sys.getenv "GLFW_LIB_PATH")
 
 let ccopt s = ["-ccopt"; s]
