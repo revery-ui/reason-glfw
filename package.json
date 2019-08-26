@@ -1,7 +1,8 @@
 {
   "name": "reason-glfw",
-  "version": "3.2.1027",
+  "version": "3.2.1028",
   "description": "GLFW bindings for OCaml",
+  "url": "https://github.com/revery-ui/reason-glfw",
   "license": "MIT",
   "esy": {
     "build": [
